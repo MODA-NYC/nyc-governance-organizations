@@ -1,0 +1,51 @@
+Column,Row(s),Feedback
+Name,NYC_GOID_000217,Fix “Mayorâ€™s Office of Housing Recovery Operations”
+Name,NYC_GOID_000000,311 refers to itself as “NYC311” on its website
+Name,NYC_GOID_000118,"I know this has gone back and forth, but I think we either remove the singular Community Board entirely, or replace with the listing of each individual community board."
+NameAlphabetized,"Example: NYC_GOID_000240
+NYC_GOID_000240",What is the logic of adding NYC to the beginning of something to alphabetize?
+Description,All,"What is the source of the Description column? Why would something like 311 not have a description? If this column was created with one source originally, can we supplement particularly now that we have a smaller scope?"
+Description,NYC_GOID_000029,Why is Queens BP the only BP with a description?
+Description,"NYC_GOID_000318
+NYC_GOID_000278",Fix special characters
+Description,NYC_GOID_000050,Description begins with “This site is up for historical purposes only.” which makes it look inactive
+AlternativeNames,Example: NYC_GOID_100011,Are former names alternative names? This seems misleading.
+AlternativeNames,"NYC_GOID_000169
+NYC_GOID_000170
+NYC_GOID_000172
+NYC_GOID_000474",Repeated values error
+AlternativeNames,NYC_GOID_000312,Mistakenly populated field - Children’s Cabinet is unrelated to NYC & Company
+Acronym,NYC_GOID_000193,FDM
+Acronym,NYC_GOID_000248,MAYORS FUND is not an acronym
+Acronym,NYC_GOID_000318,H+H rather than HH
+Acronym,NYC_GOID_000234,PANY for Kings County Public Administrator appears to be an error
+Acronym,NYC_GOID_000387,"PEP is used, including on linked website"
+AlternativeAcronyms,NYC_GOID_000277,Is this an error? AJC for Mayor's Office of Special Enforcement?
+AlternativeAcronyms,NYC_GOID_000276,"Mayor's Office of Policy and Planning and Delivery is an alternative name, not an alternative acronym"
+OrganizationType,NYC_GOID_100001,Change value to ‘Advisory or Regulatory Organization’
+OrganizationType,,"Consider value for individual officers like DMs, Rat Czar, etc."
+OpenDatasetsURL,Example: NYC_GOID_000027,"Some agencies with Open Data datasets do not have values populated in the OpenDatasetsURL field, for example Brooklyn Borough President."
+PrincipalOfficersName,Many,"Many missing values including Borough Presidents and OTI divisions, 3/5 District Attorneys"
+PrincipalOfficersName,Many,"Many commissions and boards (CCPC, CFB, LPC, BSA) have their chairs listed as the principal officer. There might be a legal distinction worth discussing here, but practically it’s the staff exec. director who runs the organization, not the chair."
+PrincipalOfficersName,All,"Is there a reason we’re not splitting out given name and surname? Generating a list of principal officer titles with names, for example Chancellor Matos Rodriguez from row NYC_GOID_000099 is a very helpful use of this dataset and isn’t possible with a singular name field."
+PrincipalOfficerTitle,Many,"Low-hanging fruit missing values including Borough Presidents, OTI divisions, and District Attorneys"
+PrincipalOfficerTitle,NYC_GOID_000252,Carson Hicks is now Executive Director
+PrincipalOfficerTitle,NYC_GOID_000260,Title is currently Senior Executive Director
+PrincipalOfficerTitle,NYC_GOID_000238,"Confirmed,so no longer Acting"
+PrincipalOfficersName,NYC_GOID_000268,Jose Bayona has left the City
+PrincipalOfficersName,NYC_GOID_000276,Betsy MacLean has left the City
+PrincipalOfficersName,NYC_GOID_100007,Ryan Birchmeier has left the City
+PrincipalOfficersName,NYC_GOID_000135,Fix special characters
+PrincipalOfficerContactURL,NYC_GOID_000260,Remove value of “Non-existant”
+PrincipalOfficerContactURL,"NYC_GOID_100010
+NYC_GOID_100011
+NYC_GOID_100012",Add OTI contact form to OTI divisions
+FoundingYear,NYC_GOID_000166,We should be able to find the press release when Fabien Levy was made a DM
+FoundingYear,NYC_GOID_000112,"As an Open Data Ambassador, I’m certain that COPIC has a founding year 😉"
+Notes,All,"Consider elimination of Notes field given sparse usage. If it will persist, we should review for where more notes would be helpful.
+
+Currently, Cyber has a note on OTI merger, but ODA and OIP do not. Other offices like Climate are in similar boat."
+InstanceOf,All,"Consider elimination of InstanceOf field or populate more. If I understand correctly, this might tie into our parent/child discussion?"
+Name Source fields,All,Consider eliminating these fields. Fields that pertain to internal (ODA list) or non-City (WeGov) sources should be eliminated for sure.
+Jan 2025 Org Chart,"NYC_GOID_000162
+NYC_GOID_000436","This is just for internal purposes I think, but DMHEDW and TLC are on the org chart"
