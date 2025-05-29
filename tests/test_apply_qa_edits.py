@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from src import process_golden_dataset as pgd
+import process_golden_dataset as pgd
 
 
 # Fixture to clear changelog_entries before each test

@@ -45,9 +45,8 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-# If you have a src-layout, uncomment this:
-# package-dir = {"" = "src"}
-# packages = find_namespace:{where=["src"]}
+package-dir = {"" = "src"}
+py-modules = ["process_golden_dataset", "data_exploration"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
