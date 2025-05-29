@@ -1,6 +1,3 @@
-import pandas as pd
-import argparse
-
 def apply_qa_edits(df):
     """
     Apply QA edits to the DataFrame.
@@ -8,6 +5,7 @@ def apply_qa_edits(df):
     """
     # TODO: Implement QA edits
     return df
+
 
 def main():
     """
@@ -19,8 +17,8 @@ def main():
 
     # Example usage (replace with actual logic):
     # parser = argparse.ArgumentParser(description="Process the golden dataset.")
-    # parser.add_argument("input_file", help="Path to the input golden dataset CSV file.")
-    # parser.add_argument("output_file", help="Path to save the processed dataset CSV file.")
+    # parser.add_argument("input_file", help="Path to the input golden dataset CSV.")
+    # parser.add_argument("output_file", help="Path to save the processed dataset CSV.")
     # args = parser.parse_args()
 
     # print(f"Input file: {args.input_file}")
@@ -31,6 +29,7 @@ def main():
     # df_processed.to_csv(args.output_file, index=False)
 
     print("Golden dataset processing complete.")
+
 
 if __name__ == "__main__":
     main()

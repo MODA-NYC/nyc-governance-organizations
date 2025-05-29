@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.so
+*.log
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+
+# IDE/Editor
+.vscode/
+.cursor/
+
+# macOS
+.DS_Store
+
+# Data Files
+data/output/*
+!data/output/.gitkeep
+data/audit/*
+!data/audit/.gitkeep
+# data/output/*.csv # Covered by data/output/*
+# data/audit/*.csv # Covered by data/audit/*
+
+# Other
+.coverage
+htmlcov/
+*.env
+*.pytest_cache/
