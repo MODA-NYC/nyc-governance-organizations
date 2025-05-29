@@ -1,7 +1,15 @@
 import re
 import typing
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
+
+import pandas as pd
+
+# Global list to store changelog entries (for demonstration/testing)
+# In a real application, this would be a robust logging system
+# (e.g., writing to CSV/DB).
+changelog_entries = []
 
 
 class QAAction(Enum):
@@ -51,6 +59,31 @@ RULES = {
 }
 
 
+def log_change(
+    record_id: str,
+    column_changed: str,
+    old_value: typing.Any,
+    new_value: typing.Any,
+    feedback_source: str,
+    notes: str | None,
+    changed_by: str,
+):
+    """Logs a change to the changelog_entries list."""
+    global changelog_entries
+    entry = {
+        "timestamp": datetime.now().isoformat(),
+        "record_id": record_id,
+        "column_changed": column_changed,
+        "old_value": old_value,
+        "new_value": new_value,
+        "feedback_source": feedback_source,
+        "notes": notes,
+        "changed_by": changed_by,
+    }
+    changelog_entries.append(entry)
+    # print(f"Change logged: {entry}") # For debugging
+
+
 def detect_rule(feedback: str) -> QAAction:
     for pattern, action in RULES.items():
         if re.search(pattern, feedback, re.IGNORECASE):
@@ -59,43 +92,149 @@ def detect_rule(feedback: str) -> QAAction:
 
 
 # Stub handler functions
-def handle_direct_set(row, column_to_edit, new_value=None, original_feedback=None):
-    print(
-        f"Called handle_direct_set for column '{column_to_edit}' "
-        f"with value '{new_value}'"
+def handle_direct_set(
+    row_series: pd.Series,
+    column_to_edit: str,
+    new_value: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+) -> pd.Series:
+    old_value = row_series.get(column_to_edit)
+    log_change(
+        record_id,
+        column_to_edit,
+        old_value,
+        new_value,
+        feedback_source,
+        notes,
+        changed_by,
     )
-    pass
+    row_series[column_to_edit] = new_value
+    return row_series
 
 
-def handle_char_fix(row, column_to_edit, new_value=None, original_feedback=None):
-    print(f"Called handle_char_fix for column '{column_to_edit}'")
-    pass
+def handle_char_fix(
+    row_series: pd.Series,
+    column_to_edit: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+) -> pd.Series:
+    old_value = row_series.get(column_to_edit)
+    if isinstance(old_value, str):
+        new_value = old_value.strip()
+        if new_value != old_value:
+            log_change(
+                record_id,
+                column_to_edit,
+                old_value,
+                new_value,
+                feedback_source,
+                notes,
+                changed_by,
+            )
+            row_series[column_to_edit] = new_value
+    return row_series
 
 
-def handle_blank_value(row, column_to_edit, new_value=None, original_feedback=None):
-    print(f"Called handle_blank_value for column '{column_to_edit}'")
-    pass
+def handle_blank_value(
+    row_series: pd.Series,
+    column_to_edit: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+) -> pd.Series:
+    old_value = row_series.get(column_to_edit)
+    new_value = ""
+    log_change(
+        record_id,
+        column_to_edit,
+        old_value,
+        new_value,
+        feedback_source,
+        notes,
+        changed_by,
+    )
+    row_series[column_to_edit] = new_value
+    return row_series
 
 
-def handle_dedup_semicolon(row, column_to_edit, new_value=None, original_feedback=None):
-    print(f"Called handle_dedup_semicolon for column '{column_to_edit}'")
-    pass
+def handle_dedup_semicolon(
+    row_series: pd.Series,
+    column_to_edit: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+) -> pd.Series:
+    old_value = row_series.get(column_to_edit)
+    if isinstance(old_value, str) and old_value:
+        items = old_value.split(";")
+        # Strip whitespace from each item, filter out empty strings, then deduplicate
+        stripped_items = [item.strip() for item in items]
+        unique_items = list(
+            dict.fromkeys([item for item in stripped_items if item])
+        )  # Preserves order of first appearance
+
+        new_value = ";".join(unique_items)
+
+        if new_value != old_value:
+            log_change(
+                record_id,
+                column_to_edit,
+                old_value,
+                new_value,
+                feedback_source,
+                notes,
+                changed_by,
+            )
+            row_series[column_to_edit] = new_value
+    return row_series
 
 
-def handle_policy_query(row, column_to_edit, new_value=None, original_feedback=None):
+def handle_policy_query(
+    row_series: pd.Series,
+    column_to_edit: str | None,
+    original_feedback: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+):
+    # This handler's signature might also need adjustment based on how it's called.
+    # For now, keeping it distinct.
     print(
         f"Called handle_policy_query for column '{column_to_edit}' "
         f"with feedback: {original_feedback}"
     )
+    # Potentially log this interaction as well, though it's not a direct data edit.
     pass
 
 
-def handle_data_enrich(row, column_to_edit, new_value=None, original_feedback=None):
+def handle_data_enrich(
+    row_series: pd.Series,
+    column_to_edit: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,
+):
     print(f"Called handle_data_enrich for column '{column_to_edit}'")
     pass
 
 
-def handle_not_found(row, column_to_edit, new_value=None, original_feedback=None):
+def handle_not_found(
+    row_series: pd.Series,
+    original_feedback: str,
+    record_id: str | None,
+    feedback_source: str | None,
+    changed_by: str | None,
+    notes: str | None = None,
+):
     print(f"Called handle_not_found for feedback: {original_feedback}")
     pass
 
@@ -105,9 +244,9 @@ ACTION_HANDLERS = {
     QAAction.CHAR_FIX: handle_char_fix,
     QAAction.BLANK_VALUE: handle_blank_value,
     QAAction.DEDUP_SEMICOLON: handle_dedup_semicolon,
-    QAAction.POLICY_QUERY: handle_policy_query,
-    QAAction.DATA_ENRICH: handle_data_enrich,
-    QAAction.NOT_FOUND: handle_not_found,
+    QAAction.POLICY_QUERY: handle_policy_query,  # Stub, signature might change
+    QAAction.DATA_ENRICH: handle_data_enrich,  # Stub, signature might change
+    QAAction.NOT_FOUND: handle_not_found,  # Stub, signature might change
 }
 
 
