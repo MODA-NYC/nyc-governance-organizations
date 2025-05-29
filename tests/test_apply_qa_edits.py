@@ -259,3 +259,54 @@ def test_deduplicate_semicolon_non_string_input(clear_changelog):
 
     assert modified_row[column_to_edit] == original_value  # Should not change
     assert len(clear_changelog) == 0  # No logging as no change
+
+
+def test_policy_query_logs_and_does_not_mutate(clear_changelog):
+    # Mock DataFrame
+    data = {
+        "record_id": ["NYC_GOID_POLICY_001"],
+        "Name": ["Test Name"],
+        "Notes": ["Initial notes content"],
+    }
+    df = pd.DataFrame(data)
+    row_series = df.iloc[0].copy()
+    original_row_copy = row_series.copy()  # Capture original state
+
+    # Example parameters
+    record_id = "NYC_GOID_POLICY_001"
+    column_to_edit = "Notes"  # Can be a specific column or None
+    original_feedback = "Consider elimination of Notes field."
+    feedback_source = "QA Team"
+    changed_by = "PolicyBot"
+
+    # Call the handle_policy_query function
+    modified_row = pgd.handle_policy_query(
+        row_series,
+        column_to_edit,
+        original_feedback,
+        record_id,
+        feedback_source,
+        changed_by,
+        notes=original_feedback,  # Pass original_feedback as notes for consistency
+    )
+
+    # Assert Data Integrity: DataFrame row should not be changed
+    assert original_row_copy.equals(
+        modified_row
+    ), "DataFrame row was modified by handle_policy_query"
+
+    # Assert Changelog Entry
+    assert (
+        len(clear_changelog) == 1
+    ), "log_change was not called or called multiple times"
+    log_entry = clear_changelog[0]
+
+    assert log_entry["record_id"] == record_id
+    assert log_entry["column_changed"] == (column_to_edit or "Policy Question")
+    assert log_entry["old_value"] == "N/A"
+    assert log_entry["new_value"] == "N/A"
+    assert (
+        log_entry["notes"] == original_feedback
+    ), "Logged notes do not match original feedback"
+    assert log_entry["feedback_source"] == feedback_source
+    assert log_entry["changed_by"] == changed_by

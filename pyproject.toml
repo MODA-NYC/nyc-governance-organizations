@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "pandas>=2.0",
     "python-dateutil",
+    "ftfy>=6.0",
 ]
 
 [project.optional-dependencies]

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
+import ftfy
 import pandas as pd
 
 # Global list to store changelog entries (for demonstration/testing)
@@ -56,6 +57,14 @@ RULES = {
     # if defined
     # Example: "Consider elimination of Notes field..."
     r"Consider elimination of (?P<column>\w+) field.*": QAAction.POLICY_QUERY,
+    # New policy query patterns
+    (
+        r"(What is the logic|What's the process|How should we handle|Is this correct)"
+    ): QAAction.POLICY_QUERY,
+    (
+        r"(Consider elimination|Consider merging|Should we delete|"
+        r"Review for removal|Discuss)"
+    ): QAAction.POLICY_QUERY,
 }
 
 
@@ -125,7 +134,8 @@ def handle_char_fix(
 ) -> pd.Series:
     old_value = row_series.get(column_to_edit)
     if isinstance(old_value, str):
-        new_value = old_value.strip()
+        repaired_text = ftfy.fix_text(old_value)
+        new_value = repaired_text.strip()
         if new_value != old_value:
             log_change(
                 record_id,
@@ -207,12 +217,21 @@ def handle_policy_query(
 ):
     # This handler's signature might also need adjustment based on how it's called.
     # For now, keeping it distinct.
-    print(
-        f"Called handle_policy_query for column '{column_to_edit}' "
-        f"with feedback: {original_feedback}"
+    log_change(
+        record_id=record_id,
+        column_changed=column_to_edit if column_to_edit else "Policy Question",
+        old_value="N/A",
+        new_value="N/A",
+        feedback_source=feedback_source,
+        notes=original_feedback,  # Use original_feedback as notes
+        changed_by=changed_by,
     )
+    # print(
+    # f"Called handle_policy_query for column '{column_to_edit}' "
+    # f"with feedback: {original_feedback}"
+    # )
     # Potentially log this interaction as well, though it's not a direct data edit.
-    pass
+    return row_series
 
 
 def handle_data_enrich(
