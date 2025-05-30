@@ -205,6 +205,9 @@ def handle_char_fix(
     old_value = row_series.get(column_to_edit)
     if isinstance(old_value, str):
         repaired_text = ftfy.fix_text(old_value)
+        # Handle specific character sequences
+        repaired_text = repaired_text.replace("¬†", " ")  # Fix ¬†
+        repaired_text = repaired_text.replace("\u00a0", " ")  # Fix NBSP
         new_value = repaired_text.strip()
         if new_value != old_value:
             log_change(
