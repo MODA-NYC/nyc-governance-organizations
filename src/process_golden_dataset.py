@@ -48,26 +48,39 @@ CHANGELOG_COLUMNS = [
 RULES = {
     # Example: "Set Name to NYC311"
     r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
+    # Rule for "Fix "[value]"" (double quotes)
+    r"Fix \"(?P<value>.*?)\"": QAAction.DIRECT_SET,
+    # Rule for "Fix '[value]'" (single quotes)
+    r"Fix '(?P<value>.*?)'": QAAction.DIRECT_SET,
+    # New rule for acronym-like direct values
+    r"^(?P<value>[A-Z0-9+-.]{1,10})$": QAAction.DIRECT_SET,
+    # New rule for "CorrectValue rather than IncorrectValue"
+    r"^(?P<value>[A-Z0-9+-. /]+?) rather than [A-Z0-9+-. /]+?$": QAAction.DIRECT_SET,
+    # New rule for "[Subject] is now/currently [New Value]"
+    r"^(?:.*is now|.*is currently)\s+(?P<value>.+)$": QAAction.DIRECT_SET,
+    # General rule for extracting double-quoted value for DIRECT_SET
+    r".*?\"(?P<value>.*?)\".*": QAAction.DIRECT_SET,
+    # General rule for extracting single-quoted value for DIRECT_SET
+    r".*?'(?P<value>.*?)'.*": QAAction.DIRECT_SET,
     # Example: "Fix special characters in Description"
     r"Fix special characters(?: in (?P<column>\w+))?": QAAction.CHAR_FIX,
     # Example: "Remove value of PrincipalOfficerContactURL"
     r"Remove value of (?P<column>\w+)": QAAction.BLANK_VALUE,
-    # Example: "What is the logic of adding NYC..."
+    # Example: "What is the logic..." - More specific policy queries may catch first
     r"What is the logic.*": QAAction.POLICY_QUERY,
-    # Example: "Repeated values error" - could be a policy query or
-    # a specific fix depending on context
-    r"Repeated values error": QAAction.POLICY_QUERY,  # Or a more specific action
-    # if defined
+    # Example: "Repeated values error" - could be a policy query
+    r"Repeated values error": QAAction.POLICY_QUERY,
     # Example: "Consider elimination of Notes field..."
     r"Consider elimination of (?P<column>\w+) field.*": QAAction.POLICY_QUERY,
-    # New policy query patterns
-    (
-        r"(What is the logic|What's the process|How should we handle|Is this correct)"
-    ): QAAction.POLICY_QUERY,
-    (
-        r"(Consider elimination|Consider merging|Should we delete|"
-        r"Review for removal|Discuss)"
-    ): QAAction.POLICY_QUERY,
+    # Enhanced General Policy Query Patterns
+    r"(What is the logic|What's the process|Why is|Is this an error|"
+    r"How should we handle|Is this correct|Can we find|"
+    r"Should we be able)": QAAction.POLICY_QUERY,
+    r"(Consider elimination|Consider merging|Should we delete|"
+    r"Review for removal|Discuss|Mistakenly populated field|"
+    r"appears to be an error|is not an acronym)": QAAction.POLICY_QUERY,
+    # Catch-all for questions if not matched above
+    r".*\?": QAAction.POLICY_QUERY,
 }
 
 
