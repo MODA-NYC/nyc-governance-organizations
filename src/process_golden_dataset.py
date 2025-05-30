@@ -904,6 +904,11 @@ def apply_qa_edits(
         if col not in df_qa.columns:
             raise ValueError(f"QA DataFrame is missing expected column: {col}")
 
+    # Clean up encoding issues in the feedback column using ftfy
+    df_qa["feedback"] = df_qa["feedback"].apply(
+        lambda x: ftfy.fix_text(x) if pd.notna(x) else x
+    )
+
     for _, qa_row in df_qa.iterrows():
         _process_single_qa_row(
             qa_row,
