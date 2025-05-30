@@ -149,12 +149,12 @@ def test_deduplicate_semicolon_list(clear_changelog):
         "NameA;NameB;NameC;NameD"  # Order preserved, spaces stripped, empty removed
     )
 
-    data = {"record_id": ["NYC_GOID_005"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_005"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_005"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
@@ -174,12 +174,12 @@ def test_deduplicate_semicolon_list(clear_changelog):
 
 def test_deduplicate_semicolon_list_no_duplicates(clear_changelog):
     original_value = "NameA;NameB;NameC"
-    data = {"record_id": ["NYC_GOID_006"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_006"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_006"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
@@ -195,12 +195,12 @@ def test_deduplicate_semicolon_list_no_duplicates(clear_changelog):
 
 def test_deduplicate_semicolon_list_empty_input(clear_changelog):
     original_value = ""
-    data = {"record_id": ["NYC_GOID_007"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_007"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_007"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
@@ -214,12 +214,12 @@ def test_deduplicate_semicolon_list_empty_input(clear_changelog):
 
 def test_deduplicate_semicolon_list_single_item(clear_changelog):
     original_value = "NameA"
-    data = {"record_id": ["NYC_GOID_008"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_008"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_008"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
@@ -234,12 +234,12 @@ def test_deduplicate_semicolon_list_single_item(clear_changelog):
 def test_deduplicate_semicolon_list_with_only_semicolons(clear_changelog):
     original_value = ";;;"
     expected_value = ""  # Empty items are removed
-    data = {"record_id": ["NYC_GOID_009"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_009"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_009"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
@@ -256,12 +256,12 @@ def test_deduplicate_semicolon_list_with_only_semicolons(clear_changelog):
 
 def test_deduplicate_semicolon_non_string_input(clear_changelog):
     original_value = 123  # Not a string
-    data = {"record_id": ["NYC_GOID_010"], "AlternateNames": [original_value]}
+    data = {"record_id": ["NYC_GOID_010"], "AlternateOrFormerNames": [original_value]}
     df = pd.DataFrame(data)
     row_series = df.iloc[0].copy()
 
     record_id = "NYC_GOID_010"
-    column_to_edit = "AlternateNames"
+    column_to_edit = "AlternateOrFormerNames"
     feedback_source = "Test"
     changed_by = "Tester"
 
