@@ -535,7 +535,7 @@ def test_blank_value_on_departure(clear_changelog):
     column_to_edit = "PrincipalOfficersName"
     initial_name = "Jose Bayona"
     feedback_text = (
-        "Jose Bayona has left the City"  # This feedback will trigger the new rule
+        "Jose Bayona has left the City"  # This feedback will now trigger POLICY_QUERY
     )
     changed_by = "test_user"
     feedback_source = "test_qa_departure.csv"  # For the log
@@ -546,27 +546,26 @@ def test_blank_value_on_departure(clear_changelog):
         [{"Row(s)": record_id, "Column": column_to_edit, "feedback": feedback_text}]
     )
 
-    # Apply the QA edits, which should trigger the new rule
-    # and then call handle_blank_value
+    # Apply the QA edits, which should now trigger POLICY_QUERY instead of BLANK_VALUE
     processed_df = process_golden_dataset.apply_qa_edits(
         golden_data, qa_data, changed_by, feedback_source
     )
 
-    # Assert DataFrame update
-    assert processed_df.loc[0, column_to_edit] == ""
+    # Assert DataFrame update - value should remain unchanged
+    assert processed_df.loc[0, column_to_edit] == initial_name
 
     # Assert log_change call
     assert len(clear_changelog) == 1
     log_entry = clear_changelog[0]
+    assert log_entry["ChangeID"] == 1  # First entry should have ID 1
     assert log_entry["record_id"] == record_id
     assert log_entry["column_changed"] == column_to_edit
-    assert log_entry["old_value"] == initial_name
-    assert log_entry["new_value"] == ""
+    assert log_entry["old_value"] == "N/A"  # Policy queries use N/A
+    assert log_entry["new_value"] == "N/A"  # Policy queries use N/A
     assert log_entry["feedback_source"] == feedback_source
-    assert (
-        log_entry["notes"] == feedback_text
-    )  # The handle_blank_value uses the original feedback as notes
+    assert log_entry["notes"] == feedback_text  # Original feedback preserved in notes
     assert log_entry["changed_by"] == changed_by
+    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.POLICY_QUERY.value
 
 
 @pytest.mark.parametrize(
@@ -579,21 +578,21 @@ def test_blank_value_on_departure(clear_changelog):
             "Old Name",
             "John Doe has left the City",
             True,
-            "",
+            "Old Name",  # Value remains unchanged
             "John Doe has left the City",
         ),
         (
             "Another Name",
             "Someone is no longer with us",
             True,
-            "",
+            "Another Name",  # Value remains unchanged
             "Someone is no longer with us",
         ),
         (
             "Current Occupant",
             "Occupant is no longer at the post",
             True,
-            "",
+            "Current Occupant",  # Value remains unchanged
             "Occupant is no longer at the post",
         ),
         (
@@ -605,11 +604,12 @@ def test_blank_value_on_departure(clear_changelog):
         ),  # Should not match rule
         (
             "",
-            "Already Blank has left",
+            # Changed to text that won't match departure pattern
+            "Field is already empty",
             False,
             "",
             None,
-        ),  # Already blank, no change, and rule also might not match depending on `.*`
+        ),  # Already blank, using feedback that won't match any rules
     ],
 )
 def test_blank_value_on_departure_parametrized(
@@ -639,14 +639,17 @@ def test_blank_value_on_departure_parametrized(
     if should_log:
         assert len(clear_changelog) == 1
         log_entry = clear_changelog[0]
+        assert log_entry["ChangeID"] == 1  # First entry should have ID 1
         assert log_entry["record_id"] == record_id
         assert log_entry["column_changed"] == column_to_edit
-        assert str(log_entry["old_value"]) == str(initial_value)
-        assert log_entry["new_value"] == expected_final_value
+        assert log_entry["old_value"] == "N/A"  # Policy queries use N/A
+        assert log_entry["new_value"] == "N/A"  # Policy queries use N/A
         assert log_entry["feedback_source"] == feedback_source
-        assert (
-            log_entry["notes"] == feedback
-        )  # handle_blank_value uses original feedback for notes
+        assert log_entry["notes"] == feedback  # Original feedback preserved in notes
         assert log_entry["changed_by"] == changed_by
+        assert (
+            log_entry["RuleAction"]
+            == process_golden_dataset.QAAction.POLICY_QUERY.value
+        )
     else:
         assert len(clear_changelog) == 0

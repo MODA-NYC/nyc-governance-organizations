@@ -72,10 +72,10 @@ RULES = {
     r"Fix special characters(?: in (?P<column>\w+))?": QAAction.CHAR_FIX,
     # Example: "Remove value of PrincipalOfficerContactURL"
     r"Remove value of (?P<column>\w+)": QAAction.BLANK_VALUE,
-    # New rule for blanking value on departure
+    # Rule for departure feedback - now triggers policy query instead of blanking
     (
         r"^(?:.*(?:has left|is no longer with|is no longer at))" r"(?:\s+\w+)*$"
-    ): QAAction.BLANK_VALUE,
+    ): QAAction.POLICY_QUERY,
     # New rule for "no longer Acting"
     r"(?:Confirmed, ?so )?no longer Acting": QAAction.REMOVE_ACTING_PREFIX,
     # Example: "What is the logic..." - More specific policy queries may catch first
