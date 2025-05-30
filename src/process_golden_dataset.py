@@ -22,6 +22,7 @@ class QAAction(Enum):
     DEDUP_SEMICOLON = "dedup_semicolon"
     POLICY_QUERY = "policy_query"
     DATA_ENRICH = "data_enrich"
+    REMOVE_ACTING_PREFIX = "remove_acting_prefix"
     NOT_FOUND = "not_found"
     _RECORD_FILTERED_OUT = "_record_filtered_out"
 
@@ -66,6 +67,12 @@ RULES = {
     r"Fix special characters(?: in (?P<column>\w+))?": QAAction.CHAR_FIX,
     # Example: "Remove value of PrincipalOfficerContactURL"
     r"Remove value of (?P<column>\w+)": QAAction.BLANK_VALUE,
+    # New rule for blanking value on departure
+    (
+        r"^(?:.*(?:has left|is no longer with|is no longer at))" r"(?:\s+\w+)*$"
+    ): QAAction.BLANK_VALUE,
+    # New rule for "no longer Acting"
+    r"(?:Confirmed, ?so )?no longer Acting": QAAction.REMOVE_ACTING_PREFIX,
     # Example: "What is the logic..." - More specific policy queries may catch first
     r"What is the logic.*": QAAction.POLICY_QUERY,
     # Example: "Repeated values error" - could be a policy query
@@ -305,6 +312,127 @@ def handle_record_filtered_out(
     return row_series
 
 
+def handle_remove_acting_prefix(
+    row_series: pd.Series,
+    column_to_edit: str,
+    record_id: str,
+    feedback_source: str,
+    changed_by: str,
+    notes: str | None = None,  # This is the original feedback string
+) -> pd.Series:
+    """Removes 'Acting ' prefix from a field if present (case-insensitive)."""
+    old_value = row_series.get(column_to_edit)
+    new_value = old_value  # Initialize
+
+    # Define standardized log notes based on original feedback and old_value
+    # These will be fully formed here for clarity if used.
+    # The `notes` variable here is the original feedback.
+    _log_note_no_prefix = (
+        f"Rule '{notes}' triggered, but no 'Acting ' prefix found/changed "
+        f"in '{old_value}'."
+    )
+    _log_note_non_string = (
+        f"Rule '{notes}' triggered on non-string value '{old_value}'. "
+        f"No action taken."
+    )
+    _log_note_none_value = f"Rule '{notes}' triggered on None value. No action taken."
+
+    if isinstance(old_value, str):
+        temp_old_value_lower = old_value.lower()
+        # Check if it starts with "acting" possibly followed by spaces,
+        # or is just "acting"
+        if temp_old_value_lower.startswith("acting"):
+            match = re.match(r"acting\s*", old_value, re.IGNORECASE)
+            if match:
+                prefix_len = len(match.group(0))
+                # Only proceed if the prefix found is shorter than the whole string,
+                # or if the whole string is just variations of "acting"
+                # (e.g. "Acting  ")
+                if (
+                    prefix_len < len(old_value)
+                    or temp_old_value_lower.strip() == "acting"
+                ):
+                    new_value = old_value[prefix_len:].strip()
+                # If prefix_len == len(old_value) and
+                # temp_old_value_lower.strip() != "acting",
+                # it means something like old_value was "actingdirector" -
+                # no space. We don't change this.
+                # The temp_old_value_lower.strip() == "acting" handles
+                # "Acting  " -> ""
+
+        if new_value != old_value:
+            # Standardized note for successful removal
+            log_note_for_change = (
+                f"Removed 'Acting' prefix from '{old_value}' to get '{new_value}'. "
+                f"Original feedback: '{notes}'"
+            )
+            if old_value.lower().strip() == "acting" and new_value == "":
+                log_note_for_change = (
+                    f"Changed '{old_value}' to empty string based on "
+                    f"'no longer Acting' feedback: '{notes}'"
+                )
+
+            log_change(
+                record_id,
+                column_to_edit,
+                old_value,
+                new_value,
+                feedback_source,
+                log_note_for_change,
+                changed_by,
+            )
+            row_series[column_to_edit] = new_value
+        else:  # No change was made to the string value (e.g., no prefix,
+            # or not actionable)
+            print(
+                f"Info: RecordID {record_id}, Column {column_to_edit}: "
+                f"Rule 'no longer Acting' triggered on non-string value "
+                f"'{old_value}'. "
+                f"Feedback: '{notes}'"
+            )
+            log_change(
+                record_id,
+                column_to_edit,
+                old_value,
+                old_value,  # No change
+                feedback_source,
+                _log_note_no_prefix,
+                changed_by,
+            )
+    elif old_value is None:
+        print(
+            f"Info: RecordID {record_id}, Column {column_to_edit}: "
+            f"Rule 'no longer Acting' triggered on None value. "
+            f"Feedback: '{notes}'"
+        )
+        log_change(
+            record_id,
+            column_to_edit,
+            old_value,  # Will be logged as None/NaN
+            old_value,  # No change
+            feedback_source,
+            _log_note_none_value,
+            changed_by,
+        )
+    else:  # Non-string, non-None value
+        print(
+            f"Info: RecordID {record_id}, Column {column_to_edit}: "
+            f"Rule 'no longer Acting' triggered on non-string value '{old_value}'. "
+            f"Feedback: '{notes}'"
+        )
+        log_change(
+            record_id,
+            column_to_edit,
+            old_value,
+            old_value,  # No change
+            feedback_source,
+            _log_note_non_string,
+            changed_by,
+        )
+
+    return row_series
+
+
 ACTION_HANDLERS = {
     QAAction.DIRECT_SET: handle_direct_set,
     QAAction.CHAR_FIX: handle_char_fix,
@@ -312,6 +440,7 @@ ACTION_HANDLERS = {
     QAAction.DEDUP_SEMICOLON: handle_dedup_semicolon,
     QAAction.POLICY_QUERY: handle_policy_query,
     QAAction.DATA_ENRICH: handle_data_enrich,
+    QAAction.REMOVE_ACTING_PREFIX: handle_remove_acting_prefix,
     QAAction.NOT_FOUND: handle_not_found,
     QAAction._RECORD_FILTERED_OUT: handle_record_filtered_out,
 }
@@ -663,6 +792,7 @@ def _apply_action_to_single_golden_row(
         QAAction.BLANK_VALUE,
         QAAction.DEDUP_SEMICOLON,
         QAAction.DATA_ENRICH,
+        QAAction.REMOVE_ACTING_PREFIX,
     }:
         final_column_to_edit, continue_processing = _handle_col_specific_action_args(
             handler_args,
