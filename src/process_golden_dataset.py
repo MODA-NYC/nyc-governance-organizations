@@ -64,14 +64,10 @@ RULES = {
     r"^(?P<value>[A-Z0-9+-. /]+?) rather than [A-Z0-9+-. /]+?$": QAAction.DIRECT_SET,
     # New rule for "[Subject] is now/currently [New Value]"
     r"^(?:.*is now|.*is currently)\s+(?P<value>.+)$": QAAction.DIRECT_SET,
-    # General rule for extracting double-quoted value for DIRECT_SET
-    r".*?\"(?P<value>.*?)\".*": QAAction.DIRECT_SET,
-    # General rule for extracting single-quoted value for DIRECT_SET
-    r".*?'(?P<value>.*?)'.*": QAAction.DIRECT_SET,
     # Example: "Fix special characters in Description"
     r"Fix special characters(?: in (?P<column>\w+))?": QAAction.CHAR_FIX,
     # Example: "Remove value of PrincipalOfficerContactURL"
-    r"Remove value of (?P<column>\w+)": QAAction.BLANK_VALUE,
+    r"Remove value of .*": QAAction.BLANK_VALUE,
     # Rule for departure feedback - now triggers policy query instead of blanking
     (
         r"^(?:.*(?:has left|is no longer with|is no longer at))" r"(?:\s+\w+)*$"
@@ -91,6 +87,10 @@ RULES = {
     r"(Consider elimination|Consider merging|Should we delete|"
     r"Review for removal|Discuss|Mistakenly populated field|"
     r"appears to be an error|is not an acronym)": QAAction.POLICY_QUERY,
+    # General rule for extracting double-quoted value for DIRECT_SET
+    r".*?\"(?P<value>.*?)\".*": QAAction.DIRECT_SET,
+    # General rule for extracting single-quoted value for DIRECT_SET
+    r".*?'(?P<value>.*?)'.*": QAAction.DIRECT_SET,
     # Catch-all for questions if not matched above
     r".*\?": QAAction.POLICY_QUERY,
 }
