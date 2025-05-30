@@ -154,13 +154,19 @@ def detect_rule(feedback: str) -> tuple[QAAction, re.Match | None]:
 
     Returns:
         A tuple containing the QAAction and the regex match object if a rule is found,
-        otherwise (QAAction.NOT_FOUND, None).
+        otherwise (QAAction.POLICY_QUERY, None) as a default fallback.
     """
     for pattern_str, action in RULES.items():
         match = re.search(pattern_str, feedback, re.IGNORECASE)
         if match:
             return action, match
-    return QAAction.NOT_FOUND, None
+
+    # If no specific rule matches, default to POLICY_QUERY
+    print(
+        f"Info: Feedback '{feedback}' not matched by specific rules, "
+        f"defaulting to POLICY_QUERY."
+    )
+    return QAAction.POLICY_QUERY, None
 
 
 # Stub handler functions

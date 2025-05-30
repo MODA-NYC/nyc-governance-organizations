@@ -598,18 +598,17 @@ def test_blank_value_on_departure(clear_changelog):
         (
             "No Change Needed",
             "This person is still here",
-            False,
-            "No Change Needed",
-            None,
-        ),  # Should not match rule
+            True,  # Changed to True - will now be logged as POLICY_QUERY
+            "No Change Needed",  # Value still remains unchanged
+            "This person is still here",
+        ),
         (
             "",
-            # Changed to text that won't match departure pattern
             "Field is already empty",
-            False,
-            "",
-            None,
-        ),  # Already blank, using feedback that won't match any rules
+            True,  # Changed to True - will now be logged as POLICY_QUERY
+            "",  # Value still remains unchanged
+            "Field is already empty",
+        ),
     ],
 )
 def test_blank_value_on_departure_parametrized(
@@ -636,20 +635,32 @@ def test_blank_value_on_departure_parametrized(
 
     assert processed_df.loc[0, column_to_edit] == expected_final_value
 
-    if should_log:
-        assert len(clear_changelog) == 1
-        log_entry = clear_changelog[0]
-        assert log_entry["ChangeID"] == 1  # First entry should have ID 1
-        assert log_entry["record_id"] == record_id
-        assert log_entry["column_changed"] == column_to_edit
-        assert log_entry["old_value"] == "N/A"  # Policy queries use N/A
-        assert log_entry["new_value"] == "N/A"  # Policy queries use N/A
-        assert log_entry["feedback_source"] == feedback_source
-        assert log_entry["notes"] == feedback  # Original feedback preserved in notes
-        assert log_entry["changed_by"] == changed_by
+    # All feedback should now generate a changelog entry
+    assert len(clear_changelog) == 1
+    log_entry = clear_changelog[0]
+    assert log_entry["ChangeID"] == 1  # First entry should have ID 1
+    assert log_entry["record_id"] == record_id
+    assert log_entry["column_changed"] == column_to_edit
+    assert log_entry["feedback_source"] == feedback_source
+    assert log_entry["notes"] == feedback  # Original feedback preserved in notes
+    assert log_entry["changed_by"] == changed_by
+
+    # For departure patterns, expect POLICY_QUERY action and N/A values
+    if any(
+        pattern in feedback.lower()
+        for pattern in ["has left", "no longer with", "no longer at"]
+    ):
+        assert log_entry["old_value"] == "N/A"
+        assert log_entry["new_value"] == "N/A"
         assert (
             log_entry["RuleAction"]
             == process_golden_dataset.QAAction.POLICY_QUERY.value
         )
     else:
-        assert len(clear_changelog) == 0
+        # For unmatched patterns, also expect POLICY_QUERY action and N/A values
+        assert log_entry["old_value"] == "N/A"
+        assert log_entry["new_value"] == "N/A"
+        assert (
+            log_entry["RuleAction"]
+            == process_golden_dataset.QAAction.POLICY_QUERY.value
+        )
