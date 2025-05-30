@@ -87,6 +87,15 @@ RULES = {
     r"(Consider elimination|Consider merging|Should we delete|"
     r"Review for removal|Discuss|Mistakenly populated field|"
     r"appears to be an error|is not an acronym)": QAAction.POLICY_QUERY,
+    # New patterns for research/verification tasks
+    (
+        r"(?:should|can|could)\s+(?:be able to )?find.*"
+        r"(?:press release|announcement|news)"
+    ): QAAction.POLICY_QUERY,
+    (
+        r"(?:I'?m certain|must have|should have|has to have).*"
+        r"(?:founding year|date|established)"
+    ): QAAction.POLICY_QUERY,
     # General rule for extracting double-quoted value for DIRECT_SET
     r".*?\"(?P<value>.*?)\".*": QAAction.DIRECT_SET,
     # General rule for extracting single-quoted value for DIRECT_SET
