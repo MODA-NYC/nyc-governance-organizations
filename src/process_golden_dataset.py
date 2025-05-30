@@ -53,6 +53,8 @@ RULES = {
     r"Fix \"(?P<value>.*?)\"": QAAction.DIRECT_SET,
     # Rule for "Fix '[value]'" (single quotes)
     r"Fix '(?P<value>.*?)'": QAAction.DIRECT_SET,
+    # New rule for operational status discussions
+    r".*(?:makes it look|appears|seems)\s+(?:inactive|active).*": QAAction.POLICY_QUERY,
     # New rule for acronym-like direct values
     r"^(?P<value>[A-Z0-9+-.]{1,10})$": QAAction.DIRECT_SET,
     # New rule for "CorrectValue rather than IncorrectValue"
