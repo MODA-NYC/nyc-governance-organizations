@@ -3,6 +3,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from enum import Enum
+
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
@@ -664,3 +666,123 @@ def test_blank_value_on_departure_parametrized(
             log_entry["RuleAction"]
             == process_golden_dataset.QAAction.POLICY_QUERY.value
         )
+
+
+def test_apply_global_deduplication(clear_changelog):
+    """Test the apply_global_deduplication function."""
+    # Create test data
+    test_data = {
+        "RecordID": ["1", "2", "3"],
+        "AlternateOrFormerNames": [
+            "Name1;Name2;Name1",  # Has duplicates
+            "Name3;Name4",  # No duplicates
+            "Name5;;Name5;  Name5  ",  # Has duplicates, empty entries, and whitespace
+        ],
+        "AlternateOrFormerAcronyms": [
+            "ABC;DEF;ABC",  # Has duplicates
+            "",  # Empty string
+            "GHI;GHI;  GHI  ",  # Has duplicates and whitespace
+        ],
+    }
+    df_input = pd.DataFrame(test_data)
+
+    # Create a mock log_change function that appends to a list
+    changes_logged = []
+
+    def mock_log_change(
+        record_id,
+        column_changed,
+        old_value,
+        new_value,
+        feedback_source,
+        notes,
+        changed_by,
+        rule_action,
+    ):
+        changes_logged.append(
+            {
+                "record_id": record_id,
+                "column_changed": column_changed,
+                "old_value": old_value,
+                "new_value": new_value,
+                "feedback_source": feedback_source,
+                "notes": notes,
+                "changed_by": changed_by,
+                "rule_action": rule_action,
+            }
+        )
+
+    # Create a mock QAAction enum
+    class MockQAAction(Enum):
+        DEDUP_SEMICOLON = "dedup_semicolon"
+
+    # Call the function
+    df_result = process_golden_dataset.apply_global_deduplication(
+        df_input,
+        "test_user",
+        mock_log_change,
+        MockQAAction,
+    )
+
+    # Test that the function returns a new DataFrame
+    assert id(df_result) != id(df_input)
+
+    # Test AlternateOrFormerNames deduplication
+    assert df_result.loc[0, "AlternateOrFormerNames"] == "Name1;Name2"
+    assert df_result.loc[1, "AlternateOrFormerNames"] == "Name3;Name4"
+    assert df_result.loc[2, "AlternateOrFormerNames"] == "Name5"
+
+    # Test AlternateOrFormerAcronyms deduplication
+    assert df_result.loc[0, "AlternateOrFormerAcronyms"] == "ABC;DEF"
+    assert df_result.loc[1, "AlternateOrFormerAcronyms"] == ""
+    assert df_result.loc[2, "AlternateOrFormerAcronyms"] == "GHI"
+
+    # Test that changes were logged correctly
+    assert len(changes_logged) == 4  # Should have 4 changes logged
+
+    # Check specific changes
+    expected_changes = [
+        {
+            "record_id": "1",
+            "column_changed": "AlternateOrFormerNames",
+            "old_value": "Name1;Name2;Name1",
+            "new_value": "Name1;Name2",
+            "feedback_source": "System_GlobalRule",
+            "notes": "Global deduplication applied to AlternateOrFormerNames",
+            "changed_by": "test_user",
+            "rule_action": "dedup_semicolon",
+        },
+        {
+            "record_id": "1",
+            "column_changed": "AlternateOrFormerAcronyms",
+            "old_value": "ABC;DEF;ABC",
+            "new_value": "ABC;DEF",
+            "feedback_source": "System_GlobalRule",
+            "notes": "Global deduplication applied to AlternateOrFormerAcronyms",
+            "changed_by": "test_user",
+            "rule_action": "dedup_semicolon",
+        },
+        {
+            "record_id": "3",
+            "column_changed": "AlternateOrFormerNames",
+            "old_value": "Name5;;Name5;  Name5  ",
+            "new_value": "Name5",
+            "feedback_source": "System_GlobalRule",
+            "notes": "Global deduplication applied to AlternateOrFormerNames",
+            "changed_by": "test_user",
+            "rule_action": "dedup_semicolon",
+        },
+        {
+            "record_id": "3",
+            "column_changed": "AlternateOrFormerAcronyms",
+            "old_value": "GHI;GHI;  GHI  ",
+            "new_value": "GHI",
+            "feedback_source": "System_GlobalRule",
+            "notes": "Global deduplication applied to AlternateOrFormerAcronyms",
+            "changed_by": "test_user",
+            "rule_action": "dedup_semicolon",
+        },
+    ]
+
+    for expected in expected_changes:
+        assert expected in changes_logged, f"Expected change not found: {expected}"

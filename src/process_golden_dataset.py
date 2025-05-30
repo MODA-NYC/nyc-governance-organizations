@@ -76,8 +76,11 @@ RULES = {
     r"(?:Confirmed, ?so )?no longer Acting": QAAction.REMOVE_ACTING_PREFIX,
     # Example: "What is the logic..." - More specific policy queries may catch first
     r"What is the logic.*": QAAction.POLICY_QUERY,
-    # Example: "Repeated values error" - could be a policy query
-    r"Repeated values error": QAAction.POLICY_QUERY,
+    # Example: "Repeated values error" - now a policy query since handled by global rule
+    (
+        r"(?:Repeated values?|Duplicated? values?|Values? repeated)"
+        r"(?: error| issue| found)?"
+    ): QAAction.POLICY_QUERY,
     # Example: "Consider elimination of Notes field..."
     r"Consider elimination of (?P<column>\w+) field.*": QAAction.POLICY_QUERY,
     # Enhanced General Policy Query Patterns
@@ -979,6 +982,80 @@ def apply_qa_edits(
     return df_modified
 
 
+def apply_global_deduplication(
+    df_input: pd.DataFrame,
+    changed_by_user: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """Apply global deduplication to specified semicolon-separated columns.
+
+    Args:
+        df_input: Input DataFrame to process.
+        changed_by_user: String identifying who/what made the changes.
+        log_change_func: Function to call for logging changes.
+        qa_action_enum: The QAAction enum class for action types.
+
+    Returns:
+        A processed copy of the input DataFrame with deduplication applied.
+    """
+    # Define columns that should always have semicolon deduplication applied
+    semicolon_columns_to_dedup = [
+        "AlternateOrFormerNames",
+        "AlternateOrFormerAcronyms",
+    ]
+
+    df_processed = df_input.copy()
+
+    for column_name_to_dedup in semicolon_columns_to_dedup:
+        if column_name_to_dedup not in df_processed.columns:
+            print(
+                f"Warning: Column {column_name_to_dedup} not found in dataset. "
+                f"Skipping global deduplication for this column."
+            )
+            continue
+
+        for index, row_series in df_processed.iterrows():
+            old_value = row_series.get(column_name_to_dedup)
+            record_id = str(row_series["RecordID"])
+
+            if isinstance(old_value, str) and old_value.strip():
+                # Split by semicolon, strip items, filter empty ones
+                items = old_value.split(";")
+                stripped_items = [item.strip() for item in items]
+                filtered_items = [item for item in stripped_items if item]
+
+                # Remove duplicates while preserving order
+                seen = set()
+                unique_items = []
+                for item in filtered_items:
+                    if item not in seen:
+                        seen.add(item)
+                        unique_items.append(item)
+
+                new_value = ";".join(unique_items)
+
+                if new_value != old_value:
+                    # Log the change
+                    log_change_func(
+                        record_id=record_id,
+                        column_changed=column_name_to_dedup,
+                        old_value=old_value,
+                        new_value=new_value,
+                        feedback_source="System_GlobalRule",
+                        notes=(
+                            f"Global deduplication applied to "
+                            f"{column_name_to_dedup}"
+                        ),
+                        changed_by=changed_by_user,
+                        rule_action=qa_action_enum.DEDUP_SEMICOLON.value,
+                    )
+                    # Update the DataFrame
+                    df_processed.loc[index, column_name_to_dedup] = new_value
+
+    return df_processed
+
+
 def main():
     """
     Main function to process the golden dataset with QA edits.
@@ -1034,6 +1111,15 @@ def main():
 
     global changelog_entries
     changelog_entries = []
+
+    # Apply global deduplication before QA edits
+    print("Applying global deduplication rules...")
+    df_golden = apply_global_deduplication(
+        df_golden,
+        args.changed_by,
+        log_change,
+        QAAction,
+    )
 
     df_edited = apply_qa_edits(df_golden, df_qa, args.changed_by, args.qa)
     post_edit_count = len(df_edited)
