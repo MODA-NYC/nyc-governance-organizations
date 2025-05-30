@@ -13,6 +13,7 @@ import pandas as pd
 # In a real application, this would be a robust logging system
 # (e.g., writing to CSV/DB).
 changelog_entries = []
+changelog_id_counter = 0  # Global counter for changelog IDs
 
 
 class QAAction(Enum):
@@ -35,6 +36,7 @@ class QAEditRule:
 
 
 CHANGELOG_COLUMNS = [
+    "ChangeID",  # New column for unique change ID
     "timestamp",
     "record_id",
     "column_changed",
@@ -43,6 +45,7 @@ CHANGELOG_COLUMNS = [
     "feedback_source",
     "notes",
     "changed_by",
+    "RuleAction",  # New column for the rule action that triggered the change
 ]
 
 # Illustrative example rules
@@ -101,10 +104,25 @@ def log_change(
     feedback_source: str,
     notes: str | None,
     changed_by: str,
+    rule_action: str | None = None,  # New parameter for the rule action
 ):
-    """Logs a change to the changelog_entries list."""
-    global changelog_entries
+    """Logs a change to the changelog_entries list.
+
+    Args:
+        record_id: The ID of the record being changed.
+        column_changed: The name of the column being changed.
+        old_value: The previous value.
+        new_value: The new value.
+        feedback_source: The source of the feedback (e.g., QA filename).
+        notes: Additional notes about the change.
+        changed_by: The user/process that made the change.
+        rule_action: The QAAction that triggered this change (optional).
+    """
+    global changelog_entries, changelog_id_counter
+    changelog_id_counter += 1  # Increment the counter for each new entry
+
     entry = {
+        "ChangeID": changelog_id_counter,
         "timestamp": datetime.now().isoformat(),
         "record_id": record_id,
         "column_changed": column_changed,
@@ -113,6 +131,7 @@ def log_change(
         "feedback_source": feedback_source,
         "notes": notes,
         "changed_by": changed_by,
+        "RuleAction": rule_action if rule_action else "unknown",
     }
     changelog_entries.append(entry)
     # print(f"Change logged: {entry}") # For debugging
@@ -154,6 +173,7 @@ def handle_direct_set(
         feedback_source,
         notes,
         changed_by,
+        QAAction.DIRECT_SET.value,
     )
     row_series[column_to_edit] = new_value
     return row_series
@@ -180,6 +200,7 @@ def handle_char_fix(
                 feedback_source,
                 notes,
                 changed_by,
+                QAAction.CHAR_FIX.value,
             )
             row_series[column_to_edit] = new_value
     elif old_value is not None and not isinstance(old_value, str):
@@ -210,6 +231,7 @@ def handle_blank_value(
             feedback_source,
             notes,
             changed_by,
+            QAAction.BLANK_VALUE.value,
         )
         row_series[column_to_edit] = new_value
     return row_series
@@ -239,6 +261,7 @@ def handle_dedup_semicolon(
                 feedback_source,
                 notes,
                 changed_by,
+                QAAction.DEDUP_SEMICOLON.value,
             )
             row_series[column_to_edit] = new_value
     elif old_value is not None and not isinstance(old_value, str):
@@ -267,6 +290,7 @@ def handle_policy_query(
         feedback_source=feedback_source,
         notes=original_feedback,
         changed_by=changed_by,
+        rule_action=QAAction.POLICY_QUERY.value,
     )
     return row_series
 
@@ -310,6 +334,7 @@ def handle_record_filtered_out(
         feedback_source=feedback_source,
         notes=notes if notes else "Record filtered out by a rule",
         changed_by=changed_by,
+        rule_action=QAAction._RECORD_FILTERED_OUT.value,
     )
     return row_series
 
@@ -382,6 +407,7 @@ def handle_remove_acting_prefix(
                 feedback_source,
                 log_note_for_change,
                 changed_by,
+                QAAction.REMOVE_ACTING_PREFIX.value,
             )
             row_series[column_to_edit] = new_value
         else:  # No change was made to the string value (e.g., no prefix,
@@ -400,6 +426,7 @@ def handle_remove_acting_prefix(
                 feedback_source,
                 _log_note_no_prefix,
                 changed_by,
+                QAAction.REMOVE_ACTING_PREFIX.value,
             )
     elif old_value is None:
         print(
@@ -415,6 +442,7 @@ def handle_remove_acting_prefix(
             feedback_source,
             _log_note_none_value,
             changed_by,
+            QAAction.REMOVE_ACTING_PREFIX.value,
         )
     else:  # Non-string, non-None value
         print(
@@ -430,6 +458,7 @@ def handle_remove_acting_prefix(
             feedback_source,
             _log_note_non_string,
             changed_by,
+            QAAction.REMOVE_ACTING_PREFIX.value,
         )
 
     return row_series
@@ -583,6 +612,7 @@ def _handle_direct_set_args(
             feedback_source_name,
             log_notes,
             changed_by_user,
+            QAAction.DIRECT_SET.value,
         )
         return None, False
 
@@ -603,6 +633,7 @@ def _handle_direct_set_args(
             feedback_source_name,
             log_notes,
             changed_by_user,
+            QAAction.DIRECT_SET.value,
         )
         return None, False
 
@@ -645,6 +676,7 @@ def _handle_col_specific_action_args(
             feedback_source_name,
             log_notes,
             changed_by_user,
+            action.value,
         )
         return None, False
 
@@ -708,6 +740,7 @@ def _execute_handler_safely(
                 feedback_source_name,
                 log_notes,
                 changed_by_user,
+                action.value,
             )
             return None
 
@@ -729,6 +762,7 @@ def _execute_handler_safely(
             feedback_source_name,
             log_notes,
             changed_by_user,
+            action.value,
         )
         return None
 
@@ -765,6 +799,7 @@ def _apply_action_to_single_golden_row(
             feedback_source_name,
             log_notes,
             changed_by_user,
+            action.value if action else "unknown",  # Pass the action value
         )
         return original_row_series
 
@@ -866,6 +901,7 @@ def _process_single_qa_row(
             feedback_source_name,
             "Missing feedback text in QA sheet for given RecordID",
             changed_by_user,
+            QAAction.POLICY_QUERY.value,
         )
         return
 

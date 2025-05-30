@@ -17,11 +17,14 @@ def clear_changelog(monkeypatch):
     # This ensures test isolation.
     new_changelog = []
     monkeypatch.setattr(process_golden_dataset, "changelog_entries", new_changelog)
+    # Reset the changelog counter for each test
+    monkeypatch.setattr(process_golden_dataset, "changelog_id_counter", 0)
     return new_changelog  # Return it so tests can inspect it if needed
 
 
 def test_changelog_columns_definition():
     assert process_golden_dataset.CHANGELOG_COLUMNS == [
+        "ChangeID",  # New column for unique change ID
         "timestamp",
         "record_id",
         "column_changed",
@@ -30,6 +33,7 @@ def test_changelog_columns_definition():
         "feedback_source",
         "notes",
         "changed_by",
+        "RuleAction",  # New column for the rule action that triggered the change
     ]
 
 
@@ -61,12 +65,14 @@ def test_name_replacement(clear_changelog):
     # Assert log_change call
     assert len(clear_changelog) == 1
     log_entry = clear_changelog[0]
+    assert log_entry["ChangeID"] == 1  # First entry should have ID 1
     assert log_entry["record_id"] == record_id
     assert log_entry["column_changed"] == column_to_edit
     assert log_entry["old_value"] == "Old Name"
     assert log_entry["new_value"] == new_name
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
+    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.DIRECT_SET.value
 
 
 def test_blank_out_value(clear_changelog):
@@ -307,6 +313,7 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     ), "log_change was not called or called multiple times"
     log_entry = clear_changelog[0]
 
+    assert log_entry["ChangeID"] == 1  # First entry should have ID 1
     assert log_entry["record_id"] == record_id
     assert log_entry["column_changed"] == (column_to_edit or "Policy Question")
     assert log_entry["old_value"] == "N/A"
@@ -316,6 +323,7 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     ), "Logged notes do not match original feedback"
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
+    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.POLICY_QUERY.value
 
 
 # Tests for REMOVE_ACTING_PREFIX
