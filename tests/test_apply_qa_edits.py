@@ -1,7 +1,13 @@
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import pandas as pd
 import pytest
+from pandas.testing import assert_frame_equal
 
-import process_golden_dataset as pgd
+from src import process_golden_dataset
 
 
 # Fixture to clear changelog_entries before each test
@@ -10,12 +16,12 @@ def clear_changelog(monkeypatch):
     # Create a new empty list for changelog_entries for each test
     # This ensures test isolation.
     new_changelog = []
-    monkeypatch.setattr(pgd, "changelog_entries", new_changelog)
+    monkeypatch.setattr(process_golden_dataset, "changelog_entries", new_changelog)
     return new_changelog  # Return it so tests can inspect it if needed
 
 
 def test_changelog_columns_definition():
-    assert pgd.CHANGELOG_COLUMNS == [
+    assert process_golden_dataset.CHANGELOG_COLUMNS == [
         "timestamp",
         "record_id",
         "column_changed",
@@ -45,7 +51,7 @@ def test_name_replacement(clear_changelog):
     changed_by = "Tester"
 
     # Apply the handler
-    modified_row = pgd.handle_direct_set(
+    modified_row = process_golden_dataset.handle_direct_set(
         row_series, column_to_edit, new_name, record_id, feedback_source, changed_by
     )
 
@@ -73,7 +79,7 @@ def test_blank_out_value(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_blank_value(
+    modified_row = process_golden_dataset.handle_blank_value(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -101,7 +107,7 @@ def test_char_fix_strip_whitespace(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_char_fix(
+    modified_row = process_golden_dataset.handle_char_fix(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -123,7 +129,7 @@ def test_char_fix_no_change(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_char_fix(
+    modified_row = process_golden_dataset.handle_char_fix(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -146,7 +152,7 @@ def test_deduplicate_semicolon_list(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -171,7 +177,7 @@ def test_deduplicate_semicolon_list_no_duplicates(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -192,7 +198,7 @@ def test_deduplicate_semicolon_list_empty_input(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -211,7 +217,7 @@ def test_deduplicate_semicolon_list_single_item(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -231,7 +237,7 @@ def test_deduplicate_semicolon_list_with_only_semicolons(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -253,7 +259,7 @@ def test_deduplicate_semicolon_non_string_input(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = pgd.handle_dedup_semicolon(
+    modified_row = process_golden_dataset.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -280,7 +286,7 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     changed_by = "PolicyBot"
 
     # Call the handle_policy_query function
-    modified_row = pgd.handle_policy_query(
+    modified_row = process_golden_dataset.handle_policy_query(
         row_series,
         column_to_edit,
         original_feedback,
@@ -310,3 +316,329 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     ), "Logged notes do not match original feedback"
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
+
+
+# Tests for REMOVE_ACTING_PREFIX
+@pytest.mark.parametrize(
+    (
+        "record_id, column, initial_title, expected_title, feedback, "
+        "log_expected, expected_notes_substring"
+    ),
+    [
+        (
+            "ID001",
+            "Title",
+            "Acting Director",
+            "Director",
+            "Confirmed, so no longer Acting",
+            True,
+            (
+                "Removed 'Acting' prefix from 'Acting Director' to get 'Director'. "
+                "Original feedback: 'Confirmed, so no longer Acting'"
+            ),
+        ),
+        (
+            "ID002",
+            "Title",
+            "ACTING Commissioner",
+            "Commissioner",
+            "no longer Acting",
+            True,
+            (
+                "Removed 'Acting' prefix from 'ACTING Commissioner' "
+                "to get 'Commissioner'. Original feedback: 'no longer Acting'"
+            ),
+        ),
+        (
+            "ID003",
+            "Title",
+            "Director",
+            "Director",
+            "Confirmed, no longer Acting",
+            True,  # Logged because rule triggered but no change
+            (
+                "Rule 'Confirmed, no longer Acting' triggered, but no 'Acting ' "
+                "prefix found/changed in 'Director'."
+            ),
+        ),
+        (
+            "ID004",
+            "Title",
+            "Acting",  # This specific case
+            "",
+            "no longer Acting",
+            True,
+            (
+                "Changed 'Acting' to empty string based on 'no longer Acting' "
+                "feedback: 'no longer Acting'"
+            ),
+        ),
+        (
+            "ID005",
+            "Title",
+            "Acting  ",  # With extra spaces, also becomes empty
+            "",
+            "no longer Acting",
+            True,
+            (
+                "Changed 'Acting  ' to empty string based on 'no longer Acting' "
+                "feedback: 'no longer Acting'"
+            ),
+        ),
+        (
+            "ID006",
+            "Title",
+            None,  # Non-string value
+            None,
+            "no longer Acting",
+            True,  # Logged because rule triggered but no change
+            ("Rule 'no longer Acting' triggered on None value. No action taken."),
+        ),
+        (
+            "ID007",
+            "Title",
+            12345,  # Non-string value
+            12345,
+            "no longer Acting",
+            True,  # Logged because rule triggered but no change
+            (
+                "Rule 'no longer Acting' triggered on non-string value '12345'. "
+                "No action taken."
+            ),
+        ),
+        (
+            "ID008",
+            "Title",
+            "Director (Acting)",  # Suffix, should not be removed by this rule
+            "Director (Acting)",
+            "no longer Acting",
+            True,  # Logged because rule triggered but no change
+            (
+                "Rule 'no longer Acting' triggered, but no 'Acting ' prefix "
+                "found/changed in 'Director (Acting)'."
+            ),
+        ),
+    ],
+)
+def test_remove_acting_prefix(  # noqa: C901
+    clear_changelog,
+    record_id,
+    column,
+    initial_title,
+    expected_title,
+    feedback,
+    log_expected,
+    expected_notes_substring,
+):
+    golden_data = pd.DataFrame([{"RecordID": record_id, column: initial_title}])
+    qa_data = pd.DataFrame(
+        [{"Row(s)": record_id, "Column": column, "feedback": feedback}]
+    )
+    changed_by = "test_user"
+    qa_filename = "test_qa.csv"
+
+    processed_df = process_golden_dataset.apply_qa_edits(
+        golden_data, qa_data, changed_by, qa_filename
+    )
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+
+    expected_data = pd.DataFrame([{"RecordID": record_id, column: expected_title}])
+
+    # Adjust dtypes for accurate comparison if None or numeric values are involved
+    if initial_title is None and expected_title is None:
+        expected_data[column] = expected_data[column].astype(object)
+        if column in processed_df.columns:
+            processed_df[column] = processed_df[column].astype(object)
+    elif isinstance(initial_title, int | float) and initial_title == expected_title:
+        # If original and expected are same numeric, processed should also be
+        # numeric or comparable
+        if column in processed_df.columns and pd.api.types.is_numeric_dtype(
+            processed_df[column]
+        ):
+            pass  # types are consistent
+        elif column in processed_df.columns:  # if processed became string
+            expected_data[column] = expected_data[column].astype(str)
+    else:
+        # Default to string comparison for most other cases unless specific
+        # handling needed
+        if expected_title is not None:
+            expected_data[column] = str(
+                expected_title
+            )  # Ensure expected value is string for comparison if not None
+        # Ensure processed_df column is string if it exists and isn't None for
+        # fair comparison
+        # This is tricky because apply_qa_edits might change type to string by
+        # default
+        if column in processed_df.columns and processed_df[column].iloc[0] is not None:
+            processed_df[column] = processed_df[column].astype(str)
+        if (
+            column in expected_data.columns
+            and expected_data[column].iloc[0] is not None
+        ):
+            expected_data[column] = expected_data[column].astype(str)
+
+    assert_frame_equal(processed_df, expected_data, check_dtype=False)
+
+    if log_expected:
+        assert (
+            len(changelog_df) == 1
+        ), f"Expected 1 log entry, found {len(changelog_df)}"
+        log_entry = changelog_df.iloc[0]
+        assert log_entry["record_id"] == record_id
+        assert log_entry["column_changed"] == column
+
+        # Handle NaN comparison carefully for old_value in log
+        if pd.isna(initial_title):
+            assert pd.isna(log_entry["old_value"]), (
+                f"Expected old_value in log to be NaN for initial_title None, "
+                f"but got {log_entry['old_value']}"
+            )
+        else:
+            assert str(initial_title) == str(log_entry["old_value"]), (
+                f"Old value mismatch: expected {initial_title}, "
+                f"got {log_entry['old_value']}"
+            )
+
+        # Handle new_value comparison in log
+        if pd.isna(expected_title):
+            assert pd.isna(log_entry["new_value"]), (
+                f"Expected new_value in log to be NaN for expected_title None, "
+                f"but got {log_entry['new_value']}"
+            )
+        else:
+            assert str(expected_title) == str(log_entry["new_value"]), (
+                f"New value mismatch: expected {expected_title}, "
+                f"got {log_entry['new_value']}"
+            )
+
+        assert log_entry["changed_by"] == changed_by
+        assert expected_notes_substring in log_entry["notes"], (
+            f"Expected substring '{expected_notes_substring}' not found in notes: "
+            f"'{log_entry['notes']}'"
+        )
+    else:
+        assert (
+            len(changelog_df) == 0
+        ), f"Expected no log entries, found {len(changelog_df)}"
+
+
+def test_blank_value_on_departure(clear_changelog):
+    record_id = "NYC_GOID_00268"
+    column_to_edit = "PrincipalOfficersName"
+    initial_name = "Jose Bayona"
+    feedback_text = (
+        "Jose Bayona has left the City"  # This feedback will trigger the new rule
+    )
+    changed_by = "test_user"
+    feedback_source = "test_qa_departure.csv"  # For the log
+
+    golden_data = pd.DataFrame([{"RecordID": record_id, column_to_edit: initial_name}])
+    # The actual feedback in qa_data is what's tested against RULES
+    qa_data = pd.DataFrame(
+        [{"Row(s)": record_id, "Column": column_to_edit, "feedback": feedback_text}]
+    )
+
+    # Apply the QA edits, which should trigger the new rule
+    # and then call handle_blank_value
+    processed_df = process_golden_dataset.apply_qa_edits(
+        golden_data, qa_data, changed_by, feedback_source
+    )
+
+    # Assert DataFrame update
+    assert processed_df.loc[0, column_to_edit] == ""
+
+    # Assert log_change call
+    assert len(clear_changelog) == 1
+    log_entry = clear_changelog[0]
+    assert log_entry["record_id"] == record_id
+    assert log_entry["column_changed"] == column_to_edit
+    assert log_entry["old_value"] == initial_name
+    assert log_entry["new_value"] == ""
+    assert log_entry["feedback_source"] == feedback_source
+    assert (
+        log_entry["notes"] == feedback_text
+    )  # The handle_blank_value uses the original feedback as notes
+    assert log_entry["changed_by"] == changed_by
+
+
+@pytest.mark.parametrize(
+    (
+        "initial_value, feedback, should_log, expected_final_value, "
+        "expected_log_note_substring"
+    ),
+    [
+        (
+            "Old Name",
+            "John Doe has left the City",
+            True,
+            "",
+            "John Doe has left the City",
+        ),
+        (
+            "Another Name",
+            "Someone is no longer with us",
+            True,
+            "",
+            "Someone is no longer with us",
+        ),
+        (
+            "Current Occupant",
+            "Occupant is no longer at the post",
+            True,
+            "",
+            "Occupant is no longer at the post",
+        ),
+        (
+            "No Change Needed",
+            "This person is still here",
+            False,
+            "No Change Needed",
+            None,
+        ),  # Should not match rule
+        (
+            "",
+            "Already Blank has left",
+            False,
+            "",
+            None,
+        ),  # Already blank, no change, and rule also might not match depending on `.*`
+    ],
+)
+def test_blank_value_on_departure_parametrized(
+    clear_changelog,
+    initial_value,
+    feedback,
+    should_log,
+    expected_final_value,
+    expected_log_note_substring,
+):
+    record_id = "ID_DEPART"
+    column_to_edit = "OfficerName"
+    changed_by = "test_user"
+    feedback_source = "departure_qa.csv"
+
+    golden_data = pd.DataFrame([{"RecordID": record_id, column_to_edit: initial_value}])
+    qa_data = pd.DataFrame(
+        [{"Row(s)": record_id, "Column": column_to_edit, "feedback": feedback}]
+    )
+
+    processed_df = process_golden_dataset.apply_qa_edits(
+        golden_data, qa_data, changed_by, feedback_source
+    )
+
+    assert processed_df.loc[0, column_to_edit] == expected_final_value
+
+    if should_log:
+        assert len(clear_changelog) == 1
+        log_entry = clear_changelog[0]
+        assert log_entry["record_id"] == record_id
+        assert log_entry["column_changed"] == column_to_edit
+        assert str(log_entry["old_value"]) == str(initial_value)
+        assert log_entry["new_value"] == expected_final_value
+        assert log_entry["feedback_source"] == feedback_source
+        assert (
+            log_entry["notes"] == feedback
+        )  # handle_blank_value uses original feedback for notes
+        assert log_entry["changed_by"] == changed_by
+    else:
+        assert len(clear_changelog) == 0
