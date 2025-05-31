@@ -1084,7 +1084,7 @@ def apply_global_character_fixing(
         "Description",
         "AlternateOrFormerNames",
         "AlternateOrFormerAcronyms",
-        "PrincipalOfficersName",
+        "PrincipalOfficerName",
         "PrincipalOfficerTitle",
         "Notes",
     ]
@@ -1231,7 +1231,7 @@ def main():
     post_filter_count = len(df_final)
 
     try:
-        df_final.to_csv(args.out, index=False)
+        df_final.to_csv(args.out, index=False, encoding="utf-8-sig")
         print(f"Processed dataset saved to: {args.out}")
     except Exception as e:
         print(f"Error saving processed dataset: {e}")
@@ -1239,7 +1239,7 @@ def main():
 
     df_changelog = pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS)
     try:
-        df_changelog.to_csv(args.changelog, index=False)
+        df_changelog.to_csv(args.changelog, index=False, encoding="utf-8-sig")
         print(f"Changelog saved to: {args.changelog}")
     except Exception as e:
         print(f"Error saving changelog: {e}")
