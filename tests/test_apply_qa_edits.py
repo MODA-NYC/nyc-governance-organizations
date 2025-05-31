@@ -786,3 +786,207 @@ def test_apply_global_deduplication(clear_changelog):
 
     for expected in expected_changes:
         assert expected in changes_logged, f"Expected change not found: {expected}"
+
+
+def test_global_character_fixing(clear_changelog):
+    """Test the apply_global_character_fixing function."""
+    # Create test data with various character issues
+    test_data = {
+        "RecordID": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        "Name": [
+            "Mayorâ€™s Office",  # ftfy-fixable mojibake
+            "Clean Name",  # Already clean, should not change
+            "Name with¬†special space",  # Contains ¬†
+            "Name with\u00a0non-breaking space",  # Contains NBSP
+            None,  # Non-string value
+            "  Padded Name  ",  # Extra whitespace
+            "",  # Empty string
+            "Normal™ Name",  # Character that may need NFKC normalization
+            "Name with multiple  spaces",  # Multiple spaces
+        ],
+        "Description": [
+            "Lorraine Cort√É¬©s-V√É¬°zquez",  # Specific mojibake pattern
+            "Description with¬†and\u00a0spaces",  # Multiple issues
+            123,  # Non-string value (number)
+            "Already clean description",
+            "Café",  # Accent that should be preserved
+            "Description™ with symbols",  # Trademark symbol
+            "   ",  # Only whitespace
+            "Multiple\n\nNewlines",  # Newlines should be preserved
+            "Tab\tcharacter",  # Tab should be preserved
+        ],
+        "AlternateOrFormerNames": [
+            "Name1¬†Name2",
+            "Clean;Names",
+            "",
+            None,
+            "José;María",  # Accented characters should be preserved
+            "Name with  extra   spaces",
+            "√É¬©√É¬°",  # Just mojibake characters
+            "Mixed™Issues¬†Here",
+            "Normal Alternative Name",
+        ],
+        "PrincipalOfficersName": [
+            "John Doe",  # Clean
+            "Jane¬†Smith",  # With ¬†
+            "Bob\u00a0Jones",  # With NBSP
+            "Alice√É¬©Brown",  # With mojibake
+            "",
+            None,
+            123.45,  # Float non-string
+            "  Officer Name  ",  # Padded
+            "Clean Officer",
+        ],
+        "Notes": [
+            "Note with â€œquotesâ€",  # Smart quotes mojibake
+            "Clean note",
+            None,
+            "",
+            "Note¬†with¬†multiple¬†issues",
+            "Simple note",
+            "Note\u00a0with\u00a0NBSP",
+            "   Padded note   ",
+            "Already good note",
+        ],
+        # Add a column not in text_columns_to_fix to verify it's not processed
+        "OtherColumn": [
+            "Text with¬†issues",
+            "More text",
+            "Should not be fixed",
+            "Keep as is",
+            "No changes",
+            "Original value",
+            "Untouched",
+            "Not processed",
+            "Ignored column",
+        ],
+    }
+    df_input = pd.DataFrame(test_data)
+
+    # Call the function
+    df_result = process_golden_dataset.apply_global_character_fixing(
+        df_input,
+        "TestGlobalCharFix",
+        process_golden_dataset.log_change,
+        process_golden_dataset.QAAction,
+    )
+
+    # Test that the function returns a new DataFrame
+    assert id(df_result) != id(df_input)
+
+    # Test Name column fixes
+    assert df_result.loc[0, "Name"] == "Mayor's Office"  # Mojibake fixed
+    assert df_result.loc[1, "Name"] == "Clean Name"  # No change
+    assert df_result.loc[2, "Name"] == "Name with special space"  # ¬† replaced
+    assert df_result.loc[3, "Name"] == "Name with non-breaking space"  # NBSP replaced
+    assert df_result.loc[4, "Name"] is None  # None unchanged
+    assert df_result.loc[5, "Name"] == "Padded Name"  # Whitespace stripped
+    assert df_result.loc[6, "Name"] == ""  # Empty string unchanged
+    assert df_result.loc[7, "Name"] == "NormalTM Name"  # NFKC normalizes ™ to TM
+    assert (
+        df_result.loc[8, "Name"] == "Name with multiple  spaces"
+    )  # Internal spaces preserved
+
+    # Test Description column fixes
+    assert (
+        df_result.loc[0, "Description"] == "Lorraine Cortés-Vázquez"
+    )  # Mojibake fixed
+    assert (
+        df_result.loc[1, "Description"] == "Description with and spaces"
+    )  # Multiple fixes
+    assert df_result.loc[2, "Description"] == 123  # Non-string unchanged
+    assert df_result.loc[3, "Description"] == "Already clean description"  # No change
+    assert df_result.loc[4, "Description"] == "Café"  # Accent preserved
+    assert (
+        df_result.loc[5, "Description"] == "DescriptionTM with symbols"
+    )  # ™ normalized to TM
+    assert df_result.loc[6, "Description"] == ""  # Whitespace-only becomes empty
+    assert (
+        df_result.loc[7, "Description"] == "Multiple\n\nNewlines"
+    )  # Newlines preserved
+    assert df_result.loc[8, "Description"] == "Tab\tcharacter"  # Tab preserved
+
+    # Test AlternateOrFormerNames column fixes
+    assert df_result.loc[0, "AlternateOrFormerNames"] == "Name1 Name2"  # ¬† replaced
+    assert df_result.loc[1, "AlternateOrFormerNames"] == "Clean;Names"  # No change
+    assert df_result.loc[2, "AlternateOrFormerNames"] == ""  # Empty unchanged
+    assert df_result.loc[3, "AlternateOrFormerNames"] is None  # None unchanged
+    assert (
+        df_result.loc[4, "AlternateOrFormerNames"] == "José;María"
+    )  # Accents preserved
+    assert (
+        df_result.loc[5, "AlternateOrFormerNames"] == "Name with  extra   spaces"
+    )  # Internal spaces preserved
+    assert df_result.loc[6, "AlternateOrFormerNames"] == "éá"  # Mojibake fixed
+    assert (
+        df_result.loc[7, "AlternateOrFormerNames"] == "MixedTMIssues Here"
+    )  # ™ normalized to TM, ¬† fixed
+
+    # Test PrincipalOfficersName column fixes
+    assert df_result.loc[0, "PrincipalOfficersName"] == "John Doe"  # No change
+    assert df_result.loc[1, "PrincipalOfficersName"] == "Jane Smith"  # ¬† replaced
+    assert df_result.loc[2, "PrincipalOfficersName"] == "Bob Jones"  # NBSP replaced
+    assert df_result.loc[3, "PrincipalOfficersName"] == "AliceéBrown"  # Mojibake fixed
+    assert (
+        df_result.loc[7, "PrincipalOfficersName"] == "Officer Name"
+    )  # Whitespace stripped
+
+    # Test Notes column fixes
+    assert (
+        df_result.loc[0, "Notes"] == 'Note with "quotesâ€'
+    )  # Smart quotes mojibake partially fixed
+    assert (
+        df_result.loc[4, "Notes"] == "Note with multiple issues"
+    )  # Multiple ¬† replaced
+    assert df_result.loc[6, "Notes"] == "Note with NBSP"  # NBSP replaced
+    assert df_result.loc[7, "Notes"] == "Padded note"  # Whitespace stripped
+
+    # Test that OtherColumn was NOT processed
+    assert df_result.loc[0, "OtherColumn"] == "Text with¬†issues"  # Should be unchanged
+    assert df_result.loc[1, "OtherColumn"] == "More text"  # Should be unchanged
+
+    # Check the changelog entries
+    changelog_df = pd.DataFrame(clear_changelog)
+
+    # The actual number of changes may vary based on ftfy and unicodedata behavior
+    # So we'll check that we have at least some changes logged
+    assert len(changelog_df) > 0, "No changes were logged"
+
+    # Check that all logged entries have the correct structure
+    for _, log_entry in changelog_df.iterrows():
+        assert "ChangeID" in log_entry
+        assert log_entry["feedback_source"] == "System_GlobalCharFix"
+        assert log_entry["changed_by"] == "TestGlobalCharFix"
+        assert log_entry["RuleAction"] == process_golden_dataset.QAAction.CHAR_FIX.value
+        assert "Global character/Unicode fixing applied to" in log_entry["notes"]
+
+        # Verify the column changed is in our text_columns_to_fix
+        text_columns_to_fix = [
+            "Name",
+            "NameAlphabetized",
+            "Description",
+            "AlternateOrFormerNames",
+            "AlternateOrFormerAcronyms",
+            "PrincipalOfficersName",
+            "PrincipalOfficerTitle",
+            "Notes",
+        ]
+        assert log_entry["column_changed"] in text_columns_to_fix
+
+        # Verify old_value and new_value are different
+        assert log_entry["old_value"] != log_entry["new_value"]
+
+    # Verify that specific known fixes were logged
+    name_mayor_change = changelog_df[
+        (changelog_df["record_id"] == "1") & (changelog_df["column_changed"] == "Name")
+    ]
+    assert len(name_mayor_change) == 1
+    assert "Mayor" in name_mayor_change.iloc[0]["new_value"]
+    assert "Office" in name_mayor_change.iloc[0]["new_value"]
+
+    description_cortez_change = changelog_df[
+        (changelog_df["record_id"] == "1")
+        & (changelog_df["column_changed"] == "Description")
+    ]
+    assert len(description_cortez_change) == 1
+    assert "Cortés-Vázquez" in description_cortez_change.iloc[0]["new_value"]

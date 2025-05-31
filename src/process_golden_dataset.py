@@ -2,6 +2,7 @@ import argparse
 import pathlib
 import re
 import typing
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -65,7 +66,7 @@ RULES = {
     # New rule for "[Subject] is now/currently [New Value]"
     r"^(?:.*is now|.*is currently)\s+(?P<value>.+)$": QAAction.DIRECT_SET,
     # Example: "Fix special characters in Description"
-    r"Fix special characters(?: in (?P<column>\w+))?": QAAction.CHAR_FIX,
+    r"Fix special characters(?: in (?P<column>\w+))?": QAAction.POLICY_QUERY,
     # Example: "Remove value of PrincipalOfficerContactURL"
     r"Remove value of .*": QAAction.BLANK_VALUE,
     # Rule for departure feedback - now triggers policy query instead of blanking
@@ -211,6 +212,9 @@ def handle_char_fix(
         # Handle specific character sequences
         repaired_text = repaired_text.replace("¬†", " ")  # Fix ¬†
         repaired_text = repaired_text.replace("\u00a0", " ")  # Fix NBSP
+        # Add new specific mojibake replacements
+        repaired_text = repaired_text.replace("√É¬©", "é")  # Fix for é
+        repaired_text = repaired_text.replace("√É¬°", "á")  # Fix for á
         new_value = repaired_text.strip()
         if new_value != old_value:
             log_change(
@@ -1056,6 +1060,83 @@ def apply_global_deduplication(
     return df_processed
 
 
+def apply_global_character_fixing(
+    df_input: pd.DataFrame,
+    changed_by_user: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """Apply global character fixing to specified text columns.
+
+    Args:
+        df_input: Input DataFrame to process.
+        changed_by_user: String identifying who/what made the changes.
+        log_change_func: Function to call for logging changes.
+        qa_action_enum: The QAAction enum class for action types.
+
+    Returns:
+        A processed copy of the input DataFrame with character fixing applied.
+    """
+    # Define columns that should have character fixing applied
+    text_columns_to_fix = [
+        "Name",
+        "NameAlphabetized",
+        "Description",
+        "AlternateOrFormerNames",
+        "AlternateOrFormerAcronyms",
+        "PrincipalOfficersName",
+        "PrincipalOfficerTitle",
+        "Notes",
+    ]
+
+    df_processed = df_input.copy()
+
+    for column_name_to_fix in text_columns_to_fix:
+        if column_name_to_fix not in df_processed.columns:
+            print(
+                f"Warning: Column {column_name_to_fix} not found in dataset. "
+                f"Skipping global character fixing for this column."
+            )
+            continue
+
+        for index, row_series in df_processed.iterrows():
+            old_value = row_series.get(column_name_to_fix)
+            record_id = str(row_series["RecordID"])
+
+            # Skip if value is not a string or is NaN
+            if not isinstance(old_value, str):
+                continue
+
+            # Apply comprehensive text fixing
+            new_value = ftfy.fix_text(old_value)
+            new_value = unicodedata.normalize("NFKC", new_value)
+            new_value = new_value.replace("¬†", " ").replace("\u00a0", " ")
+            # Add the specific mojibake replacements from handle_char_fix
+            new_value = new_value.replace("√É¬©", "é")  # Fix for é
+            new_value = new_value.replace("√É¬°", "á")  # Fix for á
+            new_value = new_value.strip()
+
+            if new_value != old_value:
+                # Log the change
+                log_change_func(
+                    record_id=record_id,
+                    column_changed=column_name_to_fix,
+                    old_value=old_value,
+                    new_value=new_value,
+                    feedback_source="System_GlobalCharFix",
+                    notes=(
+                        f"Global character/Unicode fixing applied to "
+                        f"{column_name_to_fix}"
+                    ),
+                    changed_by=changed_by_user,
+                    rule_action=qa_action_enum.CHAR_FIX.value,
+                )
+                # Update the DataFrame
+                df_processed.loc[index, column_name_to_fix] = new_value
+
+    return df_processed
+
+
 def main():
     """
     Main function to process the golden dataset with QA edits.
@@ -1115,6 +1196,15 @@ def main():
     # Apply global deduplication before QA edits
     print("Applying global deduplication rules...")
     df_golden = apply_global_deduplication(
+        df_golden,
+        args.changed_by,
+        log_change,
+        QAAction,
+    )
+
+    # Apply global character fixing before QA edits
+    print("Applying global character fixing rules...")
+    df_golden = apply_global_character_fixing(
         df_golden,
         args.changed_by,
         log_change,
