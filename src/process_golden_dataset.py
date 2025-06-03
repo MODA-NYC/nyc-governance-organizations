@@ -29,6 +29,8 @@ class QAAction(Enum):
     _RECORD_FILTERED_OUT = "_record_filtered_out"
     DELETE_RECORD = "delete_record"
     APPEND_FROM_CSV = "append_from_csv"
+    NAME_SPLIT_SUCCESS = "name_split_success"
+    NAME_SPLIT_REVIEW_NEEDED = "name_split_review_needed"
 
 
 @dataclass
@@ -1122,7 +1124,7 @@ def _process_single_qa_row(
     qa_row: pd.Series,
     df_modified: pd.DataFrame,
     feedback_source_name: str,
-    changed_by_user: str,
+    changed_by: str,
     action_handlers: dict,
     rules_dict: dict,
     qa_action_enum: type[Enum],
@@ -1150,7 +1152,7 @@ def _process_single_qa_row(
             "Skipped",
             feedback_source_name,
             "Missing feedback text in QA sheet for given RecordID",
-            changed_by_user,
+            changed_by,
             QAAction.POLICY_QUERY.value,
         )
         return
@@ -1169,7 +1171,7 @@ def _process_single_qa_row(
             feedback_text,
             column_to_edit_from_qa,
             feedback_source_name,
-            changed_by_user,
+            changed_by,
             action_handlers,
             rules_dict,
             qa_action_enum,
@@ -1180,7 +1182,7 @@ def _process_single_qa_row(
 def apply_qa_edits(
     df_golden: pd.DataFrame,
     df_qa: pd.DataFrame,
-    changed_by_user: str,
+    changed_by: str,
     qa_filename: str,
 ) -> pd.DataFrame:
     """Apply QA edits from the QA DataFrame to the Golden DataFrame."""
@@ -1217,7 +1219,7 @@ def apply_qa_edits(
                     df_modified,
                     record_id_to_delete,
                     feedback_source_name,
-                    changed_by_user,
+                    changed_by,
                     feedback_text,
                     log_change,
                     QAAction,
@@ -1238,7 +1240,7 @@ def apply_qa_edits(
                     csv_path_to_add,
                     base_input_dir,
                     feedback_source_name,
-                    changed_by_user,
+                    changed_by,
                     feedback_text,
                     log_change,
                     QAAction,
@@ -1256,7 +1258,7 @@ def apply_qa_edits(
             qa_row,
             df_modified,
             feedback_source_name,
-            changed_by_user,
+            changed_by,
             ACTION_HANDLERS,
             RULES,
             QAAction,
@@ -1416,6 +1418,169 @@ def apply_global_character_fixing(
     return df_processed
 
 
+def _log_name_split_issue(
+    log_change_func: callable,
+    record_id: str,
+    original_full_name_raw: str | None,
+    changed_by_user: str,
+    qa_action_enum: type[Enum],
+    reason: str,
+):
+    """Helper to log issues during name splitting."""
+    log_notes = (
+        f"PrincipalOfficerName ('{original_full_name_raw}') {reason}; "
+        "requires manual review."
+    )
+    # Check for NA, non-string, or effectively empty string
+    is_na = pd.isna(original_full_name_raw)
+    is_not_str = not isinstance(original_full_name_raw, str)
+
+    # Check for empty string only if it's a string, to avoid error on non-str types
+    is_effectively_empty_str = False
+    if not is_na and not is_not_str:  # i.e., it is a string
+        is_effectively_empty_str = not original_full_name_raw.strip()
+
+    if is_na or is_not_str or is_effectively_empty_str:
+        log_notes = (
+            f"PrincipalOfficerName ('{original_full_name_raw}') is effectively empty, "
+            "None, or not a string after initial processing; requires manual review."
+        )
+
+    log_change_func(
+        record_id=record_id,
+        column_changed="PrincipalOfficerName_SplitReview",
+        old_value=(
+            original_full_name_raw if pd.notna(original_full_name_raw) else "N/A"
+        ),
+        new_value="N/A",
+        feedback_source="System_NameSplitRule",
+        notes=log_notes,
+        changed_by=changed_by_user,
+        rule_action=qa_action_enum.NAME_SPLIT_REVIEW_NEEDED.value,
+    )
+
+
+def populate_split_officer_names(
+    df_input: pd.DataFrame,
+    changed_by_user: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """
+    Populates PrincipalOfficerGivenName and PrincipalOfficerFamilyName
+    based on the existing PrincipalOfficerName field.
+    """
+    df_processed = df_input.copy()
+    print("Populating split officer names...")
+
+    required_name_cols = ["PrincipalOfficerGivenName", "PrincipalOfficerFamilyName"]
+    for col in required_name_cols:
+        if col not in df_processed.columns:
+            print(
+                f"Warning: Column '{col}' not found. Adding it with empty strings. "
+                "This should ideally be handled by a schema management script."
+            )
+            df_processed[col] = ""
+
+    num_successful_splits = 0
+    num_review_needed = 0
+
+    for index, row in df_processed.iterrows():
+        record_id = str(row["RecordID"])
+        original_full_name_raw = row.get("PrincipalOfficerName")
+        old_given_name = row.get("PrincipalOfficerGivenName", "")
+        old_family_name = row.get("PrincipalOfficerFamilyName", "")
+
+        given_name_to_set = old_given_name
+        family_name_to_set = old_family_name
+        processed_successfully = False
+
+        # Check for NA or non-string types first
+        is_na_check = pd.isna(original_full_name_raw)
+        is_not_str_check = not isinstance(original_full_name_raw, str)
+        if is_na_check or is_not_str_check:
+            name_to_process = None
+        else:
+            name_to_process = original_full_name_raw.strip()
+
+        if name_to_process:
+            parts = name_to_process.split()
+            if len(parts) == 2:
+                given_name_to_set = parts[0].strip()
+                family_name_to_set = parts[1].strip()
+
+                if given_name_to_set != old_given_name:
+                    log_change_func(
+                        record_id=record_id,
+                        column_changed="PrincipalOfficerGivenName",
+                        old_value=old_given_name,
+                        new_value=given_name_to_set,
+                        feedback_source="System_NameSplitRule",
+                        notes=(
+                            "Populated GivenName from PrincipalOfficerName: "
+                            f"'{name_to_process}'"
+                        ),
+                        changed_by=changed_by_user,
+                        rule_action=qa_action_enum.NAME_SPLIT_SUCCESS.value,
+                    )
+                    df_processed.loc[index, "PrincipalOfficerGivenName"] = (
+                        given_name_to_set
+                    )
+
+                if family_name_to_set != old_family_name:
+                    log_change_func(
+                        record_id=record_id,
+                        column_changed="PrincipalOfficerFamilyName",
+                        old_value=old_family_name,
+                        new_value=family_name_to_set,
+                        feedback_source="System_NameSplitRule",
+                        notes=(
+                            "Populated FamilyName from PrincipalOfficerName: "
+                            f"'{name_to_process}'"
+                        ),
+                        changed_by=changed_by_user,
+                        rule_action=qa_action_enum.NAME_SPLIT_SUCCESS.value,
+                    )
+                    df_processed.loc[index, "PrincipalOfficerFamilyName"] = (
+                        family_name_to_set
+                    )
+                processed_successfully = True
+                num_successful_splits += 1
+            else:
+                # Name did not split into exactly two parts
+                _log_name_split_issue(
+                    log_change_func,
+                    record_id,
+                    original_full_name_raw,
+                    changed_by_user,
+                    qa_action_enum,
+                    "did not split into two parts",
+                )
+                num_review_needed += 1
+        else:
+            # Name was None, NA, empty, or non-string initially
+            _log_name_split_issue(
+                log_change_func,
+                record_id,
+                original_full_name_raw,
+                changed_by_user,
+                qa_action_enum,
+                "is effectively empty or invalid",
+            )
+            num_review_needed += 1
+
+        # Ensure original values are retained if not processed successfully
+        if not processed_successfully:
+            df_processed.loc[index, "PrincipalOfficerGivenName"] = old_given_name
+            df_processed.loc[index, "PrincipalOfficerFamilyName"] = old_family_name
+
+    print(
+        f"Name splitting complete. Successful splits: {num_successful_splits}, "
+        f"Needs review: {num_review_needed}"
+    )
+    return df_processed
+
+
 def _parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -1500,9 +1665,14 @@ def _apply_transformations(
         QAAction,
     )
 
+    print("Populating PrincipalOfficerGivenName and PrincipalOfficerFamilyName...")
+    df_transformed = populate_split_officer_names(
+        df_transformed, changed_by, log_change, QAAction
+    )
+
     print(f"Applying QA edits from {qa_filename}...")
-    df_edited = apply_qa_edits(df_transformed, df_qa, changed_by, qa_filename)
-    return df_edited
+    df_transformed = apply_qa_edits(df_transformed, df_qa, changed_by, qa_filename)
+    return df_transformed
 
 
 def _handle_filter_column(df: pd.DataFrame, drop_flag: bool) -> pd.DataFrame:

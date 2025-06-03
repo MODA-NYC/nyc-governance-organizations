@@ -1326,3 +1326,335 @@ def get_changelog_df():
     return pd.DataFrame(
         process_golden_dataset.changelog_entries, columns=changelog_columns
     )
+
+
+# --- Tests for populate_split_officer_names ---
+
+OFFICER_NAME_TEST_COLS = [
+    "RecordID",
+    "PrincipalOfficerName",
+    "PrincipalOfficerGivenName",
+    "PrincipalOfficerFamilyName",
+]
+
+
+def create_officer_name_df(data_list: list[tuple]) -> pd.DataFrame:
+    """Helper function to create a DataFrame for officer name splitting tests."""
+    return pd.DataFrame(data_list, columns=OFFICER_NAME_TEST_COLS)
+
+
+@pytest.mark.parametrize(
+    (
+        "record_id, officer_name, initial_given, initial_family, "
+        "expected_given, expected_family, expected_logs, log_details"
+    ),
+    [
+        (
+            "REC001",
+            "Jane Doe",
+            "",
+            "",
+            "Jane",
+            "Doe",
+            2,
+            [
+                {
+                    "column_changed": "PrincipalOfficerGivenName",
+                    "old_value": "",
+                    "new_value": "Jane",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated GivenName from PrincipalOfficerName: 'Jane Doe'"
+                    ),
+                },
+                {
+                    "column_changed": "PrincipalOfficerFamilyName",
+                    "old_value": "",
+                    "new_value": "Doe",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated FamilyName from PrincipalOfficerName: 'Jane Doe'"
+                    ),
+                },
+            ],
+        ),
+        (
+            "REC002",
+            "John Michael Smith",
+            "",
+            "",
+            "",  # Remains empty
+            "",  # Remains empty
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "John Michael Smith",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": "did not split into two parts",
+                }
+            ],
+        ),
+        (
+            "REC003",
+            "Cher",
+            "",
+            "",
+            "",
+            "",
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "Cher",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": "did not split into two parts",
+                }
+            ],
+        ),
+        (
+            "REC004",
+            "",  # Empty string
+            "",
+            "",
+            "",
+            "",
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": (
+                        "PrincipalOfficerName ('') is effectively empty"
+                    ),
+                }
+            ],
+        ),
+        (
+            "REC005",
+            None,  # None value
+            "",
+            "",
+            "",
+            "",
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "N/A",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": (
+                        "PrincipalOfficerName ('None') is effectively empty"
+                    ),
+                }
+            ],
+        ),
+        (
+            "REC006",
+            pd.NA,  # NaN value
+            "PreGiven",
+            "PreFamily",
+            "PreGiven",  # Remains as is
+            "PreFamily",  # Remains as is
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "N/A",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": (
+                        "PrincipalOfficerName ('<NA>') is effectively empty"
+                    ),
+                }
+            ],
+        ),
+        (
+            "REC007",
+            "Vita Sackville-West",  # This is a 2-part name
+            "",
+            "",
+            "Vita",
+            "Sackville-West",
+            2,
+            [
+                {
+                    "column_changed": "PrincipalOfficerGivenName",
+                    "old_value": "",
+                    "new_value": "Vita",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated GivenName from PrincipalOfficerName: "
+                        "'Vita Sackville-West'"
+                    ),
+                },
+                {
+                    "column_changed": "PrincipalOfficerFamilyName",
+                    "old_value": "",
+                    "new_value": "Sackville-West",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated FamilyName from PrincipalOfficerName: "
+                        "'Vita Sackville-West'"
+                    ),
+                },
+            ],
+        ),
+        (
+            "REC008",
+            "  Leading Trailing  ",  # Two parts with surrounding spaces
+            "",
+            "",
+            "Leading",
+            "Trailing",
+            2,
+            [
+                {
+                    "column_changed": "PrincipalOfficerGivenName",
+                    "old_value": "",
+                    "new_value": "Leading",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated GivenName from PrincipalOfficerName: "
+                        "'Leading Trailing'"
+                    ),
+                },
+                {
+                    "column_changed": "PrincipalOfficerFamilyName",
+                    "old_value": "",
+                    "new_value": "Trailing",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated FamilyName from PrincipalOfficerName: "
+                        "'Leading Trailing'"
+                    ),
+                },
+            ],
+        ),
+        (
+            "REC009",
+            "Already Split",  # Original name will be split again
+            "GivenOriginal",  # Pre-existing value
+            "FamilyOriginal",  # Pre-existing value
+            "Already",  # Will be overwritten
+            "Split",  # Will be overwritten
+            2,
+            [
+                {
+                    "column_changed": "PrincipalOfficerGivenName",
+                    "old_value": "GivenOriginal",
+                    "new_value": "Already",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated GivenName from PrincipalOfficerName: "
+                        "'Already Split'"
+                    ),
+                },
+                {
+                    "column_changed": "PrincipalOfficerFamilyName",
+                    "old_value": "FamilyOriginal",
+                    "new_value": "Split",
+                    "rule_action": "name_split_success",
+                    "notes_substring": (
+                        "Populated FamilyName from PrincipalOfficerName: "
+                        "'Already Split'"
+                    ),
+                },
+            ],
+        ),
+        (
+            "REC010",
+            "Truly Un Splittable Name",  # Changed to a 4-part name
+            "KeepGiven",  # Pre-existing value that should be kept
+            "KeepFamily",  # Pre-existing value that should be kept
+            "KeepGiven",  # Should remain KeepGiven
+            "KeepFamily",  # Should remain KeepFamily
+            1,
+            [
+                {
+                    "column_changed": "PrincipalOfficerName_SplitReview",
+                    "old_value": "Truly Un Splittable Name",
+                    "new_value": "N/A",
+                    "rule_action": "name_split_review_needed",
+                    "notes_substring": (
+                        "PrincipalOfficerName ('Truly Un Splittable Name') "
+                        "did not split into two parts"
+                    ),
+                }
+            ],
+        ),
+    ],
+)
+def test_populate_split_officer_names(
+    clear_changelog,  # Fixture to ensure fresh changelog
+    record_id,
+    officer_name,
+    initial_given,
+    initial_family,
+    expected_given,
+    expected_family,
+    expected_logs,
+    log_details,
+):
+    """Parametrized test for populate_split_officer_names function."""
+    df_input = create_officer_name_df(
+        [(record_id, officer_name, initial_given, initial_family)]
+    )
+    changed_by = "test_name_splitter_rule"
+
+    df_processed = process_golden_dataset.populate_split_officer_names(
+        df_input,
+        changed_by,
+        process_golden_dataset.log_change,  # Actual log_change function
+        process_golden_dataset.QAAction,  # Actual QAAction Enum
+    )
+
+    # Assert DataFrame changes
+    processed_row = df_processed.iloc[0]
+    assert processed_row["PrincipalOfficerGivenName"] == expected_given
+    assert processed_row["PrincipalOfficerFamilyName"] == expected_family
+
+    # Assert changelog entries
+    changelog = clear_changelog  # The fixture returns the fresh list
+    assert len(changelog) == expected_logs
+
+    for detail in log_details:  # Removed unused enumerate index 'i'
+        # Find the log entry. For 2-log cases, this assumes an order or
+        # requires more specific matching if order is not guaranteed.
+        # For simplicity, if 2 logs, assume first detail matches first log, etc.
+        # Or, better, match by column_changed if unique enough.
+
+        # Find the specific log entry based on the column_changed field
+        # This is more robust than relying on order for multi-log scenarios
+        matching_log_entries = []
+        for log_item in changelog:
+            if log_item["column_changed"] == detail["column_changed"]:
+                matching_log_entries.append(log_item)
+
+        assert len(matching_log_entries) == 1, (
+            f"Expected 1 log entry for column '{detail['column_changed']}', "
+            f"found {len(matching_log_entries)}"
+        )
+        log_entry = matching_log_entries[0]
+
+        assert log_entry["record_id"] == record_id
+        assert log_entry["old_value"] == detail["old_value"]
+        assert log_entry["new_value"] == detail["new_value"]
+        assert log_entry["feedback_source"] == "System_NameSplitRule"
+        assert detail["notes_substring"] in log_entry["notes"], (
+            f"Substring '{detail['notes_substring']}' not in notes "
+            f"'{log_entry['notes']}'"
+        )
+        assert log_entry["changed_by"] == changed_by
+
+        # Get the actual enum value for comparison
+        expected_rule_action_name = detail["rule_action"].upper()
+        expected_rule_action_value = getattr(
+            process_golden_dataset.QAAction, expected_rule_action_name
+        ).value
+        assert log_entry["RuleAction"] == expected_rule_action_value
