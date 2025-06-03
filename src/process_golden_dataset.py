@@ -591,24 +591,33 @@ def handle_append_from_csv(
         Modified DataFrame with new records appended.
     """
     # Resolve the CSV path
-    csv_path = pathlib.Path(csv_path_to_add_str)
-    if not csv_path.is_absolute():
-        csv_path = base_input_dir / csv_path
+    csv_path_obj = pathlib.Path(csv_path_to_add_str)
+    resolved_csv_path: pathlib.Path
+
+    if csv_path_obj.is_absolute() or csv_path_to_add_str.startswith("data/"):
+        # If absolute, or seems to be project-root relative starting with "data/"
+        resolved_csv_path = csv_path_obj
+    else:
+        # Otherwise, assume it's relative to the QA file's directory (base_input_dir)
+        resolved_csv_path = base_input_dir / csv_path_obj
 
     try:
         # Load the new records
-        df_new_records = pd.read_csv(csv_path, dtype=str).fillna("")
+        df_new_records = pd.read_csv(resolved_csv_path, dtype=str).fillna("")
 
         if df_new_records.empty:
-            print(f"Warning: CSV file '{csv_path}' is empty. No records to append.")
+            print(
+                f"Warning: CSV file '{resolved_csv_path}' is empty. "
+                "No records to append."
+            )
             return current_df
 
-        print(f"Loading {len(df_new_records)} records from '{csv_path}'")
+        print(f"Loading {len(df_new_records)} records from '{resolved_csv_path}'")
 
         # Optional: Schema check (basic check for RecordID column)
         if "RecordID" not in df_new_records.columns:
             print(
-                f"Warning: CSV file '{csv_path}' missing 'RecordID' column. "
+                f"Warning: CSV file '{resolved_csv_path}' missing 'RecordID' column. "
                 f"Attempting to append anyway."
             )
 
@@ -640,7 +649,7 @@ def handle_append_from_csv(
                 old_value="N/A",
                 new_value=new_record_name,
                 feedback_source=feedback_source,
-                notes=f"{notes_from_feedback} - Appended from {csv_path_to_add_str}",
+                notes=f"{notes_from_feedback} - Appended from {resolved_csv_path}",
                 changed_by=changed_by,
                 rule_action=qa_action_enum.APPEND_FROM_CSV.value,
             )
@@ -650,34 +659,34 @@ def handle_append_from_csv(
 
         print(
             f"Successfully appended {len(df_new_records)} records from "
-            f"'{csv_path_to_add_str}'"
+            f"'{resolved_csv_path}'"
         )
 
         return modified_df
 
     except FileNotFoundError:
-        print(f"Error: CSV file not found: '{csv_path}'")
+        print(f"Error: CSV file not found: '{resolved_csv_path}'")
         log_change_func(
             record_id="_APPEND_ERROR",
             column_changed="_APPEND_FROM_CSV_FAILED",
             old_value="File Not Found",
-            new_value=str(csv_path),
+            new_value=str(resolved_csv_path),
             feedback_source=feedback_source,
-            notes=f"Failed to append from {csv_path_to_add_str}: File not found",
+            notes=f"Failed to append from {resolved_csv_path}: File not found",
             changed_by=changed_by,
             rule_action=qa_action_enum.APPEND_FROM_CSV.value,
         )
         return current_df
 
     except Exception as e:
-        print(f"Error loading CSV file '{csv_path}': {e}")
+        print(f"Error loading CSV file '{resolved_csv_path}': {e}")
         log_change_func(
             record_id="_APPEND_ERROR",
             column_changed="_APPEND_FROM_CSV_FAILED",
             old_value="Load Error",
             new_value=str(e),
             feedback_source=feedback_source,
-            notes=f"Failed to append from {csv_path_to_add_str}: {e}",
+            notes=f"Failed to append from {resolved_csv_path}: {e}",
             changed_by=changed_by,
             rule_action=qa_action_enum.APPEND_FROM_CSV.value,
         )
@@ -859,8 +868,27 @@ def _handle_direct_set_args(
         )
         return None, False
 
+    # Initial strip for whitespace
+    processed_value = parsed_value.strip()
+
+    # Remove surrounding double quotes if present
+    if (
+        len(processed_value) >= 2
+        and processed_value.startswith('"')
+        and processed_value.endswith('"')
+    ):
+        processed_value = processed_value[1:-1]
+
+    # Remove surrounding single quotes if present (applied after double quote check)
+    if (
+        len(processed_value) >= 2
+        and processed_value.startswith("'")
+        and processed_value.endswith("'")
+    ):
+        processed_value = processed_value[1:-1]
+
     handler_args["column_to_edit"] = final_column_to_edit
-    handler_args["new_value"] = parsed_value.strip()
+    handler_args["new_value"] = processed_value
     return final_column_to_edit, True
 
 
@@ -1194,12 +1222,13 @@ def apply_qa_edits(
                     log_change,
                     QAAction,
                 )
+                continue
             else:
                 print(
                     f"Error: DELETE_RECORD action but no record ID found in "
                     f"feedback: '{feedback_text}'"
                 )
-                continue  # Skip to next QA row
+                continue
 
         elif action == QAAction.APPEND_FROM_CSV:
             if match:
@@ -1214,12 +1243,13 @@ def apply_qa_edits(
                     log_change,
                     QAAction,
                 )
+                continue
             else:
                 print(
                     f"Error: APPEND_FROM_CSV action but no CSV path found in "
                     f"feedback: '{feedback_text}'"
                 )
-                continue  # Skip to next QA row
+                continue
 
         # For all other actions, use the existing row-specific processing
         _process_single_qa_row(
@@ -1386,10 +1416,8 @@ def apply_global_character_fixing(
     return df_processed
 
 
-def main():
-    """
-    Main function to process the golden dataset with QA edits.
-    """
+def _parse_args():
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Process a golden dataset CSV with QA edits from another CSV."
     )
@@ -1417,83 +1445,110 @@ def main():
         action="store_true",
         help=arg_help_drop_filter,  # Use reformatted help string
     )
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    print("Starting golden dataset processing...")
-    print(f"Golden dataset: {args.golden}")
-    print(f"QA edits: {args.qa}")
-    print(f"Output dataset: {args.out}")
-    print(f"Changelog: {args.changelog}")
-    print(f"Changed by: {args.changed_by}")
+
+def _load_dataframes(
+    golden_path: str, qa_path: str
+) -> tuple[pd.DataFrame | None, pd.DataFrame | None]:
+    """Load golden and QA dataframes."""
+    df_golden, df_qa = None, None
+    try:
+        print(
+            "Attempting to load golden dataset with engine='python' "
+            f"from {golden_path}..."
+        )
+        df_golden = pd.read_csv(golden_path, dtype=str, engine="python")
+        print("Golden dataset loaded successfully.")
+    except Exception as e:
+        print(f"Error loading golden dataset ({golden_path}): {e}")
+        return None, None
 
     try:
-        df_golden = pd.read_csv(args.golden, dtype=str)
-        df_qa = pd.read_csv(args.qa, dtype=str)
-    except FileNotFoundError as e:
-        print(f"Error: Input file not found: {e.filename}")
-        return
+        print(f"Attempting to load QA dataset with engine='python' from {qa_path}...")
+        df_qa = pd.read_csv(qa_path, dtype=str, engine="python")
+        print("QA dataset loaded successfully.")
     except Exception as e:
-        print(f"Error loading CSV files: {e}")
-        return
+        print(f"Error loading QA dataset ({qa_path}): {e}")
+        return df_golden, None
+    return df_golden, df_qa
 
-    pre_load_count = len(df_golden)
-    print(f"Initial records in golden dataset: {pre_load_count}")
 
+def _apply_transformations(
+    df_golden: pd.DataFrame,
+    df_qa: pd.DataFrame,
+    changed_by: str,
+    qa_filename: str,
+) -> pd.DataFrame:
+    """Apply global transformations and QA edits."""
     global changelog_entries
-    changelog_entries = []
+    changelog_entries = []  # Reset changelog for this processing run
 
-    # Apply global deduplication before QA edits
     print("Applying global deduplication rules...")
-    df_golden = apply_global_deduplication(
+    df_transformed = apply_global_deduplication(
         df_golden,
-        args.changed_by,
+        changed_by,
         log_change,
         QAAction,
     )
 
-    # Apply global character fixing before QA edits
     print("Applying global character fixing rules...")
-    df_golden = apply_global_character_fixing(
-        df_golden,
-        args.changed_by,
+    df_transformed = apply_global_character_fixing(
+        df_transformed,
+        changed_by,
         log_change,
         QAAction,
     )
 
-    df_edited = apply_qa_edits(df_golden, df_qa, args.changed_by, args.qa)
-    post_edit_count = len(df_edited)
+    print(f"Applying QA edits from {qa_filename}...")
+    df_edited = apply_qa_edits(df_transformed, df_qa, changed_by, qa_filename)
+    return df_edited
 
-    df_final = df_edited.copy()
 
-    if args.drop_filter_col:
+def _handle_filter_column(df: pd.DataFrame, drop_flag: bool) -> pd.DataFrame:
+    """Handle dropping the filter column if specified."""
+    if drop_flag:
         hypothetical_main_filter_column = "_RECORD_FILTERED_OUT_FLAG"
-        if hypothetical_main_filter_column in df_final.columns:
+        if hypothetical_main_filter_column in df.columns:
             print(f"Dropping filter column: {hypothetical_main_filter_column}")
-            df_final = df_final.drop(columns=[hypothetical_main_filter_column])
+            return df.drop(columns=[hypothetical_main_filter_column])
         else:
-            msg = (  # Reformatted print message
+            msg = (
                 f"Note: --drop-filter-col specified, but column "
                 f"'{hypothetical_main_filter_column}' not found in the final DataFrame."
             )
             print(msg)
+    return df
 
-    post_filter_count = len(df_final)
 
+def _save_outputs(
+    df_processed: pd.DataFrame, out_path: str, changelog_path: str
+) -> bool:
+    """Save processed dataframe and changelog to CSV files."""
     try:
-        df_final.to_csv(args.out, index=False, encoding="utf-8-sig")
-        print(f"Processed dataset saved to: {args.out}")
+        df_processed.to_csv(out_path, index=False, encoding="utf-8-sig")
+        print(f"Processed dataset saved to: {out_path}")
     except Exception as e:
         print(f"Error saving processed dataset: {e}")
-        return
+        return False
 
     df_changelog = pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS)
     try:
-        df_changelog.to_csv(args.changelog, index=False, encoding="utf-8-sig")
-        print(f"Changelog saved to: {args.changelog}")
+        df_changelog.to_csv(changelog_path, index=False, encoding="utf-8-sig")
+        print(f"Changelog saved to: {changelog_path}")
     except Exception as e:
         print(f"Error saving changelog: {e}")
-        return
+        return False
+    return True
 
+
+def _perform_integrity_checks(
+    pre_load_count: int,
+    post_edit_count: int,
+    post_filter_count: int,
+    df_changelog: pd.DataFrame,
+):
+    """Perform and print results of integrity checks."""
     print("\n--- Integrity Checks ---")
     print(f"Pre-load golden dataset count: {pre_load_count}")
     print(f"Post-edit golden dataset count: {post_edit_count}")
@@ -1510,15 +1565,13 @@ def main():
                 df_changelog[df_changelog["column_changed"] == "_RECORD_FILTERED_OUT"]
             )
 
-        msg_filtered_count = (  # Reformatted print message
+        msg_filtered_count = (
             f"Number of '_RECORD_FILTERED_OUT' entries in changelog: "
             f"{filtered_out_log_count}"
         )
         print(msg_filtered_count)
 
-        assert (
-            post_edit_count - post_filter_count
-        ) == filtered_out_log_count, (  # Reformatted assertion message
+        assert (post_edit_count - post_filter_count) == filtered_out_log_count, (
             f"Assertion Failed: Mismatch between rows removed from dataset "
             f"({post_edit_count - post_filter_count}) and '_RECORD_FILTERED_OUT' "
             f"changelog entries ({filtered_out_log_count})."
@@ -1529,6 +1582,45 @@ def main():
         print(f"Integrity check FAILED: {e}")
     except Exception as e:
         print(f"An error occurred during integrity checks: {e}")
+
+
+def main():
+    """
+    Main function to process the golden dataset with QA edits.
+    """
+    args = _parse_args()
+
+    print("Starting golden dataset processing...")
+    print(f"Golden dataset: {args.golden}")
+    print(f"QA edits: {args.qa}")
+    print(f"Output dataset: {args.out}")
+    print(f"Changelog: {args.changelog}")
+    print(f"Changed by: {args.changed_by}")
+
+    df_golden, df_qa = _load_dataframes(args.golden, args.qa)
+
+    if df_golden is None or df_qa is None:
+        print("Exiting due to errors loading dataframes.")
+        return
+
+    pre_load_count = len(df_golden)
+    print(f"Initial records in golden dataset: {pre_load_count}")
+
+    df_edited = _apply_transformations(df_golden, df_qa, args.changed_by, args.qa)
+    post_edit_count = len(df_edited)
+
+    df_final = _handle_filter_column(df_edited.copy(), args.drop_filter_col)
+    post_filter_count = len(df_final)
+
+    if not _save_outputs(df_final, args.out, args.changelog):
+        print("Exiting due to errors saving output files.")
+        return
+
+    # For integrity checks, create df_changelog from the global list
+    df_changelog_for_checks = pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS)
+    _perform_integrity_checks(
+        pre_load_count, post_edit_count, post_filter_count, df_changelog_for_checks
+    )
 
     print("\nGolden dataset processing complete.")
 

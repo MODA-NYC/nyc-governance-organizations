@@ -1170,7 +1170,9 @@ def test_append_from_nonexistent_csv(clear_changelog, tmp_path):
     expected_new_value_path_str = str(tmp_path / non_existent_csv)
     assert expected_new_value_path_str in log_entry["new_value"]  # Path is logged
     assert log_entry["feedback_source"] == "qa_append_nonexistent.csv"
-    expected_notes = f"Failed to append from {non_existent_csv}: " f"File not found"
+    # Split f-string to resolve E501
+    path_info = f"Failed to append from {expected_new_value_path_str}"
+    expected_notes = f"{path_info}: File not found"
     assert expected_notes in log_entry["notes"]
     assert log_entry["changed_by"] == "test_user_append_fail"
     expected_action_append_fail = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
@@ -1222,7 +1224,8 @@ def test_append_from_empty_csv(clear_changelog, tmp_path):
         or "empty file" in log_entry["new_value"].lower()
     )  # Depending on pandas version / OS
     assert log_entry["feedback_source"] == "qa_append_empty.csv"
-    assert f"Failed to append from {empty_csv_filename}:" in log_entry["notes"]
+    expected_notes_empty_csv = f"Failed to append from {str(empty_csv_path)}:"
+    assert expected_notes_empty_csv in log_entry["notes"]
     assert log_entry["changed_by"] == "test_user_append_empty"
     expected_action_val = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
     assert log_entry["RuleAction"] == expected_action_val
