@@ -27,6 +27,8 @@ class QAAction(Enum):
     REMOVE_ACTING_PREFIX = "remove_acting_prefix"
     NOT_FOUND = "not_found"
     _RECORD_FILTERED_OUT = "_record_filtered_out"
+    DELETE_RECORD = "delete_record"
+    APPEND_FROM_CSV = "append_from_csv"
 
 
 @dataclass
@@ -51,6 +53,12 @@ CHANGELOG_COLUMNS = [
 
 # Illustrative example rules
 RULES = {
+    # Rule for record deletion
+    r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
+    # Rule for appending from CSV
+    (
+        r"Append records from CSV " r"(?P<csv_path_to_add>[\w./-]+\.csv)"
+    ): QAAction.APPEND_FROM_CSV,
     # Example: "Set Name to NYC311"
     r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
     # Rule for "Fix "[value]"" (double quotes)
@@ -489,6 +497,193 @@ def handle_remove_acting_prefix(
     return row_series
 
 
+def handle_delete_record(
+    current_df: pd.DataFrame,
+    record_id_to_delete: str,
+    feedback_source: str,
+    changed_by: str,
+    notes_from_feedback: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """Deletes a specific record by its RecordID from the DataFrame.
+
+    Args:
+        current_df: The current DataFrame to modify.
+        record_id_to_delete: The RecordID to delete.
+        feedback_source: Source of the feedback (e.g., QA filename).
+        changed_by: User/process that made the change.
+        notes_from_feedback: The original feedback string.
+        log_change_func: Function to call for logging changes.
+        qa_action_enum: The QAAction enum class for action types.
+
+    Returns:
+        Modified DataFrame with the record deleted (if found).
+    """
+    # Check if the record exists
+    matching_rows = current_df[current_df["RecordID"] == record_id_to_delete]
+
+    if matching_rows.empty:
+        # Record not found
+        print(
+            f"Warning: RecordID '{record_id_to_delete}' not found for deletion. "
+            f"Feedback: '{notes_from_feedback}'"
+        )
+        log_change_func(
+            record_id=record_id_to_delete,
+            column_changed="_ROW_DELETE_FAILED",
+            old_value="Record Not Found",
+            new_value="N/A",
+            feedback_source=feedback_source,
+            notes=f"Record not found for deletion. Feedback: {notes_from_feedback}",
+            changed_by=changed_by,
+            rule_action=qa_action_enum.DELETE_RECORD.value,
+        )
+        return current_df
+
+    # Get the row data for logging (using Name if available, otherwise just note
+    # it's the entire row)
+    old_row_data = matching_rows.iloc[0].get("Name", "Entire Row Data")
+
+    # Log the deletion
+    log_change_func(
+        record_id=record_id_to_delete,
+        column_changed="_ROW_DELETED",
+        old_value=old_row_data,
+        new_value="N/A",
+        feedback_source=feedback_source,
+        notes=notes_from_feedback,
+        changed_by=changed_by,
+        rule_action=qa_action_enum.DELETE_RECORD.value,
+    )
+
+    # Delete the row
+    modified_df = current_df[current_df["RecordID"] != record_id_to_delete].copy()
+
+    print(f"Deleted RecordID '{record_id_to_delete}' from dataset.")
+
+    return modified_df
+
+
+def handle_append_from_csv(
+    current_df: pd.DataFrame,
+    csv_path_to_add_str: str,
+    base_input_dir: pathlib.Path,
+    feedback_source: str,
+    changed_by: str,
+    notes_from_feedback: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """Appends all records from a specified CSV file to the current DataFrame.
+
+    Args:
+        current_df: The current DataFrame to append to.
+        csv_path_to_add_str: Path to the CSV file to append (relative or absolute).
+        base_input_dir: Base directory for resolving relative paths.
+        feedback_source: Source of the feedback (e.g., QA filename).
+        changed_by: User/process that made the change.
+        notes_from_feedback: The original feedback string.
+        log_change_func: Function to call for logging changes.
+        qa_action_enum: The QAAction enum class for action types.
+
+    Returns:
+        Modified DataFrame with new records appended.
+    """
+    # Resolve the CSV path
+    csv_path = pathlib.Path(csv_path_to_add_str)
+    if not csv_path.is_absolute():
+        csv_path = base_input_dir / csv_path
+
+    try:
+        # Load the new records
+        df_new_records = pd.read_csv(csv_path, dtype=str).fillna("")
+
+        if df_new_records.empty:
+            print(f"Warning: CSV file '{csv_path}' is empty. No records to append.")
+            return current_df
+
+        print(f"Loading {len(df_new_records)} records from '{csv_path}'")
+
+        # Optional: Schema check (basic check for RecordID column)
+        if "RecordID" not in df_new_records.columns:
+            print(
+                f"Warning: CSV file '{csv_path}' missing 'RecordID' column. "
+                f"Attempting to append anyway."
+            )
+
+        # Check for significant schema differences
+        current_cols = set(current_df.columns)
+        new_cols = set(df_new_records.columns)
+        missing_in_new = current_cols - new_cols
+        extra_in_new = new_cols - current_cols
+
+        if missing_in_new:
+            print(
+                f"Warning: New CSV missing columns present in main dataset: "
+                f"{missing_in_new}"
+            )
+        if extra_in_new:
+            print(
+                f"Warning: New CSV has extra columns not in main dataset: "
+                f"{extra_in_new}"
+            )
+
+        # Log each new row being added
+        for idx, new_row in df_new_records.iterrows():
+            new_record_id = new_row.get("RecordID", f"row_{idx}")
+            new_record_name = new_row.get("Name", "Entire New Row Data")
+
+            log_change_func(
+                record_id=new_record_id,
+                column_changed="_ROW_ADDED",
+                old_value="N/A",
+                new_value=new_record_name,
+                feedback_source=feedback_source,
+                notes=f"{notes_from_feedback} - Appended from {csv_path_to_add_str}",
+                changed_by=changed_by,
+                rule_action=qa_action_enum.APPEND_FROM_CSV.value,
+            )
+
+        # Append the new records
+        modified_df = pd.concat([current_df, df_new_records], ignore_index=True)
+
+        print(
+            f"Successfully appended {len(df_new_records)} records from "
+            f"'{csv_path_to_add_str}'"
+        )
+
+        return modified_df
+
+    except FileNotFoundError:
+        print(f"Error: CSV file not found: '{csv_path}'")
+        log_change_func(
+            record_id="_APPEND_ERROR",
+            column_changed="_APPEND_FROM_CSV_FAILED",
+            old_value="File Not Found",
+            new_value=str(csv_path),
+            feedback_source=feedback_source,
+            notes=f"Failed to append from {csv_path_to_add_str}: File not found",
+            changed_by=changed_by,
+            rule_action=qa_action_enum.APPEND_FROM_CSV.value,
+        )
+        return current_df
+
+    except Exception as e:
+        print(f"Error loading CSV file '{csv_path}': {e}")
+        log_change_func(
+            record_id="_APPEND_ERROR",
+            column_changed="_APPEND_FROM_CSV_FAILED",
+            old_value="Load Error",
+            new_value=str(e),
+            feedback_source=feedback_source,
+            notes=f"Failed to append from {csv_path_to_add_str}: {e}",
+            changed_by=changed_by,
+            rule_action=qa_action_enum.APPEND_FROM_CSV.value,
+        )
+        return current_df
+
+
 ACTION_HANDLERS = {
     QAAction.DIRECT_SET: handle_direct_set,
     QAAction.CHAR_FIX: handle_char_fix,
@@ -499,6 +694,8 @@ ACTION_HANDLERS = {
     QAAction.REMOVE_ACTING_PREFIX: handle_remove_acting_prefix,
     QAAction.NOT_FOUND: handle_not_found,
     QAAction._RECORD_FILTERED_OUT: handle_record_filtered_out,
+    QAAction.DELETE_RECORD: handle_delete_record,
+    QAAction.APPEND_FROM_CSV: handle_append_from_csv,
 }
 
 
@@ -961,6 +1158,7 @@ def apply_qa_edits(
     """Apply QA edits from the QA DataFrame to the Golden DataFrame."""
     df_modified = df_golden.copy()
     feedback_source_name = pathlib.Path(qa_filename).name
+    base_input_dir = pathlib.Path(qa_filename).parent
 
     expected_qa_cols = ["Row(s)", "Column", "feedback"]
     for col in expected_qa_cols:
@@ -973,6 +1171,57 @@ def apply_qa_edits(
     )
 
     for _, qa_row in df_qa.iterrows():
+        # Get feedback text first to determine action
+        feedback_val = qa_row.get("feedback")
+        if pd.isna(feedback_val):
+            continue
+
+        feedback_text = str(feedback_val)
+
+        # Detect the rule/action
+        action, match = detect_rule(feedback_text)
+
+        # Handle DataFrame-level actions (DELETE_RECORD, APPEND_FROM_CSV)
+        if action == QAAction.DELETE_RECORD:
+            if match:
+                record_id_to_delete = match.group("record_id_to_delete")
+                df_modified = handle_delete_record(
+                    df_modified,
+                    record_id_to_delete,
+                    feedback_source_name,
+                    changed_by_user,
+                    feedback_text,
+                    log_change,
+                    QAAction,
+                )
+            else:
+                print(
+                    f"Error: DELETE_RECORD action but no record ID found in "
+                    f"feedback: '{feedback_text}'"
+                )
+                continue  # Skip to next QA row
+
+        elif action == QAAction.APPEND_FROM_CSV:
+            if match:
+                csv_path_to_add = match.group("csv_path_to_add")
+                df_modified = handle_append_from_csv(
+                    df_modified,
+                    csv_path_to_add,
+                    base_input_dir,
+                    feedback_source_name,
+                    changed_by_user,
+                    feedback_text,
+                    log_change,
+                    QAAction,
+                )
+            else:
+                print(
+                    f"Error: APPEND_FROM_CSV action but no CSV path found in "
+                    f"feedback: '{feedback_text}'"
+                )
+                continue  # Skip to next QA row
+
+        # For all other actions, use the existing row-specific processing
         _process_single_qa_row(
             qa_row,
             df_modified,

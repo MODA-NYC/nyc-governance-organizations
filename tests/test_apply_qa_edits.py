@@ -3,6 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+import csv
 from enum import Enum
 
 import pandas as pd
@@ -10,6 +11,16 @@ import pytest
 from pandas.testing import assert_frame_equal
 
 from src import process_golden_dataset
+
+# Sample columns for consistent DataFrames, defined globally for the test module
+SAMPLE_COLS = [
+    "RecordID",
+    "Name",
+    "Description",
+    "URL",
+    "Acronym",
+    "AlternateOrFormerNames",
+]
 
 
 # Fixture to clear changelog_entries before each test
@@ -826,10 +837,10 @@ def test_global_character_fixing(clear_changelog):
             "Mixed™Issues¬†Here",
             "Normal Alternative Name",
         ],
-        "PrincipalOfficersName": [
+        "PrincipalOfficerName": [
             "John Doe",  # Clean
             "Jane¬†Smith",  # With ¬†
-            "Bob\u00a0Jones",  # With NBSP
+            "Bob\u00a0Jones",  # With NBSP - Corrected to use actual unicode char
             "Alice√É¬©Brown",  # With mojibake
             "",
             None,
@@ -922,13 +933,13 @@ def test_global_character_fixing(clear_changelog):
         df_result.loc[7, "AlternateOrFormerNames"] == "MixedTMIssues Here"
     )  # ™ normalized to TM, ¬† fixed
 
-    # Test PrincipalOfficersName column fixes
-    assert df_result.loc[0, "PrincipalOfficersName"] == "John Doe"  # No change
-    assert df_result.loc[1, "PrincipalOfficersName"] == "Jane Smith"  # ¬† replaced
-    assert df_result.loc[2, "PrincipalOfficersName"] == "Bob Jones"  # NBSP replaced
-    assert df_result.loc[3, "PrincipalOfficersName"] == "AliceéBrown"  # Mojibake fixed
+    # Test PrincipalOfficerName column fixes
+    assert df_result.loc[0, "PrincipalOfficerName"] == "John Doe"  # No change
+    assert df_result.loc[1, "PrincipalOfficerName"] == "Jane Smith"  # ¬† replaced
+    assert df_result.loc[2, "PrincipalOfficerName"] == "Bob Jones"  # NBSP replaced
+    assert df_result.loc[3, "PrincipalOfficerName"] == "AliceéBrown"  # Mojibake fixed
     assert (
-        df_result.loc[7, "PrincipalOfficersName"] == "Officer Name"
+        df_result.loc[7, "PrincipalOfficerName"] == "Officer Name"
     )  # Whitespace stripped
 
     # Test Notes column fixes
@@ -967,7 +978,7 @@ def test_global_character_fixing(clear_changelog):
             "Description",
             "AlternateOrFormerNames",
             "AlternateOrFormerAcronyms",
-            "PrincipalOfficersName",
+            "PrincipalOfficerName",
             "PrincipalOfficerTitle",
             "Notes",
         ]
@@ -990,3 +1001,325 @@ def test_global_character_fixing(clear_changelog):
     ]
     assert len(description_cortez_change) == 1
     assert "Cortés-Vázquez" in description_cortez_change.iloc[0]["new_value"]
+
+
+# --- Tests for handle_delete_record ---
+
+
+def test_delete_existing_record(clear_changelog):
+    df_golden = create_sample_golden_df()
+    record_id_to_delete = "NYC_GOID_002"
+
+    qa_data = {
+        "Row(s)": [
+            record_id_to_delete
+        ],  # Though not directly used by delete rule parsing
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Delete RecordID {record_id_to_delete}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_delete", "qa_delete_ops.csv"
+    )
+
+    # Assert record is removed
+    assert record_id_to_delete not in processed_df["RecordID"].values
+    assert len(processed_df) == len(df_golden) - 1
+
+    # Assert changelog
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == 1
+    log_entry = changelog_df.iloc[0]
+    assert log_entry["record_id"] == record_id_to_delete
+    assert log_entry["column_changed"] == "_ROW_DELETED"
+    assert log_entry["old_value"] == "Org B"  # Name of NYC_GOID_002
+    assert log_entry["new_value"] == "N/A"
+    assert log_entry["feedback_source"] == "qa_delete_ops.csv"
+    assert log_entry["notes"] == f"Delete RecordID {record_id_to_delete}"
+    assert log_entry["changed_by"] == "test_user_delete"
+    expected_action = process_golden_dataset.QAAction.DELETE_RECORD.value
+    assert log_entry["RuleAction"] == expected_action
+
+
+def test_delete_nonexistent_record(clear_changelog):
+    df_golden = create_sample_golden_df()
+    non_existent_record_id = "NYC_GOID_999"
+
+    qa_data = {
+        "Row(s)": [non_existent_record_id],
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Delete RecordID {non_existent_record_id}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+
+    initial_df_copy = df_golden.copy()
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_delete_fail", "qa_delete_fail.csv"
+    )
+
+    # Assert DataFrame remains unchanged
+    assert_frame_equal(processed_df, initial_df_copy)
+
+    # Assert changelog
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == 1
+    log_entry = changelog_df.iloc[0]
+    assert log_entry["record_id"] == non_existent_record_id
+    assert log_entry["column_changed"] == "_ROW_DELETE_FAILED"
+    assert log_entry["old_value"] == "Record Not Found"
+    assert log_entry["feedback_source"] == "qa_delete_fail.csv"
+    expected_notes = (
+        f"Record not found for deletion. "
+        f"Feedback: Delete RecordID {non_existent_record_id}"
+    )
+    assert log_entry["notes"] == expected_notes
+    assert log_entry["changed_by"] == "test_user_delete_fail"
+    # The rule action is still delete, but it failed
+    expected_action = process_golden_dataset.QAAction.DELETE_RECORD.value
+    assert log_entry["RuleAction"] == expected_action
+
+
+# --- Tests for handle_append_from_csv ---
+
+
+def test_append_from_valid_csv(clear_changelog, tmp_path):
+    df_golden = create_sample_golden_df()
+
+    # Create a temporary CSV file with new records
+    append_csv_filename = "test_append_data.csv"
+    append_csv_path = tmp_path / append_csv_filename
+
+    new_records_data = [
+        ["NYC_GOID_004", "Org D", "Desc D", "url_d", "D", "D1"],
+        ["NYC_GOID_005", "Org E", "Desc E", "url_e", "E", "E1;E2"],
+    ]
+    with open(append_csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(SAMPLE_COLS)  # Header
+        writer.writerows(new_records_data)
+
+    qa_data = {
+        "Row(s)": ["_SYSTEM_ACTION"],
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Append records from CSV {append_csv_filename}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+
+    # qa_filename path determines base_input_dir
+    dummy_qa_filepath = tmp_path / "qa_append_ops.csv"
+
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_append", str(dummy_qa_filepath)
+    )
+
+    # Assert new records are present
+    assert len(processed_df) == len(df_golden) + len(new_records_data)
+    assert "NYC_GOID_004" in processed_df["RecordID"].values
+    assert "NYC_GOID_005" in processed_df["RecordID"].values
+    org_d_name_series = processed_df[processed_df["RecordID"] == "NYC_GOID_004"]["Name"]
+    assert org_d_name_series.iloc[0] == "Org D"
+
+    # Assert changelog
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == len(new_records_data)
+
+    log_entry_d = changelog_df[changelog_df["record_id"] == "NYC_GOID_004"].iloc[0]
+    assert log_entry_d["column_changed"] == "_ROW_ADDED"
+    assert log_entry_d["old_value"] == "N/A"
+    assert log_entry_d["new_value"] == "Org D"
+    assert log_entry_d["feedback_source"] == "qa_append_ops.csv"
+    assert f"Append records from CSV {append_csv_filename}" in log_entry_d["notes"]
+    assert log_entry_d["changed_by"] == "test_user_append"
+    expected_action_append = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    assert log_entry_d["RuleAction"] == expected_action_append
+
+    log_entry_e = changelog_df[changelog_df["record_id"] == "NYC_GOID_005"].iloc[0]
+    assert log_entry_e["column_changed"] == "_ROW_ADDED"
+    assert log_entry_e["new_value"] == "Org E"
+    assert log_entry_e["RuleAction"] == expected_action_append
+
+
+def test_append_from_nonexistent_csv(clear_changelog, tmp_path):
+    df_golden = create_sample_golden_df()
+    non_existent_csv = "non_existent_file.csv"
+
+    qa_data = {
+        "Row(s)": ["_SYSTEM_ACTION"],
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Append records from CSV {non_existent_csv}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+    dummy_qa_filepath = tmp_path / "qa_append_nonexistent.csv"
+
+    initial_df_copy = df_golden.copy()
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_append_fail", str(dummy_qa_filepath)
+    )
+
+    # Assert DataFrame remains unchanged
+    assert_frame_equal(processed_df, initial_df_copy)
+
+    # Assert changelog
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == 1
+    log_entry = changelog_df.iloc[0]
+    assert log_entry["record_id"] == "_APPEND_ERROR"
+    assert log_entry["column_changed"] == "_APPEND_FROM_CSV_FAILED"
+    assert log_entry["old_value"] == "File Not Found"
+    expected_new_value_path_str = str(tmp_path / non_existent_csv)
+    assert expected_new_value_path_str in log_entry["new_value"]  # Path is logged
+    assert log_entry["feedback_source"] == "qa_append_nonexistent.csv"
+    expected_notes = f"Failed to append from {non_existent_csv}: " f"File not found"
+    assert expected_notes in log_entry["notes"]
+    assert log_entry["changed_by"] == "test_user_append_fail"
+    expected_action_append_fail = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    assert log_entry["RuleAction"] == expected_action_append_fail
+
+
+def test_append_from_empty_csv(clear_changelog, tmp_path):
+    df_golden = create_sample_golden_df()
+
+    empty_csv_filename = "empty_append_data.csv"
+    empty_csv_path = tmp_path / empty_csv_filename
+
+    # Create an empty CSV file (can even be just a header or completely empty)
+    with open(empty_csv_path, "w", newline=""):  # Ensuring 'as f' is removed
+        pass  # No need to create a csv.writer if we're not writing anything
+        # writer = csv.writer(f) # Original line causing F841
+        # writer.writerow(SAMPLE_COLS) # Writing header means not strictly "empty"
+        # for pandas read
+        # but the function checks if df_new_records is empty.
+        # An empty file or file with only header will result
+        # in empty df_new_records.
+
+    qa_data = {
+        "Row(s)": ["_SYSTEM_ACTION"],
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Append records from CSV {empty_csv_filename}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+    dummy_qa_filepath = tmp_path / "qa_append_empty.csv"
+
+    initial_df_copy = df_golden.copy()
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_append_empty", str(dummy_qa_filepath)
+    )
+
+    # Assert DataFrame remains unchanged
+    assert_frame_equal(processed_df, initial_df_copy)
+
+    # Assert changelog - Expect 1 entry for the load failure
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == 1
+    log_entry = changelog_df.iloc[0]
+    assert log_entry["record_id"] == "_APPEND_ERROR"
+    assert log_entry["column_changed"] == "_APPEND_FROM_CSV_FAILED"
+    assert log_entry["old_value"] == "Load Error"
+    # The specific error message might vary slightly, so check for a key part
+    assert (
+        "No columns to parse from file" in log_entry["new_value"]
+        or "empty file" in log_entry["new_value"].lower()
+    )  # Depending on pandas version / OS
+    assert log_entry["feedback_source"] == "qa_append_empty.csv"
+    assert f"Failed to append from {empty_csv_filename}:" in log_entry["notes"]
+    assert log_entry["changed_by"] == "test_user_append_empty"
+    expected_action_val = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    assert log_entry["RuleAction"] == expected_action_val
+
+
+def test_append_csv_with_schema_mismatch(clear_changelog, tmp_path, capsys):
+    df_golden = create_sample_golden_df()  # Has SAMPLE_COLS
+
+    # Create a temporary CSV file with mismatched schema
+    # Missing 'URL', Extra 'NewColumn'
+    mismatch_cols = [
+        "RecordID",
+        "Name",
+        "Description",
+        "Acronym",
+        "AlternateOrFormerNames",
+        "ExtraColumn",
+    ]
+    append_csv_filename = "test_append_mismatch.csv"
+    append_csv_path = tmp_path / append_csv_filename
+
+    new_records_data = [
+        ["NYC_GOID_006", "Org F", "Desc F", "F", "F1", "ExtraF"],
+    ]
+    with open(append_csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(mismatch_cols)  # Header
+        writer.writerows(new_records_data)
+
+    qa_data = {
+        "Row(s)": ["_SYSTEM_ACTION"],
+        "Column": ["_SYSTEM_ACTION"],
+        "feedback": [f"Append records from CSV {append_csv_filename}"],
+    }
+    df_qa = pd.DataFrame(qa_data)
+    dummy_qa_filepath = tmp_path / "qa_append_mismatch_ops.csv"
+
+    processed_df = process_golden_dataset.apply_qa_edits(
+        df_golden.copy(), df_qa, "test_user_append_mismatch", str(dummy_qa_filepath)
+    )
+
+    captured = capsys.readouterr()
+
+    # Assert new record is present
+    assert len(processed_df) == len(df_golden) + len(new_records_data)
+    assert "NYC_GOID_006" in processed_df["RecordID"].values
+
+    # Check resulting schema and values
+    assert "ExtraColumn" in processed_df.columns
+    df_filtered_original = processed_df[processed_df["RecordID"] == "NYC_GOID_001"]
+    col_val = df_filtered_original["ExtraColumn"].iloc[0]
+    assert pd.isna(col_val)  # Original rows get NaN for ExtraColumn
+
+    df_filtered_new = processed_df[processed_df["RecordID"] == "NYC_GOID_006"]
+    new_row_extra_col_val = df_filtered_new["ExtraColumn"].iloc[0]
+    assert new_row_extra_col_val == "ExtraF"
+
+    assert "URL" in processed_df.columns  # Original column still there
+    new_row_url_val = df_filtered_new["URL"].iloc[0]
+    assert pd.isna(new_row_url_val)  # New row gets NaN for URL as it was missing
+
+    # Assert changelog for the appended row
+    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    assert len(changelog_df) == 1
+    log_entry_f = changelog_df[changelog_df["record_id"] == "NYC_GOID_006"].iloc[0]
+    assert log_entry_f["column_changed"] == "_ROW_ADDED"
+    assert log_entry_f["new_value"] == "Org F"  # Name of NYC_GOID_006
+    expected_action_mismatch = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    assert log_entry_f["RuleAction"] == expected_action_mismatch
+
+    # Assert warnings were printed (basic check)
+    assert (
+        "Warning: New CSV missing columns present in main dataset: {'URL'}"
+        in captured.out
+    )
+    assert (
+        "Warning: New CSV has extra columns not in main dataset: {'ExtraColumn'}"
+        in captured.out
+    )
+
+
+def create_sample_golden_df():
+    """Creates a sample golden DataFrame for testing."""
+    data = {
+        "RecordID": ["NYC_GOID_001", "NYC_GOID_002", "NYC_GOID_003"],
+        "Name": ["Org A", "Org B", "Org C"],
+        "Description": ["Desc A", "Desc B", "Desc C"],
+        "URL": ["url_a", "url_b", "url_c"],
+        "Acronym": ["A", "B", "C"],
+        "AlternateOrFormerNames": ["A1;A2", "B1", ""],
+    }
+    return pd.DataFrame(data, columns=SAMPLE_COLS)
+
+
+def get_changelog_df():
+    """Converts the global changelog_entries list to a DataFrame."""
+    changelog_columns = process_golden_dataset.CHANGELOG_COLUMNS
+    return pd.DataFrame(
+        process_golden_dataset.changelog_entries, columns=changelog_columns
+    )
