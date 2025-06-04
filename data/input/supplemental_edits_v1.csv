@@ -1,4 +1,5 @@
 Row(s),Column,feedback
+_SYSTEM_ACTION,_SYSTEM_ACTION,Append records from CSV data/input/community_board_new_row_additions.csv
 NYC_GOID_000026,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
 NYC_GOID_000027,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
 NYC_GOID_000028,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
@@ -602,4 +603,3 @@ NYC_GOID_300403,InOrgChart,Set to "TRUE"
 NYC_GOID_300403,ReportsTo,Set to "Office of the Borough President of Queens"
 NYC_GOID_300309,InOrgChart,Set to "TRUE"
 NYC_GOID_300309,ReportsTo,Set to "Office of the Borough President of Brooklyn"
-_SYSTEM_ACTION,_SYSTEM_ACTION,Append records from CSV data/input/community_board_new_row_additions.csv
