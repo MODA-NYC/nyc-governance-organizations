@@ -85,18 +85,28 @@ def compare_datasets(  # noqa: C901
     # --- Identify Common RecordIDs / record_ids ---
     target_original_id_col = "RecordID"
     target_processed_id_col = "record_id"
+    target_original_name_col = "Name"  # Expected name column in original
+    target_processed_name_col = "name"  # Expected name column in processed
 
     actual_original_id_col = find_column_name(
         df_original_filtered.columns.tolist(), target_original_id_col, original_csv_path
     )
     if not actual_original_id_col:
         return
+    actual_original_name_col = find_column_name(  # Find name column in original
+        df_original_filtered.columns.tolist(),
+        target_original_name_col,
+        original_csv_path,
+    )
 
     actual_processed_id_col = find_column_name(
         df_processed.columns.tolist(), target_processed_id_col, processed_csv_path
     )
     if not actual_processed_id_col:
         return
+    actual_processed_name_col = find_column_name(  # Find name column in processed
+        df_processed.columns.tolist(), target_processed_name_col, processed_csv_path
+    )
 
     try:
         original_ids = set(
@@ -143,20 +153,41 @@ def compare_datasets(  # noqa: C901
     # --- Create Report DataFrame ---
     report_data = []
     for record_id_val in original_not_in_processed_ids:
+        name_to_add = None
+        if actual_original_name_col and actual_original_id_col:
+            name_series = df_original_filtered.loc[
+                df_original_filtered[actual_original_id_col] == record_id_val,
+                actual_original_name_col,
+            ]
+            if not name_series.empty:
+                name_to_add = name_series.iloc[0]
         report_data.append(
-            {"Status": "Original_RecordID_Not_In_Processed", "RecordID": record_id_val}
+            {
+                "Status": "Original_RecordID_Not_In_Processed",
+                "RecordID": record_id_val,
+                "Name": name_to_add,
+            }
         )
 
     for record_id_val in processed_not_in_original_ids:
+        name_to_add = None
+        if actual_processed_name_col and actual_processed_id_col:
+            name_series = df_processed.loc[
+                df_processed[actual_processed_id_col] == record_id_val,
+                actual_processed_name_col,
+            ]
+            if not name_series.empty:
+                name_to_add = name_series.iloc[0]
         report_data.append(
             {
                 "Status": "Processed_RecordID_Not_In_Original_Filtered",
                 "RecordID": record_id_val,
+                "Name": name_to_add,
             }
         )
 
     if not report_data:  # If both lists are empty
-        report_df = pd.DataFrame(columns=["Status", "RecordID"])
+        report_df = pd.DataFrame(columns=["Status", "RecordID", "Name"])
         print("\nNo discrepancies found between the datasets in terms of RecordIDs.")
     else:
         report_df = pd.DataFrame(report_data)
