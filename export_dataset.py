@@ -76,6 +76,38 @@ def main():
         df.rename(columns={old_name: new_name}, inplace=True)
         print(f"Renamed column '{old_name}' to '{new_name}'.")
 
+    # Filter by InOrgChart column
+    in_org_chart_col = "InOrgChart"
+    if in_org_chart_col in df.columns:
+        print(f"Filtering by column '{in_org_chart_col}'.")
+        rows_before_filter = len(df)
+        # Convert to string, lowercase, then map to boolean
+        # Handles actual booleans, strings 'True'/'False' (case-insensitive),
+        # and treats NaN/empty/other as False.
+        df[in_org_chart_col] = (
+            df[in_org_chart_col]
+            .astype(str)
+            .str.lower()
+            .map({"true": True})
+            .fillna(False)
+        )
+        df = df[df[in_org_chart_col]].copy()
+        rows_after_filter = len(df)
+        print(
+            f"Kept {rows_after_filter} rows out of {rows_before_filter} "
+            f"after filtering by '{in_org_chart_col}' == True."
+        )
+        if rows_after_filter == 0:
+            print(
+                f"Warning: No rows remained after filtering by '{in_org_chart_col}'. "
+                "Output CSV will be empty or have only headers."
+            )
+    else:
+        print(
+            f"Warning: Column '{in_org_chart_col}' not found in input CSV. "
+            "Proceeding without filtering by this column."
+        )
+
     # Define and Verify Hardcoded Column Selection and Order
     required_output_columns = [
         "RecordID",
