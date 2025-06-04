@@ -26,6 +26,7 @@ data/output/*
 !data/output/.gitkeep
 data/audit/*
 !data/audit/.gitkeep
+data/input/community_board_new_row_additions_backup.csv
 # data/output/*.csv # Covered by data/output/*
 # data/audit/*.csv # Covered by data/audit/*
 
