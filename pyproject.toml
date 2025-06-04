@@ -26,6 +26,7 @@ dependencies = [
     "pandas>=2.0",
     "python-dateutil",
     "ftfy>=6.0",
+    "nameparser",
 ]
 
 [project.optional-dependencies]

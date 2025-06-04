@@ -31,6 +31,8 @@ class QAAction(Enum):
     APPEND_FROM_CSV = "append_from_csv"
     NAME_SPLIT_SUCCESS = "name_split_success"
     NAME_SPLIT_REVIEW_NEEDED = "name_split_review_needed"
+    NAME_PARSE_SUCCESS = "name_parse_success"
+    NAME_PARSE_REVIEW_NEEDED = "name_parse_review_needed"
 
 
 @dataclass
@@ -707,6 +709,8 @@ ACTION_HANDLERS = {
     QAAction._RECORD_FILTERED_OUT: handle_record_filtered_out,
     QAAction.DELETE_RECORD: handle_delete_record,
     QAAction.APPEND_FROM_CSV: handle_append_from_csv,
+    QAAction.NAME_PARSE_SUCCESS: handle_policy_query,  # Placeholder handler
+    QAAction.NAME_PARSE_REVIEW_NEEDED: handle_policy_query,  # Placeholder handler
 }
 
 
@@ -1599,6 +1603,197 @@ def populate_split_officer_names(
     return df_processed
 
 
+def populate_officer_name_parts(  # noqa: C901
+    df_input: pd.DataFrame,
+    changed_by_user: str,
+    log_change_func: callable,
+    qa_action_enum: type[Enum],
+) -> pd.DataFrame:
+    """
+    Populates detailed name parts from PrincipalOfficerName.
+
+    Populates:
+    - PrincipalOfficerFullName (copy of original)
+    - PrincipalOfficerGivenName
+    - PrincipalOfficerMiddleNameOrInitial
+    - PrincipalOfficerFamilyName
+    - PrincipalOfficerSuffix
+
+    Args:
+        df_input: Input DataFrame to process
+        changed_by_user: String identifying who made the changes
+        log_change_func: Function to call for logging changes
+        qa_action_enum: The QAAction enum class for action types
+
+    Returns:
+        Processed DataFrame with populated name fields
+    """
+    try:
+        from nameparser import HumanName
+    except ImportError:
+        print(
+            "Error: nameparser library not installed. "
+            "Install with: pip install nameparser"
+        )
+        return df_input
+
+    df_processed = df_input.copy()
+    print("Populating officer name parts...")
+
+    # Ensure all required columns exist
+    required_name_cols = [
+        "PrincipalOfficerFullName",
+        "PrincipalOfficerGivenName",
+        "PrincipalOfficerMiddleNameOrInitial",
+        "PrincipalOfficerFamilyName",
+        "PrincipalOfficerSuffix",
+    ]
+
+    for col in required_name_cols:
+        if col not in df_processed.columns:
+            print(f"Warning: Column '{col}' not found. Adding it with empty strings.")
+            df_processed[col] = ""
+
+    num_successful_parses = 0
+    num_review_needed = 0
+
+    for index, row in df_processed.iterrows():
+        record_id = str(row["RecordID"])
+        original_full_name = row.get("PrincipalOfficerName")
+
+        # Step 1: Always populate PrincipalOfficerFullName
+        old_full_name_value = row.get("PrincipalOfficerFullName", "")
+
+        # Check if original_full_name is a scalar value that pd.notna can handle
+        is_scalar = not isinstance(original_full_name, list | dict | set | tuple)
+
+        if is_scalar and pd.notna(original_full_name):
+            df_processed.loc[index, "PrincipalOfficerFullName"] = original_full_name
+
+            # Log the copy action
+            if str(original_full_name) != str(old_full_name_value):
+                log_change_func(
+                    record_id=record_id,
+                    column_changed="PrincipalOfficerFullName",
+                    old_value=old_full_name_value,
+                    new_value=original_full_name,
+                    feedback_source="System_NameParseRule",
+                    notes="Copied from PrincipalOfficerName",
+                    changed_by=changed_by_user,
+                    rule_action=qa_action_enum.NAME_PARSE_SUCCESS.value,
+                )
+
+        # Step 2: Attempt to parse the name
+        if (
+            is_scalar
+            and pd.notna(original_full_name)
+            and isinstance(original_full_name, str)
+            and original_full_name.strip()
+        ):
+            try:
+                # Parse the name using nameparser
+                parsed_name = HumanName(original_full_name.strip())
+
+                # Map parsed components to our fields
+                name_parts = {
+                    "PrincipalOfficerGivenName": parsed_name.first,
+                    "PrincipalOfficerMiddleNameOrInitial": parsed_name.middle,
+                    "PrincipalOfficerFamilyName": parsed_name.last,
+                    "PrincipalOfficerSuffix": parsed_name.suffix,
+                }
+
+                # Check if we have meaningful parse results
+                # (at least first and last name should be present)
+                if parsed_name.first and parsed_name.last:
+                    # Successfully parsed - update fields
+                    for field_name, parsed_value in name_parts.items():
+                        old_value = row.get(field_name, "")
+                        new_value = parsed_value.strip() if parsed_value else ""
+
+                        if new_value and new_value != old_value:
+                            df_processed.loc[index, field_name] = new_value
+
+                            # Log each field update
+                            log_change_func(
+                                record_id=record_id,
+                                column_changed=field_name,
+                                old_value=old_value,
+                                new_value=new_value,
+                                feedback_source="System_NameParseRule",
+                                notes=f"Parsed from: '{original_full_name}'",
+                                changed_by=changed_by_user,
+                                rule_action=qa_action_enum.NAME_PARSE_SUCCESS.value,
+                            )
+
+                    num_successful_parses += 1
+
+                else:
+                    # Parse didn't yield usable results
+                    log_change_func(
+                        record_id=record_id,
+                        column_changed="PrincipalOfficerName_ParseReview",
+                        old_value=original_full_name,
+                        new_value="N/A",
+                        feedback_source="System_NameParseRule",
+                        notes=(
+                            f"PrincipalOfficerName '{original_full_name}' could not be "
+                            "confidently parsed into Given/Middle/Family/Suffix parts. "
+                            "Manual review required."
+                        ),
+                        changed_by=changed_by_user,
+                        rule_action=qa_action_enum.NAME_PARSE_REVIEW_NEEDED.value,
+                    )
+                    num_review_needed += 1
+
+            except Exception as e:
+                # Error during parsing
+                log_change_func(
+                    record_id=record_id,
+                    column_changed="PrincipalOfficerName_ParseReview",
+                    old_value=original_full_name,
+                    new_value="N/A",
+                    feedback_source="System_NameParseRule",
+                    notes=(
+                        f"Error parsing name '{original_full_name}': {str(e)}. "
+                        "Manual review needed."
+                    ),
+                    changed_by=changed_by_user,
+                    rule_action=qa_action_enum.NAME_PARSE_REVIEW_NEEDED.value,
+                )
+                num_review_needed += 1
+
+        else:
+            # Name is empty, None, or not a string
+            if not is_scalar:
+                display_value = f"Invalid type: {type(original_full_name).__name__}"
+            elif pd.notna(original_full_name):
+                display_value = original_full_name
+            else:
+                display_value = "None/Empty"
+
+            log_change_func(
+                record_id=record_id,
+                column_changed="PrincipalOfficerName_ParseReview",
+                old_value=display_value,
+                new_value="N/A",
+                feedback_source="System_NameParseRule",
+                notes=(
+                    f"PrincipalOfficerName is empty or invalid ({display_value}). "
+                    "Cannot parse into name parts."
+                ),
+                changed_by=changed_by_user,
+                rule_action=qa_action_enum.NAME_PARSE_REVIEW_NEEDED.value,
+            )
+            num_review_needed += 1
+
+    print(
+        f"Name parsing complete. Successful parses: {num_successful_parses}, "
+        f"Needs review: {num_review_needed}"
+    )
+
+    return df_processed
+
+
 def _parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -1699,8 +1894,8 @@ def _apply_transformations(
         QAAction,
     )
 
-    print("Populating PrincipalOfficerGivenName and PrincipalOfficerFamilyName...")
-    df_transformed = populate_split_officer_names(
+    print("Populating detailed officer name parts...")
+    df_transformed = populate_officer_name_parts(
         df_transformed, changed_by, log_change, QAAction
     )
 
