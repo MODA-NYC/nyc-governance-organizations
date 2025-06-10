@@ -13,6 +13,14 @@ from pathlib import Path
 
 import pandas as pd
 
+# This config maps a SourceSystem to its column names in the golden and source files.
+SOURCE_CONFIG = {
+    "Ops": {"golden_col": "Name - Ops", "source_col": "Agency Name"},
+    "CPO": {"golden_col": "Name - CPO", "source_col": "Name - CPO"},
+    "Greenbook": {"golden_col": "Name - Greenbook", "source_col": "Name - Greenbook"},
+    # If source_col is the same as golden_col, it's good practice to define it.
+}
+
 
 def generate_crosswalk(input_path: Path, output_path: Path):
     """
@@ -39,35 +47,43 @@ def generate_crosswalk(input_path: Path, output_path: Path):
         )
         sys.exit(1)
 
-    # Identify all columns that represent source names
-    name_source_cols = [col for col in df.columns if col.startswith("Name - ")]
+    all_source_dfs = []
 
-    if not name_source_cols:
+    print("Processing sources based on SOURCE_CONFIG...")
+    for source_system, config in SOURCE_CONFIG.items():
+        golden_col = config["golden_col"]
+        source_col = config["source_col"]
+
+        if golden_col not in df.columns:
+            print(
+                f"⚠️ Warning: Golden column '{golden_col}' for source "
+                f"'{source_system}' not found in input file. Skipping."
+            )
+            continue
+
+        # Create a temporary DataFrame for the current source
+        df_source = df[[record_id_col, golden_col]].copy()
+        df_source.dropna(subset=[golden_col], inplace=True)
+        df_source = df_source[df_source[golden_col].str.strip() != ""]
+
+        if df_source.empty:
+            continue
+
+        df_source["SourceSystem"] = source_system
+        df_source["SourceColumn"] = source_col
+        df_source.rename(columns={golden_col: "SourceName"}, inplace=True)
+
+        all_source_dfs.append(df_source)
+
+    if not all_source_dfs:
         print(
-            "⚠️ Warning: No source name columns (e.g., 'Name - CPO') found.",
-            file=sys.stderr,
+            "⚠️ Warning: No source data found based on SOURCE_CONFIG. "
+            "No output generated."
         )
         return
 
-    print(f"Found {len(name_source_cols)} source name columns to process.")
-
-    # Use pandas.melt to transform from wide to long format
-    df_long = df.melt(
-        id_vars=[record_id_col],
-        value_vars=name_source_cols,
-        var_name="SourceColumn",
-        value_name="SourceName",
-    )
-
-    # Create the SourceSystem column from SourceColumn
-    df_long["SourceSystem"] = df_long["SourceColumn"].str.replace(
-        "Name - ", "", regex=False
-    )
-
-    # Drop rows where the SourceName is missing, as they are not useful
-    df_long.dropna(subset=["SourceName"], inplace=True)
-    # Also drop rows where SourceName is an empty string
-    df_long = df_long[df_long["SourceName"].str.strip() != ""]
+    # Concatenate all the individual source DataFrames into one
+    df_long = pd.concat(all_source_dfs, ignore_index=True)
 
     # Rename the record ID column to a consistent name
     df_long.rename(columns={record_id_col: "RecordID"}, inplace=True)
