@@ -55,12 +55,12 @@ def generate_crosswalk(input_path: Path, output_path: Path):
     df_long = df.melt(
         id_vars=[record_id_col],
         value_vars=name_source_cols,
-        var_name="SourceSystem",
+        var_name="SourceColumn",
         value_name="SourceName",
     )
 
-    # Clean up the SourceSystem column by removing the prefix
-    df_long["SourceSystem"] = df_long["SourceSystem"].str.replace(
+    # Create the SourceSystem column from SourceColumn
+    df_long["SourceSystem"] = df_long["SourceColumn"].str.replace(
         "Name - ", "", regex=False
     )
 
@@ -71,6 +71,9 @@ def generate_crosswalk(input_path: Path, output_path: Path):
 
     # Rename the record ID column to a consistent name
     df_long.rename(columns={record_id_col: "RecordID"}, inplace=True)
+
+    # Reorder columns for the final output
+    df_long = df_long[["RecordID", "SourceSystem", "SourceColumn", "SourceName"]]
 
     print(f"Generated a crosswalk with {len(df_long)} entries.")
 

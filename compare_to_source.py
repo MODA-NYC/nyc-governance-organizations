@@ -14,17 +14,13 @@ from pathlib import Path
 import pandas as pd
 
 
-def compare_and_suggest(
+def _load_and_validate_data(
     golden_path: Path,
     crosswalk_path: Path,
     source_file_path: Path,
     source_name: str,
-    source_name_col: str,
-    output_path: Path,
-):
-    """
-    Compares data and generates a suggested edits report.
-    """
+) -> tuple[pd.DataFrame, pd.DataFrame, str]:
+    """Loads all data files and validates them."""
     try:
         print(f"Loading golden dataset from: {golden_path}")
         pd.read_csv(golden_path, dtype=str)
@@ -39,8 +35,6 @@ def compare_and_suggest(
         print(f"❌ Error loading files: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # --- 1. Prepare Data Sets ---
-    # Filter crosswalk for the specific source we are comparing against
     df_crosswalk_filtered = df_crosswalk[df_crosswalk["SourceSystem"] == source_name]
     if df_crosswalk_filtered.empty:
         print(
@@ -48,33 +42,43 @@ def compare_and_suggest(
             "in the crosswalk file. Cannot perform comparison.",
             file=sys.stderr,
         )
-        return
+        sys.exit(0)
 
-    # Get the set of known names for this source from our crosswalk
-    known_source_names = set(df_crosswalk_filtered["SourceName"])
-
-    # Get the set of current names from the new source file
-    if source_name_col not in df_source.columns:
+    unique_source_columns = df_crosswalk_filtered["SourceColumn"].unique()
+    if len(unique_source_columns) == 0:
         print(
-            f"❌ Error: Column '{source_name_col}' not found in source file "
-            f"'{source_file_path}'.",
+            f"❌ Error: No 'SourceColumn' found for source '{source_name}' "
+            "in crosswalk.",
             file=sys.stderr,
         )
         sys.exit(1)
-    current_source_names = set(df_source[source_name_col].dropna())
+    if len(unique_source_columns) > 1:
+        print(
+            f"❌ Error: Found multiple differing source columns for '{source_name}' "
+            f"in crosswalk: {list(unique_source_columns)}. Aborting.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
-    # --- 2. Perform Comparisons ---
-    print(
-        f"Comparing {len(known_source_names)} known records for '{source_name}' "
-        f"against {len(current_source_names)} records in the new source file."
-    )
+    source_name_col = unique_source_columns[0]
+    print(f"ℹ️ Determined source column from crosswalk: '{source_name_col}'")
 
-    new_names = sorted(list(current_source_names - known_source_names))
-    missing_names = sorted(list(known_source_names - current_source_names))
+    if source_name_col not in df_source.columns:
+        print(
+            f"❌ Error: Column '{source_name_col}' (from crosswalk) not found "
+            f"in source file '{source_file_path}'.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
+    return df_crosswalk_filtered, df_source, source_name_col
+
+
+def _generate_suggestions(
+    new_names: list, missing_names: list, source_name: str, name_to_id_map: dict
+) -> list[dict]:
+    """Generates a list of suggestion dictionaries."""
     suggestions = []
-
-    # --- 3. Generate Suggestions for New Records ---
     for name in new_names:
         suggestions.append(
             {
@@ -85,9 +89,6 @@ def compare_and_suggest(
             }
         )
 
-    # --- 4. Generate Suggestions for Missing Records ---
-    # Create a mapping from name to RecordID for efficient lookup
-    name_to_id_map = df_crosswalk_filtered.set_index("SourceName")["RecordID"].to_dict()
     for name in missing_names:
         record_id = name_to_id_map.get(name, "UNKNOWN_ID")
         suggestions.append(
@@ -98,12 +99,46 @@ def compare_and_suggest(
                 f"was not found in the new '{source_name}' source file.",
             }
         )
+    return suggestions
 
-    if not suggestions:
+
+def compare_and_suggest(
+    golden_path: Path,
+    crosswalk_path: Path,
+    source_file_path: Path,
+    source_name: str,
+    output_path: Path,
+):
+    """
+    Compares data and generates a suggested edits report.
+    """
+    df_crosswalk_filtered, df_source, source_name_col = _load_and_validate_data(
+        golden_path, crosswalk_path, source_file_path, source_name
+    )
+
+    # --- 1. Prepare Data Sets ---
+    known_source_names: set[str] = set(df_crosswalk_filtered["SourceName"])
+    current_source_names: set[str] = set(df_source[source_name_col].dropna())
+
+    # --- 2. Perform Comparisons ---
+    print(
+        f"Comparing {len(known_source_names)} known records for '{source_name}' "
+        f"against {len(current_source_names)} records in the new source file."
+    )
+
+    new_names = sorted(list(current_source_names - known_source_names))
+    missing_names = sorted(list(known_source_names - current_source_names))
+
+    if not new_names and not missing_names:
         print("✅ No new or missing records found. No suggestions generated.")
         return
 
-    # --- 5. Save the Report ---
+    # --- 3. Generate and Save Suggestions ---
+    name_to_id_map = df_crosswalk_filtered.set_index("SourceName")["RecordID"].to_dict()
+    suggestions = _generate_suggestions(
+        new_names, missing_names, source_name, name_to_id_map
+    )
+
     df_suggestions = pd.DataFrame(
         suggestions, columns=["RecordID", "Column", "Feedback"]
     )
@@ -148,12 +183,6 @@ def main():
         help="Name of the source system being compared (e.g., 'CPO').",
     )
     parser.add_argument(
-        "--source_name_col",
-        type=str,
-        required=True,
-        help="Name of the column in the source file containing organization names.",
-    )
-    parser.add_argument(
         "--output_csv",
         type=Path,
         required=True,
@@ -166,7 +195,6 @@ def main():
         args.crosswalk,
         args.source_file,
         args.source_name,
-        args.source_name_col,
         args.output_csv,
     )
 
