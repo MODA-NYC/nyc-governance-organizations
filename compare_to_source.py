@@ -8,10 +8,47 @@ CSV report of suggested edits for analyst review.
 """
 
 import argparse
+import re
 import sys
+import unicodedata
 from pathlib import Path
 
+import ftfy
 import pandas as pd
+
+
+def normalize_name(name: str | None) -> str:
+    """
+    Cleans and standardizes a string for comparison.
+
+    The process includes:
+    - Handling None or non-string inputs.
+    - Fixing text encoding issues with ftfy.
+    - Normalizing to NFKC Unicode form.
+    - Converting to lowercase.
+    - Removing punctuation.
+    - Collapsing whitespace.
+
+    Args:
+        name: The input string to normalize.
+
+    Returns:
+        A normalized string, or an empty string if input is invalid.
+    """
+    if not isinstance(name, str):
+        return ""
+    # 1. Fix mojibake and encoding issues
+    name = ftfy.fix_text(name)
+    # 2. Apply NFKC Unicode normalization
+    name = unicodedata.normalize("NFKC", name)
+    # 3. Convert to lowercase
+    name = name.lower()
+    # 4. Remove all characters that are not letters, numbers, or whitespace
+    name = re.sub(r"[^\w\s]", "", name)
+    # 5. Collapse multiple whitespace characters into a single space
+    name = re.sub(r"\s+", " ", name)
+    # 6. Strip leading/trailing whitespace
+    return name.strip()
 
 
 def _load_and_validate_data(
@@ -116,18 +153,47 @@ def compare_and_suggest(
         golden_path, crosswalk_path, source_file_path, source_name
     )
 
-    # --- 1. Prepare Data Sets ---
-    known_source_names: set[str] = set(df_crosswalk_filtered["SourceName"])
-    current_source_names: set[str] = set(df_source[source_name_col].dropna())
+    # --- 1. Prepare and Normalize Data Sets ---
+    # Create a mapping from the original source name to its normalized version
+    # for both the crosswalk (known) and the new source file (current).
+    # We filter out any names that become empty after normalization.
+    df_crosswalk_filtered["normalized_name"] = df_crosswalk_filtered[
+        "SourceName"
+    ].apply(normalize_name)
+    known_names_map = df_crosswalk_filtered[
+        df_crosswalk_filtered["normalized_name"] != ""
+    ]
 
-    # --- 2. Perform Comparisons ---
+    df_source["normalized_name"] = df_source[source_name_col].apply(normalize_name)
+    current_names_map = df_source[df_source["normalized_name"] != ""]
+
+    known_normalized_set = set(known_names_map["normalized_name"])
+    current_normalized_set = set(current_names_map["normalized_name"])
+
+    # --- 2. Perform Comparisons on Normalized Names ---
     print(
-        f"Comparing {len(known_source_names)} known records for '{source_name}' "
-        f"against {len(current_source_names)} records in the new source file."
+        f"Comparing {len(known_normalized_set)} known records for '{source_name}' "
+        f"against {len(current_normalized_set)} records in the new source file."
     )
 
-    new_names = sorted(list(current_source_names - known_source_names))
-    missing_names = sorted(list(known_source_names - current_source_names))
+    new_normalized = current_normalized_set - known_normalized_set
+    missing_normalized = known_normalized_set - current_normalized_set
+
+    # Retrieve the *original* names for the new/missing records for reporting.
+    new_names = sorted(
+        list(
+            current_names_map[
+                current_names_map["normalized_name"].isin(new_normalized)
+            ][source_name_col].unique()
+        )
+    )
+    missing_names = sorted(
+        list(
+            known_names_map[
+                known_names_map["normalized_name"].isin(missing_normalized)
+            ]["SourceName"].unique()
+        )
+    )
 
     if not new_names and not missing_names:
         print("✅ No new or missing records found. No suggestions generated.")
