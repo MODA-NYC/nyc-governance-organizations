@@ -119,10 +119,11 @@ def _generate_suggestions(
     for name in new_names:
         suggestions.append(
             {
+                "Source": source_name,
                 "RecordID": "N/A",
                 "Column": "Name",
-                "Feedback": f"SUGGEST_ADD: New record found in '{source_name}' "
-                f"with name: '{name}'",
+                "ColumnValue": name,
+                "Feedback": "SUGGEST_ADD: New record found in source.",
             }
         )
 
@@ -130,10 +131,11 @@ def _generate_suggestions(
         record_id = name_to_id_map.get(name, "UNKNOWN_ID")
         suggestions.append(
             {
+                "Source": source_name,
                 "RecordID": record_id,
                 "Column": "_SYSTEM",
-                "Feedback": f"SUGGEST_REVIEW_DELETE: Record with source name '{name}' "
-                f"was not found in the new '{source_name}' source file.",
+                "ColumnValue": name,  # The name that is now missing
+                "Feedback": "SUGGEST_REVIEW_DELETE: Record not found in source.",
             }
         )
     return suggestions
@@ -206,7 +208,16 @@ def compare_and_suggest(
     )
 
     df_suggestions = pd.DataFrame(
-        suggestions, columns=["RecordID", "Column", "Feedback"]
+        suggestions,
+        columns=[
+            "Source",
+            "RecordID",
+            "Column",
+            "ColumnValue",
+            "Feedback",
+            "Decision",
+            "DecisionNotes",
+        ],
     )
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
