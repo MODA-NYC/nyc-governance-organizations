@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+"""
+export_dataset.py - Prepares and exports datasets for different destinations.
+
+This script takes a final, processed "golden" dataset and produces two outputs:
+1.  A versioned copy of the full golden dataset, saved to data/output/.
+2.  A cleaned, filtered, and transformed public-facing version, saved to
+    data/published/.
+"""
 import argparse
 import pathlib
 import re
@@ -7,45 +16,43 @@ import pandas as pd
 
 
 def to_snake_case(name: str) -> str:
-    """
-    Convert a PascalCase or CamelCase string to snake_case.
-    Handles cases like 'RecordID' -> 'record_id' and
-    'PrincipalOfficerFirstName' -> 'principal_officer_first_name'.
-    """
-    # Insert an underscore before any uppercase letter that is
-    # preceded by a lowercase letter or digit, or that is followed
-    # by a lowercase letter and preceded by another uppercase letter
-    # (e.g. ABBRSomething -> ABBR_Something)
+    """Converts a PascalCase or CamelCase string to snake_case."""
     s1 = re.sub(r"(?<=[a-z0-9])([A-Z])", r"_\1", name)
-    # Insert an underscore before any uppercase letter that is
-    # followed by a lowercase letter, and is not at the beginning
-    # of the string (if the string starts with multiple uppercase,
-    # e.g. IDName -> ID_Name)
     s2 = re.sub(r"(?<=[A-Z])([A-Z][a-z])", r"_\1", s1)
     return s2.lower()
 
 
 def main():
-    """
-    Main function to process the dataset.
-    """
+    """Main function to process the dataset for export."""
     parser = argparse.ArgumentParser(
         description=(
-            "Processes a dataset CSV: renames columns, selects specific columns, "
-            "converts headers to snake_case, and saves the output."
+            "Processes a dataset CSV for final export, creating a versioned golden "
+            "copy and a public-facing, transformed version."
         )
     )
     parser.add_argument(
         "--input_csv",
         required=True,
         type=pathlib.Path,
-        help="Path to the final processed dataset CSV.",
+        help="Path to the final processed dataset to be exported.",
     )
     parser.add_argument(
-        "--output_csv",
+        "--output_golden",
         required=True,
         type=pathlib.Path,
-        help="Path to save the final, versioned, published dataset.",
+        help=(
+            "Path to save the full, versioned golden dataset "
+            "(e.g., data/output/golden_dataset_v3.csv)."
+        ),
+    )
+    parser.add_argument(
+        "--output_published",
+        required=True,
+        type=pathlib.Path,
+        help=(
+            "Path to save the final, transformed, public-facing dataset "
+            "(e.g., data/published/NYCOrgs_v3.csv)."
+        ),
     )
 
     args = parser.parse_args()
@@ -56,59 +63,42 @@ def main():
     except FileNotFoundError:
         print(f"Error: Input CSV file not found at '{args.input_csv}'")
         sys.exit(1)
+
+    # --- Step 1: Save the full, versioned Golden Dataset ---
+    print(f"Saving full golden dataset to {args.output_golden}...")
+    try:
+        args.output_golden.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(args.output_golden, index=False, encoding="utf-8-sig")
+        print("✅ Golden dataset saved successfully.")
     except Exception as e:
-        print(f"Error loading CSV file '{args.input_csv}': {e}")
+        print(f"Error saving golden dataset: {e}")
         sys.exit(1)
 
-    # Verify and Perform Hardcoded Column Renames
+    # --- Step 2: Process and save the Published Dataset ---
+    print("\nProcessing data for public export...")
+
+    # Create a copy for transformation to avoid changing the original DataFrame
+    df_public = df.copy()
+
+    # Rename columns
     rename_map = {
         "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
         "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
     }
-
-    for old_name, new_name in rename_map.items():
-        if old_name not in df.columns:
-            print(
-                f"Error: Expected column '{old_name}' not found in "
-                f"input CSV '{args.input_csv}'."
-            )
-            sys.exit(1)
-        df.rename(columns={old_name: new_name}, inplace=True)
-        print(f"Renamed column '{old_name}' to '{new_name}'.")
+    df_public.rename(columns=rename_map, inplace=True)
 
     # Filter by InOrgChart column
-    in_org_chart_col = "InOrgChart"
-    if in_org_chart_col in df.columns:
-        print(f"Filtering by column '{in_org_chart_col}'.")
-        rows_before_filter = len(df)
-        # Convert to string, lowercase, then map to boolean
-        # Handles actual booleans, strings 'True'/'False' (case-insensitive),
-        # and treats NaN/empty/other as False.
-        df[in_org_chart_col] = (
-            df[in_org_chart_col]
+    if "InOrgChart" in df_public.columns:
+        df_public["InOrgChart"] = (
+            df_public["InOrgChart"]
             .astype(str)
             .str.lower()
             .map({"true": True})
             .fillna(False)
         )
-        df = df[df[in_org_chart_col]].copy()
-        rows_after_filter = len(df)
-        print(
-            f"Kept {rows_after_filter} rows out of {rows_before_filter} "
-            f"after filtering by '{in_org_chart_col}' == True."
-        )
-        if rows_after_filter == 0:
-            print(
-                f"Warning: No rows remained after filtering by '{in_org_chart_col}'. "
-                "Output CSV will be empty or have only headers."
-            )
-    else:
-        print(
-            f"Warning: Column '{in_org_chart_col}' not found in input CSV. "
-            "Proceeding without filtering by this column."
-        )
+        df_public = df_public[df_public["InOrgChart"]].copy()
 
-    # Define and Verify Hardcoded Column Selection and Order
+    # Define and select final columns for public output
     required_output_columns = [
         "RecordID",
         "Name",
@@ -123,48 +113,35 @@ def main():
         "BudgetCode",
         "OpenDatasetsURL",
         "FoundingYear",
-        "PrincipalOfficerFirstName",  # New name
-        "PrincipalOfficerLastName",  # New name
+        "PrincipalOfficerFirstName",
+        "PrincipalOfficerLastName",
         "PrincipalOfficerTitle",
         "PrincipalOfficerContactURL",
         "InOrgChart",
         "ReportsTo",
     ]
 
-    missing_columns = [col for col in required_output_columns if col not in df.columns]
-    if missing_columns:
-        print(
-            f"Error: The following expected columns are missing from the input CSV "
-            f"'{args.input_csv}' (after renames): {', '.join(missing_columns)}"
-        )
+    missing_cols = [
+        col for col in required_output_columns if col not in df_public.columns
+    ]
+    if missing_cols:
+        print(f"Error: Expected columns missing for public export: {missing_cols}")
         sys.exit(1)
 
-    # Create a new DataFrame with selected columns in the specified order
-    try:
-        df_selected = df[required_output_columns].copy()
-    except KeyError as e:
-        # This should ideally be caught by the missing_columns check above,
-        # but as an extra precaution:
-        print(
-            f"Error during column selection: {e}. "
-            "This indicates an unexpected issue."
-        )
-        sys.exit(1)
+    df_selected = df_public[required_output_columns]
 
-    # Convert All Selected Column Headers to Snake Case
+    # Convert headers to snake case
     df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
-    print("Converted all selected column headers to snake_case.")
+    print("Converted public column headers to snake_case.")
 
-    # Save Output CSV
+    # Save final published file
     try:
-        # Ensure output directory exists
-        args.output_csv.parent.mkdir(parents=True, exist_ok=True)
-        df_selected.to_csv(args.output_csv, index=False, encoding="utf-8-sig")
+        args.output_published.parent.mkdir(parents=True, exist_ok=True)
+        df_selected.to_csv(args.output_published, index=False, encoding="utf-8-sig")
+        print(f"✅ Published dataset saved successfully to: {args.output_published}")
     except Exception as e:
-        print(f"Error saving output CSV to '{args.output_csv}': {e}")
+        print(f"Error saving published dataset: {e}")
         sys.exit(1)
-
-    print(f"Successfully exported dataset to '{args.output_csv}'")
 
 
 if __name__ == "__main__":
