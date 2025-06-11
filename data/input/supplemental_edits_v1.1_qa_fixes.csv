@@ -1,0 +1,5 @@
+Row(s),Column,feedback
+NYC_GOID_000000,Name,Set Name to "NYC311"
+NYC_GOID_000193,Acronym,Set Acronym to "FDM"
+NYC_GOID_000318,Acronym,Set Acronym to "H+H"
+NYC_GOID_000238,PrincipalOfficerTitle,Set PrincipalOfficerTitle to "Executive Director"
