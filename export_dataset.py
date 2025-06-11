@@ -113,6 +113,7 @@ def main():
         "BudgetCode",
         "OpenDatasetsURL",
         "FoundingYear",
+        "PrincipalOfficerFullName",
         "PrincipalOfficerFirstName",
         "PrincipalOfficerLastName",
         "PrincipalOfficerTitle",

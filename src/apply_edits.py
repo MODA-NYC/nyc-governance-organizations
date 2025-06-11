@@ -64,10 +64,12 @@ CHANGELOG_COLUMNS = [
 
 RULES = {
     r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
-    r"Append records from CSV (?P<csv_path_to_add>[\w./-]+\.csv)": (
+    r"^\s*Append records from CSV\s+(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": (
         QAAction.APPEND_FROM_CSV
     ),
     r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
+    # Handles cases where column is in its own field
+    r"Set to (?P<value>.+)": QAAction.DIRECT_SET,
     r"Fix \"(?P<value>.*?)\"": QAAction.DIRECT_SET,
     r"Fix '(?P<value>.*?)'": QAAction.DIRECT_SET,
     r".*(?:makes it look|appears|seems)\s+(?:inactive|active).*": (
@@ -266,9 +268,26 @@ def handle_append_from_csv(
     changed_by: str,
     notes_from_feedback: str,
 ) -> pd.DataFrame:
-    resolved_csv_path = base_input_dir / pathlib.Path(csv_path_str)
+    csv_path_obj = pathlib.Path(csv_path_str)
+
+    # Handle both project-root relative paths and paths relative to the QA file
+    if csv_path_str.startswith("data/"):
+        # Assume it's a path from the project root
+        resolved_csv_path = csv_path_obj
+    else:
+        # Assume it's relative to the input file's directory
+        resolved_csv_path = base_input_dir / csv_path_obj
+
     try:
         df_new_records = pd.read_csv(resolved_csv_path, dtype=str).fillna("")
+        if df_new_records.empty:
+            print(
+                f"⚠️ Warning: CSV file '{resolved_csv_path}' is empty. "
+                "No records appended."
+            )
+            return current_df
+
+        print(f"Appending {len(df_new_records)} records from '{resolved_csv_path}'...")
         for _, new_row in df_new_records.iterrows():
             log_change(
                 new_row.get("RecordID", "N/A"),
@@ -282,10 +301,33 @@ def handle_append_from_csv(
             )
         return pd.concat([current_df, df_new_records], ignore_index=True)
     except FileNotFoundError:
+        # This is a critical error, print it loudly to the console.
+        print(
+            f"❌ CRITICAL ERROR: File not found at resolved path "
+            f"'{resolved_csv_path}'. Cannot append records.",
+            file=sys.stderr,
+        )
         log_change(
             "_APPEND_ERROR",
             "_APPEND_FROM_CSV_FAILED",
             "File Not Found",
+            str(resolved_csv_path),
+            feedback_source,
+            notes_from_feedback,
+            changed_by,
+            QAAction.APPEND_FROM_CSV.value,
+        )
+        return current_df
+    except Exception as e:
+        print(
+            f"❌ CRITICAL ERROR: Failed to load or process CSV "
+            f"'{resolved_csv_path}': {e}",
+            file=sys.stderr,
+        )
+        log_change(
+            "_APPEND_ERROR",
+            "_APPEND_FROM_CSV_FAILED",
+            str(e),
             str(resolved_csv_path),
             feedback_source,
             notes_from_feedback,
@@ -443,6 +485,10 @@ def apply_qa_edits(
             continue
 
         action, match = detect_rule(feedback)
+        print(
+            f"DEBUG: Feedback='{feedback}', "
+            f"Detected Action='{action.name if action else 'None'}'"
+        )
 
         # Handle DataFrame-level actions
         if action == QAAction.DELETE_RECORD and match:
@@ -457,6 +503,7 @@ def apply_qa_edits(
             continue
         elif action == QAAction.APPEND_FROM_CSV and match:
             csv_path = match.group("csv_path_to_add")
+            print(f"DEBUG: Calling handle_append_from_csv with path='{csv_path}'")
             df_modified = handle_append_from_csv(
                 df_modified,
                 csv_path,
