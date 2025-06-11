@@ -8,8 +8,8 @@ added and populated by the analyst.
 
 The script performs two main actions:
 1. Appends the decision records to a master `decision_log.csv`.
-2. Generates a `supplemental_edits.csv` file formatted for ingestion by the
-   main `process_golden_dataset.py` script.
+2. Generates a filtered "to-do list" for the analyst, containing only
+   discrepancies that require further action.
 """
 
 import argparse
@@ -24,13 +24,11 @@ DECISION_LOG_COLUMNS = [
     "Timestamp",
     "Decision",
     "DecisionNotes",
+    "ColumnValue",
     "OriginalRecordID",
     "OriginalColumn",
     "OriginalFeedback",
 ]
-
-# Define the columns for the supplemental edits file
-SUPPLEMENTAL_EDITS_COLUMNS = ["Row(s)", "Column", "feedback"]
 
 
 def load_and_validate_input(input_path: Path) -> pd.DataFrame | None:
@@ -42,7 +40,14 @@ def load_and_validate_input(input_path: Path) -> pd.DataFrame | None:
         print(f"❌ Error: Input file not found at '{input_path}'", file=sys.stderr)
         return None
 
-    required_cols = ["Decision", "DecisionNotes", "RecordID", "Column", "Feedback"]
+    required_cols = [
+        "Decision",
+        "DecisionNotes",
+        "RecordID",
+        "Column",
+        "ColumnValue",
+        "Feedback",
+    ]
     missing_cols = [col for col in required_cols if col not in df.columns]
 
     if missing_cols:
@@ -98,55 +103,52 @@ def append_to_decision_log(df_decisions: pd.DataFrame, log_path: Path):
         print(f"❌ Error updating decision log: {e}", file=sys.stderr)
 
 
-def generate_supplemental_edits(df_decisions: pd.DataFrame, edits_path: Path):
-    """Generates the supplemental_edits.csv file from decisions."""
-    edits = []
-    for _, row in df_decisions.iterrows():
-        decision = str(row["Decision"]).strip().upper()
-        if not decision:
-            continue
+def generate_discrepancies_to_process(df_decisions: pd.DataFrame, output_path: Path):
+    """Saves a file containing only the discrepancies that require action."""
+    # Filter out rows where the decision is 'IGNORE' (case-insensitive)
+    actionable_decisions = df_decisions[
+        df_decisions["Decision"].str.strip().str.upper() != "IGNORE"
+    ].copy()
 
-        if decision == "SUGGEST_ADD":
-            # The feedback already contains the suggested action, just pass it through.
-            edits.append(
-                {
-                    "Row(s)": row["RecordID"],
-                    "Column": row["Column"],
-                    "feedback": row["Feedback"],
-                }
-            )
-        elif decision == "SUGGEST_REVIEW_DELETE":
-            # Create a specific "Delete RecordID" command
-            edits.append(
-                {
-                    "Row(s)": row["RecordID"],
-                    "Column": "_SYSTEM_ACTION",
-                    "feedback": f"Delete RecordID {row['RecordID']}",
-                }
-            )
-        # Other decisions like "IGNORE" or "INVESTIGATE" do not generate edits.
-
-    if not edits:
-        print("ℹ️ No decisions found that require supplemental edits.")
+    if actionable_decisions.empty:
+        print("ℹ️ No actionable decisions found. The 'to-process' file will be empty.")
+        # Still create an empty file with headers to signal completion
+        actionable_decisions.to_csv(output_path, index=False, encoding="utf-8-sig")
         return
 
-    df_edits = pd.DataFrame(edits, columns=SUPPLEMENTAL_EDITS_COLUMNS)
+    # Re-order columns to match the input format for clarity
+    output_columns = [
+        "Source",
+        "RecordID",
+        "Column",
+        "ColumnValue",
+        "Feedback",
+        "Decision",
+        "DecisionNotes",
+    ]
+    # Filter for only columns that exist to avoid errors
+    final_columns = [
+        col for col in output_columns if col in actionable_decisions.columns
+    ]
+    df_to_process = actionable_decisions[final_columns]
 
-    print(f"Generating {len(df_edits)} supplemental edits to: {edits_path}")
+    print(f"Generating {len(df_to_process)} actionable discrepancies to: {output_path}")
     try:
-        edits_path.parent.mkdir(parents=True, exist_ok=True)
-        df_edits.to_csv(edits_path, index=False, encoding="utf-8-sig")
-        print("✅ Successfully generated supplemental edits file.")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        df_to_process.to_csv(output_path, index=False, encoding="utf-8-sig")
+        print("✅ Successfully generated discrepancies-to-process file.")
     except Exception as e:
-        print(f"❌ Error generating supplemental edits file: {e}", file=sys.stderr)
+        print(
+            f"❌ Error generating discrepancies-to-process file: {e}", file=sys.stderr
+        )
 
 
 def main():
     """Main function to orchestrate the processing of decisions."""
     parser = argparse.ArgumentParser(
         description=(
-            "Process a reviewed discrepancies file to log decisions and "
-            "generate edits."
+            "Process a reviewed discrepancies file to log decisions and generate a"
+            " new to-do file."
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -163,10 +165,10 @@ def main():
         help="Path to the master decision log CSV file to append to.",
     )
     parser.add_argument(
-        "--supplemental_edits",
+        "--discrepancies_to_process",
         type=Path,
         required=True,
-        help="Path to save the generated supplemental edits CSV file.",
+        help="Path to save the output CSV with discrepancies that require action.",
     )
     args = parser.parse_args()
 
@@ -182,7 +184,7 @@ def main():
         sys.exit(0)
 
     append_to_decision_log(df_processed, args.decision_log)
-    generate_supplemental_edits(df_processed, args.supplemental_edits)
+    generate_discrepancies_to_process(df_processed, args.discrepancies_to_process)
 
     print("\nProcessing complete.")
 
