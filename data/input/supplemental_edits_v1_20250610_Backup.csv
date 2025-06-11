@@ -1,4 +1,5 @@
 Row(s),Column,feedback
+_SYSTEM_ACTION,_SYSTEM_ACTION,Append records from CSV data/input/community_board_new_row_additions.csv
 NYC_GOID_000026,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
 NYC_GOID_000027,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
 NYC_GOID_000028,Description,Set Description to "The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs."
@@ -33,6 +34,7 @@ NYC_GOID_000029,OpenDatasetsURL,Set OpenDatasetsURL to "https://data.cityofnewyo
 NYC_GOID_000030,OpenDatasetsURL,Set OpenDatasetsURL to "https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Staten+Island+Borough+President+%28BPSI%29"
 NYC_GOID_000026,OpenDatasetsURL,Set OpenDatasetsURL to "https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Bronx+Borough+President+%28BPBX%29"
 NYC_GOID_100009,OpenDatasetsURL,Set OpenDatasetsURL to "https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+the+City+Clerk+%28OCC%29"
+NYC_GOID_000118,_SYSTEM_ACTION,Delete RecordID NYC_GOID_000118
 NYC_GOID_000161,Name,Set Name to "Deputy Mayor for Health and Human Services"
 NYC_GOID_000163,Name,Set Name to "Deputy Mayor for Operations"
 NYC_GOID_000164,Name,Set Name to "Deputy Mayor for Public Safety"

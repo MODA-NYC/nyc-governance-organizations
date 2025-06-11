@@ -317,55 +317,121 @@ ACTION_HANDLERS = {
 }
 
 
-def _apply_row_level_action(
-    row_series: pd.Series,
-    action: QAAction,
-    match: re.Match | None,
-    qa_row: pd.Series,
-    feedback_source_name: str,
-    changed_by: str,
-    feedback: str,
-) -> pd.Series:
-    """Helper to apply a single row-level action."""
-    handler = ACTION_HANDLERS.get(action)
-    if not handler:
-        return row_series
+def _handle_direct_set(
+    row_series,
+    match,
+    qa_row,
+    record_id,
+    feedback_source_name,
+    changed_by,
+    feedback,
+    df_modified,
+    index,
+):
+    col = (
+        match.group("column") if "column" in match.groupdict() else qa_row.get("Column")
+    )
+    parsed_value = match.group("value")
 
-    record_id = qa_row.get("Row(s)")
-    handler_args = {
-        "record_id": record_id,
-        "feedback_source": feedback_source_name,
-        "changed_by": changed_by,
-        "notes": feedback,
-    }
+    if col and parsed_value is not None:
+        # Strip leading/trailing whitespace and quotes
+        clean_value = parsed_value.strip()
+        if (
+            len(clean_value) > 1
+            and clean_value.startswith('"')
+            and clean_value.endswith('"')
+        ):
+            clean_value = clean_value[1:-1]
+        elif (
+            len(clean_value) > 1
+            and clean_value.startswith("'")
+            and clean_value.endswith("'")
+        ):
+            clean_value = clean_value[1:-1]
 
-    if action in [
-        QAAction.DIRECT_SET,
-        QAAction.BLANK_VALUE,
-        QAAction.REMOVE_ACTING_PREFIX,
-    ]:
-        column = qa_row.get("Column") or (
-            match.group("column") if match and "column" in match.groupdict() else None
+        # Call the handler with the cleaned value
+        modified_row = handle_direct_set(
+            row_series,
+            col,
+            clean_value,
+            record_id,
+            feedback_source_name,
+            changed_by,
+            feedback,
         )
-        if not column:
-            return row_series  # Skip if no column specified for these actions
-        handler_args["column_to_edit"] = column
-        if action == QAAction.DIRECT_SET:
-            handler_args["new_value"] = (
-                match.group("value") if match and "value" in match.groupdict() else ""
+        df_modified.loc[index] = modified_row
+
+
+def _process_row(
+    row_series,
+    qa_row,
+    action,
+    match,
+    feedback_source_name,
+    changed_by,
+    feedback,
+    df_modified,
+):
+    record_id = qa_row.get("Row(s)")
+    if pd.isna(record_id) or record_id not in df_modified["RecordID"].values:
+        return
+
+    target_indices = df_modified[df_modified["RecordID"] == record_id].index
+    for index in target_indices:
+        row_series = df_modified.loc[index].copy()
+        handler = ACTION_HANDLERS.get(action)
+
+        if not handler:
+            continue
+
+        # This is the corrected block for DIRECT_SET
+        if action == QAAction.DIRECT_SET and match:
+            _handle_direct_set(
+                row_series,
+                match,
+                qa_row,
+                record_id,
+                feedback_source_name,
+                changed_by,
+                feedback,
+                df_modified,
+                index,
             )
-        return handler(row_series, **handler_args)
 
-    elif action == QAAction.POLICY_QUERY:
-        handler_args["column_to_edit"] = qa_row.get("Column")
-        handler_args["original_feedback"] = feedback
-        return handler(row_series, **handler_args)
+        # This is the existing logic for other row-level actions
+        elif action in [
+            QAAction.BLANK_VALUE,
+            QAAction.REMOVE_ACTING_PREFIX,
+        ]:
+            col = qa_row.get("Column")
+            if col:
+                modified_row = handler(
+                    row_series=row_series,
+                    column_to_edit=col,
+                    record_id=record_id,
+                    feedback_source=feedback_source_name,
+                    changed_by=changed_by,
+                    notes=feedback,
+                )
+                df_modified.loc[index] = modified_row
 
-    return row_series
+        elif action == QAAction.POLICY_QUERY:
+            handle_policy_query(
+                row_series=row_series,
+                column_to_edit=qa_row.get("Column"),
+                original_feedback=feedback,
+                record_id=record_id,
+                feedback_source=feedback_source_name,
+                changed_by=changed_by,
+                notes=feedback,
+            )
 
 
 def apply_qa_edits(
-    df_golden: pd.DataFrame, df_qa: pd.DataFrame, changed_by: str, qa_filename: str
+    df_golden: pd.DataFrame,
+    df_qa: pd.DataFrame,
+    changed_by: str,
+    qa_filename: str,
 ) -> pd.DataFrame:
     df_modified = df_golden.copy()
     feedback_source_name = pathlib.Path(qa_filename).name
@@ -382,7 +448,11 @@ def apply_qa_edits(
         if action == QAAction.DELETE_RECORD and match:
             record_id = match.group("record_id_to_delete")
             df_modified = handle_delete_record(
-                df_modified, record_id, feedback_source_name, changed_by, feedback
+                df_modified,
+                record_id,
+                feedback_source_name,
+                changed_by,
+                feedback,
             )
             continue
         elif action == QAAction.APPEND_FROM_CSV and match:
@@ -399,22 +469,18 @@ def apply_qa_edits(
 
         # Handle row-level actions
         record_id = qa_row.get("Row(s)")
-        if pd.isna(record_id) or record_id not in df_modified["RecordID"].values:
-            continue
-
-        target_indices = df_modified[df_modified["RecordID"] == record_id].index
-        for index in target_indices:
-            row_series = df_modified.loc[index].copy()
-            modified_row = _apply_row_level_action(
-                row_series,
+        if pd.notna(record_id) and record_id in df_modified["RecordID"].values:
+            # Pass the full qa_row series to the processing function
+            _process_row(
+                df_modified[df_modified["RecordID"] == record_id].iloc[0],
+                qa_row,
                 action,
                 match,
-                qa_row,
                 feedback_source_name,
                 changed_by,
                 feedback,
+                df_modified,
             )
-            df_modified.loc[index] = modified_row
 
     return df_modified
 
