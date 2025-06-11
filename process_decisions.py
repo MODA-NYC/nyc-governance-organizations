@@ -22,12 +22,12 @@ import pandas as pd
 # Define the expected columns in the decision log
 DECISION_LOG_COLUMNS = [
     "Timestamp",
+    "SourceRecordID",
+    "SourceColumn",
+    "SourceColumnValue",
+    "SourceFeedback",
     "Decision",
     "DecisionNotes",
-    "ColumnValue",
-    "OriginalRecordID",
-    "OriginalColumn",
-    "OriginalFeedback",
 ]
 
 
@@ -79,21 +79,24 @@ def append_to_decision_log(df_decisions: pd.DataFrame, log_path: Path):
 
     log_data = df_decisions.copy()
     log_data["Timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Explicitly rename columns to the 'Source' convention
     log_data.rename(
         columns={
-            "RecordID": "OriginalRecordID",
-            "Column": "OriginalColumn",
-            "Feedback": "OriginalFeedback",
+            "RecordID": "SourceRecordID",
+            "Column": "SourceColumn",
+            "ColumnValue": "SourceColumnValue",
+            "Feedback": "SourceFeedback",
         },
         inplace=True,
     )
 
+    # Ensure all required columns are present before saving
     final_log_df = log_data[DECISION_LOG_COLUMNS]
 
     print(f"Appending {len(final_log_df)} records to decision log: {log_path}")
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        # Append with header if file doesn't exist, otherwise without
         header = not log_path.exists()
         final_log_df.to_csv(
             log_path, mode="a", header=header, index=False, encoding="utf-8-sig"
@@ -112,25 +115,40 @@ def generate_discrepancies_to_process(df_decisions: pd.DataFrame, output_path: P
 
     if actionable_decisions.empty:
         print("ℹ️ No actionable decisions found. The 'to-process' file will be empty.")
-        # Still create an empty file with headers to signal completion
-        actionable_decisions.to_csv(output_path, index=False, encoding="utf-8-sig")
+        pd.DataFrame(
+            columns=[
+                "Source",
+                "RecordID",
+                "SourceColumn",
+                "SourceColumnValue",
+                "SourceFeedback",
+                "Decision",
+                "DecisionNotes",
+            ]
+        ).to_csv(output_path, index=False, encoding="utf-8-sig")
         return
 
-    # Re-order columns to match the input format for clarity
+    # Rename columns to the new 'Source' convention for consistency
+    actionable_decisions.rename(
+        columns={
+            "Column": "SourceColumn",
+            "ColumnValue": "SourceColumnValue",
+            "Feedback": "SourceFeedback",
+        },
+        inplace=True,
+    )
+
+    # Define the final, ordered list of columns for the output file
     output_columns = [
         "Source",
         "RecordID",
-        "Column",
-        "ColumnValue",
-        "Feedback",
+        "SourceColumn",
+        "SourceColumnValue",
+        "SourceFeedback",
         "Decision",
         "DecisionNotes",
     ]
-    # Filter for only columns that exist to avoid errors
-    final_columns = [
-        col for col in output_columns if col in actionable_decisions.columns
-    ]
-    df_to_process = actionable_decisions[final_columns]
+    df_to_process = actionable_decisions[output_columns]
 
     print(f"Generating {len(df_to_process)} actionable discrepancies to: {output_path}")
     try:
