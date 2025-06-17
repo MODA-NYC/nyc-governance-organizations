@@ -41,8 +41,8 @@ def main():
         required=True,
         type=pathlib.Path,
         help=(
-            "Path to save the full, versioned golden dataset "
-            "(e.g., data/output/golden_dataset_v3.csv)."
+            "Path to save the full, versioned golden dataset (e.g., "
+            "data/output/golden_dataset_v3.csv)."
         ),
     )
     parser.add_argument(
@@ -50,8 +50,8 @@ def main():
         required=True,
         type=pathlib.Path,
         help=(
-            "Path to save the final, transformed, public-facing dataset "
-            "(e.g., data/published/NYCOrgs_v3.csv)."
+            "Path to save the final, transformed, public-facing dataset (e.g., "
+            "data/published/NYCOrgs_v3.csv)."
         ),
     )
 
@@ -64,7 +64,7 @@ def main():
         print(f"Error: Input CSV file not found at '{args.input_csv}'")
         sys.exit(1)
 
-    # --- Step 1: Save the full, versioned Golden Dataset ---
+    # --- Step 2: Save the full, versioned Golden Dataset ---
     print(f"Saving full golden dataset to {args.output_golden}...")
     try:
         args.output_golden.parent.mkdir(parents=True, exist_ok=True)
@@ -74,10 +74,9 @@ def main():
         print(f"Error saving golden dataset: {e}")
         sys.exit(1)
 
-    # --- Step 2: Process and save the Published Dataset ---
+    # --- Step 3: Process and save the Published Dataset ---
     print("\nProcessing data for public export...")
 
-    # Create a copy for transformation to avoid changing the original DataFrame
     df_public = df.copy()
 
     # Rename columns
@@ -87,16 +86,39 @@ def main():
     }
     df_public.rename(columns=rename_map, inplace=True)
 
-    # Filter by InOrgChart column
-    if "InOrgChart" in df_public.columns:
-        df_public["InOrgChart"] = (
-            df_public["InOrgChart"]
+    # --- Filter for records to include in public output ---
+    print("Applying filters for public export...")
+    rows_before_filter = len(df_public)
+
+    org_chart_col = "InOrgChart"
+    ops_name_col = "Name - Ops"
+
+    in_org_chart = pd.Series([False] * len(df_public), index=df_public.index)
+    has_ops_name = pd.Series([False] * len(df_public), index=df_public.index)
+
+    if org_chart_col in df_public.columns:
+        print(f"Filtering for '{org_chart_col}' is TRUE.")
+        in_org_chart = (
+            df_public[org_chart_col]
             .astype(str)
             .str.lower()
             .map({"true": True})
             .fillna(False)
         )
-        df_public = df_public[df_public["InOrgChart"]].copy()
+
+    if ops_name_col in df_public.columns:
+        print(f"Filtering for non-blank '{ops_name_col}'.")
+        has_ops_name = df_public[ops_name_col].notna() & (
+            df_public[ops_name_col].str.strip() != ""
+        )
+
+    df_public = df_public[in_org_chart | has_ops_name].copy()
+
+    rows_after_filter = len(df_public)
+    print(
+        f"Kept {rows_after_filter} rows out of {rows_before_filter} "
+        "after applying combined filter."
+    )
 
     # Define and select final columns for public output
     required_output_columns = [

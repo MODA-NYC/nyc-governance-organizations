@@ -1,0 +1,49 @@
+Record ID,Column Name,Change Request,Notes,QA Reviewer Name
+NYC_GOID_000337,operational_status,"Set to ""Active""","SAMPLE ROW - in the change request use that same wording - Set to followed by the value you want the row set to in """" quotes.",Nathan
+NYC_GOID_000287,name,"Set to ""Mayor's Office of Risk Management and Compliance""",The word 'of' was missing.,Nathan
+NYC_GOID_000000,acronym,"Set to ""311""",,Oliver
+NYC_GOID_000000,principal_officer_contact_url,"Set to ""https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer""",,Oliver
+Several,reports_to,"Consider removal of ""The People of the City of New York""",,Oliver
+Several,budget_code,"Set to ""2"" when organization_type = ""Mayoral Office""","Some mayoral offices have budget code 2, others are blank",Oliver
+All,principal_officer_full_name,Populate field,Missing ,Oliver
+NYC_GOID_000099,principal_officer_last_name,"Set to ""Matos Rodriguez""",,Oliver
+NYC_GOID_000135,principal_officer_last_name,Assess special characters issue,,Oliver
+NYC_GOID_000138,budget_code,"Set to ""857""",,Oliver
+Several,budget_code,Fill budget codes for BP offices and CBs,https://www.checkbooknyc.com/agency_codes/newwindow,Oliver
+NYC_GOID_000139,principal_officer_last_name,"Set to ""Vera Mayuga""",,Oliver
+NYC_GOID_000143,principal_officer_last_name,"Set to ""Aviles-Ramos""",,Oliver
+Several,reports_to,"Replace values of ""Mayor's Office"" to ""Mayor""",positions with direct report to mayor are important and 'mayor's office' adds ambiguity,Oliver
+NYC_GOID_000154,principal_officer_last_name,"Set to ""Wasow Park""",,Oliver
+NYC_GOID_000162,principal_officer_last_name,Assess special characters issue,,Oliver
+NYC_GOID_000168,principal_officer_title,"Set to ""District Attorney""",,Oliver
+NYC_GOID_000171,principal_officer_title,"Set to ""District Attorney""",,Oliver
+NYC_GOID_000190,principal_officer_first_name,"Set to ""Neil""",i was unsure if he is head of FISA & OPA but this tweet confirms https://x.com/nycgov/status/1118169425339801600,Oliver
+NYC_GOID_000190,principal_officer_last_name,"Set to ""Matthew""",,Oliver
+NYC_GOID_000190,principal_officer_title,"Set to ""Executive Director""",,Oliver
+NYC_GOID_000244,principal_officer_title,"Set to ""Director""",,Oliver
+NYC_GOID_000245,principal_officer_title,"Set to ""Executive Director""",,Oliver
+NYC_GOID_000246,principal_officer_last_name,"Set to ""Joseph Varlack""",,Oliver
+NYC_GOID_000286,principal_officer_last_name,Assess special characters issue,,Oliver
+NYC_GOID_000337,operational_status,Consider record removal,why is this record in the dataset if this entity is dissolved?,Oliver
+NYC_GOID_300307,principal_officer_last_name,Assess special characters issue,,Oliver
+Several,acronym,Add numbers to community board acronyms,,Oliver
+NYC_GOID_000377,principal_officer_title,"Set to ""Executive Director""",,Oliver
+NYC_GOID_000138,principal_officer_title,"Set to ""Commissioner""",,Oliver
+NYC_GOID_000052,principal_officer_title,"Set to ""Chief Climate Officer""",,Oliver
+NYC_GOID_000258,principal_officer_title,"Set to ""Chief Administrative Officer""",,Oliver
+NYC_GOID_000265,principal_officer_title,"Set to ""Director""",,Oliver
+NYC_GOID_000287,principal_officer_title,"Set to ""Director""",,Oliver
+NYC_GOID_000310,principal_officer_title,"Set to ""President and CEO""",,Oliver
+NYC_GOID_000328,principal_officer_title,"Set to ""Chief Service Officer""",,Oliver
+NYC_GOID_000351,name,"Set to ""Mayor's Office for Childcare and Early Childhood Education""",,Oliver
+NYC_GOID_000361,name,"Set to ""Mayor's Office of Innovation and Emerging Markets""",,Oliver
+NYC_GOID_000362,name,"Set to ""Mayor's Office of Engagement""",,Oliver
+NYC_GOID_000363,name,"Set to ""Mayor's Office of Environmental Coordination""",,Oliver
+NYC_GOID_000364,name,"Set to ""Mayor's Office of Environmental Remediation""",,Oliver
+NYC_GOID_000374,name,"Set to ""Mayor's Office of Management and Budget""",,Oliver
+NYC_GOID_000396,name_alphabetized,"Set to ""Public Advocate""",,Oliver
+NYC_GOID_000123,name_alphabetized,"Set to ""Comptroller""",,Oliver
+NYC_GOID_000096,name_alphabetized,"Set to ""City Commission on Human Rights""",,Oliver
+NYC_GOID_100001,name_alphabetized,"Set to ""Borough Boards""",,Oliver
+NYC_GOID_000226,alternate_or_former_acronyms,"Set to ""IGA""",,Oliver
+NYC_GOID_000052,principal_officer_contact_url,"Set to ""https://www.nyc.gov/nyc-resources/mail/dep-email-the-commissioner.page""",,Oliver

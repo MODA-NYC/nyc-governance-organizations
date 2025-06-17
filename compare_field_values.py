@@ -23,8 +23,10 @@ SOURCE_CONFIG = {
         "source_name_col": "Agency Name",
         "field_mappings": {
             "Name": "Agency Name",
-            "PrincipalOfficerName": "Principal Officer",
-            "PrincipalOfficerTitle": "Title",
+            "PrincipalOfficerGivenName": "Agency Head First Name",
+            "PrincipalOfficerFamilyName": "Agency Head Last Name",
+            "Description": "BC Description",
+            "URL": "Agency/Board Website",
             # Add other fields to compare here, e.g., "URL": "Website"
         },
     },
