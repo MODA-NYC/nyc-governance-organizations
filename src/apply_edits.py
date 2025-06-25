@@ -1,58 +1,36 @@
 #!/usr/bin/env python3
-"""
-apply_edits.py - Applies QA feedback and supplemental edits to a dataset.
-
-This is the second processing stage. It takes a dataset (presumably one that
-has already had global rules applied) and applies targeted changes based on an
-input edits file (in the QA feedback format).
-"""
 import argparse
 import pathlib
 import re
 import sys
-import typing
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
 import pandas as pd
 
-# Global list to store changelog entries
-changelog_entries = []
-changelog_id_counter = 0
+changelog_entries, changelog_id_counter = [], 0
 
 
 class QAAction(Enum):
     DIRECT_SET = "direct_set"
-    CHAR_FIX = "char_fix"
-    BLANK_VALUE = "blank_value"
-    DEDUP_SEMICOLON = "dedup_semicolon"
     POLICY_QUERY = "policy_query"
-    REMOVE_ACTING_PREFIX = "remove_acting_prefix"
     DELETE_RECORD = "delete_record"
     APPEND_FROM_CSV = "append_from_csv"
-    # These actions are handled by run_global_rules.py but are kept here for
-    # rule matching
-    NAME_SPLIT_SUCCESS = "name_split_success"
-    NAME_SPLIT_REVIEW_NEEDED = "name_split_review_needed"
-    NAME_PARSE_SUCCESS = "name_parse_success"
-    NAME_PARSE_REVIEW_NEEDED = "name_parse_review_needed"
-    _RECORD_FILTERED_OUT = "_record_filtered_out"
-    DATA_ENRICH = "data_enrich"
-    NOT_FOUND = "not_found"
 
 
-@dataclass
-class QAEditRule:
-    pattern: re.Pattern
-    action: QAAction
-    value_parser: typing.Callable | None
-
-
+RULES = {
+    r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
+    r"^\s*Append records from CSV\s+"
+    r"(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": QAAction.APPEND_FROM_CSV,
+    r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
+    r"Set to (?P<value>.+)": QAAction.DIRECT_SET,
+    r".*\?": QAAction.POLICY_QUERY,
+}
 CHANGELOG_COLUMNS = [
     "ChangeID",
     "timestamp",
     "record_id",
+    "record_name",
     "column_changed",
     "old_value",
     "new_value",
@@ -62,486 +40,259 @@ CHANGELOG_COLUMNS = [
     "RuleAction",
 ]
 
-RULES = {
-    r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
-    r"^\s*Append records from CSV\s+(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": (
-        QAAction.APPEND_FROM_CSV
-    ),
-    r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
-    # Handles cases where column is in its own field
-    r"Set to (?P<value>.+)": QAAction.DIRECT_SET,
-    r"Fix \"(?P<value>.*?)\"": QAAction.DIRECT_SET,
-    r"Fix '(?P<value>.*?)'": QAAction.DIRECT_SET,
-    r".*(?:makes it look|appears|seems)\s+(?:inactive|active).*": (
-        QAAction.POLICY_QUERY
-    ),
-    r"^(?P<value>[A-Z0-9+-.]{1,10})$": QAAction.DIRECT_SET,
-    r"^(?P<value>[A-Z0-9+-. /]+?) rather than [A-Z0-9+-. /]+?$": QAAction.DIRECT_SET,
-    r"^(?:.*is now|.*is currently)\s+(?P<value>.+)$": QAAction.DIRECT_SET,
-    r"Fix special characters(?: in (?P<column>\w+))?": QAAction.POLICY_QUERY,
-    r"Remove value of .*": QAAction.BLANK_VALUE,
-    r"^(?:.*(?:has left|is no longer with|is no longer at))(?:\s+\w+)*$": (
-        QAAction.POLICY_QUERY
-    ),
-    r"(?:Confirmed, ?so )?no longer Acting": QAAction.REMOVE_ACTING_PREFIX,
-    r".*\?": QAAction.POLICY_QUERY,
-}
+
+def _get_pascal_case_column(df_columns, provided_col_name):
+    """
+    Finds the correct PascalCase column name from a list of columns,
+    trying snake_case as a fallback.
+    """
+    if provided_col_name in df_columns:
+        return provided_col_name
+
+    pascal_version = "".join(word.capitalize() for word in provided_col_name.split("_"))
+    if pascal_version in df_columns:
+        return pascal_version
+
+    return None  # Return None if no match is found
 
 
 def log_change(
-    record_id: str,
-    column_changed: str,
-    old_value: typing.Any,
-    new_value: typing.Any,
-    feedback_source: str,
-    notes: str | None,
-    changed_by: str,
-    rule_action: str | None,
+    record_id,
+    record_name,
+    column_changed,
+    old_value,
+    new_value,
+    feedback_source,
+    notes,
+    changed_by,
+    rule_action,
+    version_prefix,
 ):
-    """Logs a change to the changelog_entries list."""
     global changelog_entries, changelog_id_counter
     changelog_id_counter += 1
-    entry = {
-        "ChangeID": changelog_id_counter,
-        "timestamp": datetime.now().isoformat(),
-        "record_id": record_id,
-        "column_changed": column_changed,
-        "old_value": old_value,
-        "new_value": new_value,
-        "feedback_source": feedback_source,
-        "notes": notes,
-        "changed_by": changed_by,
-        "RuleAction": rule_action if rule_action else "unknown",
-    }
-    changelog_entries.append(entry)
+    changelog_entries.append(
+        {
+            "ChangeID": f"{version_prefix}_{changelog_id_counter}",
+            "timestamp": datetime.now().isoformat(),
+            "record_id": record_id,
+            "record_name": record_name,
+            "column_changed": column_changed,
+            "old_value": old_value,
+            "new_value": new_value,
+            "feedback_source": feedback_source,
+            "notes": notes,
+            "changed_by": changed_by,
+            "RuleAction": rule_action.value,
+        }
+    )
 
 
-def detect_rule(feedback: str) -> tuple[QAAction, re.Match | None]:
-    for pattern_str, action in RULES.items():
-        match = re.search(pattern_str, feedback, re.IGNORECASE)
-        if match:
+def detect_rule(feedback):
+    for pattern, action in RULES.items():
+        if match := re.search(pattern, feedback, re.IGNORECASE):
             return action, match
     return QAAction.POLICY_QUERY, None
 
 
-# --- Handler Functions ---
-# Note: All handler functions from process_golden_dataset.py are copied here.
-
-
-def handle_direct_set(
-    row_series: pd.Series,
-    column_to_edit: str,
-    new_value: str,
-    record_id: str,
-    feedback_source: str,
-    changed_by: str,
-    notes: str | None = None,
-) -> pd.Series:
-    old_value = row_series.get(column_to_edit)
-    log_change(
-        record_id,
-        column_to_edit,
-        old_value,
-        new_value,
-        feedback_source,
-        notes,
-        changed_by,
-        QAAction.DIRECT_SET.value,
-    )
-    row_series[column_to_edit] = new_value
-    return row_series
-
-
-def handle_blank_value(
-    row_series: pd.Series,
-    column_to_edit: str,
-    record_id: str,
-    feedback_source: str,
-    changed_by: str,
-    notes: str | None = None,
-) -> pd.Series:
-    old_value = row_series.get(column_to_edit)
-    log_change(
-        record_id,
-        column_to_edit,
-        old_value,
-        "",
-        feedback_source,
-        notes,
-        changed_by,
-        QAAction.BLANK_VALUE.value,
-    )
-    row_series[column_to_edit] = ""
-    return row_series
-
-
-def handle_remove_acting_prefix(
-    row_series: pd.Series,
-    column_to_edit: str,
-    record_id: str,
-    feedback_source: str,
-    changed_by: str,
-    notes: str | None = None,
-) -> pd.Series:
-    old_value = row_series.get(column_to_edit)
-    if isinstance(old_value, str) and old_value.lower().strip().startswith("acting"):
-        new_value = re.sub(r"acting\s*", "", old_value, flags=re.IGNORECASE).strip()
+def handle_delete_record(df, id, src, user, notes, prefix):
+    if id in df["RecordID"].values:
+        record_name = df[df["RecordID"] == id].iloc[0].get("Name", "N/A")
         log_change(
-            record_id,
-            column_to_edit,
-            old_value,
-            new_value,
-            feedback_source,
-            notes,
-            changed_by,
-            QAAction.REMOVE_ACTING_PREFIX.value,
-        )
-        row_series[column_to_edit] = new_value
-    return row_series
-
-
-def handle_policy_query(
-    row_series: pd.Series,
-    column_to_edit: str | None,
-    original_feedback: str,
-    record_id: str,
-    feedback_source: str,
-    changed_by: str,
-    notes: str | None = None,
-):
-    log_change(
-        record_id,
-        column_to_edit or "Policy Question",
-        "N/A",
-        "N/A",
-        feedback_source,
-        original_feedback,
-        changed_by,
-        QAAction.POLICY_QUERY.value,
-    )
-    return row_series
-
-
-def handle_delete_record(
-    current_df: pd.DataFrame,
-    record_id_to_delete: str,
-    feedback_source: str,
-    changed_by: str,
-    notes_from_feedback: str,
-) -> pd.DataFrame:
-    if record_id_to_delete in current_df["RecordID"].values:
-        old_value = (
-            current_df[current_df["RecordID"] == record_id_to_delete]
-            .iloc[0]
-            .get("Name", "Entire Row")
-        )
-        log_change(
-            record_id_to_delete,
+            id,
+            record_name,
             "_ROW_DELETED",
-            old_value,
+            record_name,
             "N/A",
-            feedback_source,
-            notes_from_feedback,
-            changed_by,
-            QAAction.DELETE_RECORD.value,
+            src,
+            notes,
+            user,
+            QAAction.DELETE_RECORD,
+            prefix,
         )
-        return current_df[current_df["RecordID"] != record_id_to_delete].copy()
-    else:
-        log_change(
-            record_id_to_delete,
-            "_ROW_DELETE_FAILED",
-            "Record Not Found",
-            "N/A",
-            feedback_source,
-            f"Deletion failed: {notes_from_feedback}",
-            changed_by,
-            QAAction.DELETE_RECORD.value,
-        )
-        return current_df
+        return df[df["RecordID"] != id].copy()
+    log_change(
+        id,
+        "N/A",
+        "_ROW_DELETE_FAILED",
+        "Record Not Found",
+        "N/A",
+        src,
+        f"Deletion failed: {notes}",
+        user,
+        QAAction.DELETE_RECORD,
+        prefix,
+    )
+    return df
 
 
-def handle_append_from_csv(
-    current_df: pd.DataFrame,
-    csv_path_str: str,
-    base_input_dir: pathlib.Path,
-    feedback_source: str,
-    changed_by: str,
-    notes_from_feedback: str,
-) -> pd.DataFrame:
-    csv_path_obj = pathlib.Path(csv_path_str)
-
-    # Handle both project-root relative paths and paths relative to the QA file
-    if csv_path_str.startswith("data/"):
-        # Assume it's a path from the project root
-        resolved_csv_path = csv_path_obj
-    else:
-        # Assume it's relative to the input file's directory
-        resolved_csv_path = base_input_dir / csv_path_obj
-
+def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
+    path_obj = (
+        base_dir / path_str
+        if not path_str.startswith("data/")
+        else pathlib.Path(path_str)
+    )
     try:
-        df_new_records = pd.read_csv(resolved_csv_path, dtype=str).fillna("")
-        if df_new_records.empty:
-            print(
-                f"⚠️ Warning: CSV file '{resolved_csv_path}' is empty. "
-                "No records appended."
-            )
-            return current_df
-
-        print(f"Appending {len(df_new_records)} records from '{resolved_csv_path}'...")
-        for _, new_row in df_new_records.iterrows():
+        new_records = pd.read_csv(path_obj, dtype=str).fillna("")
+        for _, row in new_records.iterrows():
             log_change(
-                new_row.get("RecordID", "N/A"),
+                row.get("RecordID", "N/A"),
+                row.get("Name"),
                 "_ROW_ADDED",
                 "N/A",
-                new_row.get("Name"),
-                feedback_source,
-                notes_from_feedback,
-                changed_by,
-                QAAction.APPEND_FROM_CSV.value,
+                row.get("Name"),
+                src,
+                notes,
+                user,
+                QAAction.APPEND_FROM_CSV,
+                prefix,
             )
-        return pd.concat([current_df, df_new_records], ignore_index=True)
+        return pd.concat([df, new_records], ignore_index=True)
     except FileNotFoundError:
-        # This is a critical error, print it loudly to the console.
-        print(
-            f"❌ CRITICAL ERROR: File not found at resolved path "
-            f"'{resolved_csv_path}'. Cannot append records.",
-            file=sys.stderr,
-        )
+        print(f"CRITICAL ERROR: File not found at '{path_obj}'.", file=sys.stderr)
+    return df
+
+
+def _handle_direct_set_action(
+    row_series,
+    qa_row,
+    match,
+    df_mod,
+    record_name,
+    src_name,
+    user,
+    prefix,
+):
+    """Helper function to handle the direct set logic."""
+    provided_col = qa_row.get("Column") or (
+        match.group("column") if "column" in match.groupdict() else None
+    )
+    val_str = match.group("value")
+
+    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
+
+    if pascal_col and val_str is not None:
+        old_val = row_series.get(pascal_col)
+        clean_val = val_str.strip()
+        while (
+            len(clean_val) > 1 and clean_val.startswith('"') and clean_val.endswith('"')
+        ):
+            clean_val = clean_val[1:-1].strip()
+        while (
+            len(clean_val) > 1 and clean_val.startswith("'") and clean_val.endswith("'")
+        ):
+            clean_val = clean_val[1:-1].strip()
+
         log_change(
-            "_APPEND_ERROR",
-            "_APPEND_FROM_CSV_FAILED",
-            "File Not Found",
-            str(resolved_csv_path),
-            feedback_source,
-            notes_from_feedback,
-            changed_by,
-            QAAction.APPEND_FROM_CSV.value,
+            row_series["RecordID"],
+            record_name,
+            pascal_col,
+            old_val,
+            clean_val,
+            src_name,
+            qa_row.get("feedback"),
+            user,
+            QAAction.DIRECT_SET,
+            prefix,
         )
-        return current_df
-    except Exception as e:
-        print(
-            f"❌ CRITICAL ERROR: Failed to load or process CSV "
-            f"'{resolved_csv_path}': {e}",
-            file=sys.stderr,
-        )
-        log_change(
-            "_APPEND_ERROR",
-            "_APPEND_FROM_CSV_FAILED",
-            str(e),
-            str(resolved_csv_path),
-            feedback_source,
-            notes_from_feedback,
-            changed_by,
-            QAAction.APPEND_FROM_CSV.value,
-        )
-        return current_df
+        row_series[pascal_col] = clean_val
+    return row_series
 
 
-# Simplified handlers for actions not fully implemented in this script
-def handle_char_fix(row, **kwargs):
-    return row
+def apply_qa_edits(df, qa_path, user, prefix):
+    df_mod = df.copy()
+    src_name, base_dir = qa_path.name, qa_path.parent
+    qa_df = pd.read_csv(qa_path, dtype=str).fillna("")
 
-
-def handle_dedup_semicolon(row, **kwargs):
-    return row
-
-
-ACTION_HANDLERS = {
-    QAAction.DIRECT_SET: handle_direct_set,
-    QAAction.BLANK_VALUE: handle_blank_value,
-    QAAction.REMOVE_ACTING_PREFIX: handle_remove_acting_prefix,
-    QAAction.POLICY_QUERY: handle_policy_query,
-    QAAction.DELETE_RECORD: handle_delete_record,
-    QAAction.APPEND_FROM_CSV: handle_append_from_csv,
-    QAAction.CHAR_FIX: handle_char_fix,
-    QAAction.DEDUP_SEMICOLON: handle_dedup_semicolon,
-}
-
-
-def _handle_row_action(
-    row_series: pd.Series,
-    qa_row: pd.Series,
-    action: QAAction,
-    match: re.Match,
-    feedback_source_name: str,
-    changed_by: str,
-    feedback: str,
-) -> pd.Series | None:
-    """Handles a single row-level action based on the detected rule."""
-    handler = ACTION_HANDLERS.get(action)
-    if not handler:
-        return None
-
-    record_id = qa_row.get("Row(s)")
-    if pd.isna(record_id):
-        return None
-
-    if action == QAAction.DIRECT_SET and match:
-        col = (
-            match.group("column")
-            if "column" in match.groupdict() and match.group("column")
-            else qa_row.get("Column")
-        )
-        parsed_value = match.group("value")
-
-        if col and parsed_value is not None:
-            clean_value = parsed_value.strip()
-            while (
-                len(clean_value) > 1
-                and clean_value.startswith('"')
-                and clean_value.endswith('"')
-            ):
-                clean_value = clean_value[1:-1].strip()
-            while (
-                len(clean_value) > 1
-                and clean_value.startswith("'")
-                and clean_value.endswith("'")
-            ):
-                clean_value = clean_value[1:-1].strip()
-
-            return handle_direct_set(
-                row_series,
-                col,
-                clean_value,
-                record_id,
-                feedback_source_name,
-                changed_by,
-                feedback,
-            )
-
-    elif action in [QAAction.BLANK_VALUE, QAAction.REMOVE_ACTING_PREFIX]:
-        col = qa_row.get("Column")
-        if col:
-            return handler(
-                row_series=row_series,
-                column_to_edit=col,
-                record_id=record_id,
-                feedback_source=feedback_source_name,
-                changed_by=changed_by,
-                notes=feedback,
-            )
-
-    elif action == QAAction.POLICY_QUERY:
-        handle_policy_query(
-            row_series=row_series,
-            column_to_edit=qa_row.get("Column"),
-            original_feedback=feedback,
-            record_id=record_id,
-            feedback_source=feedback_source_name,
-            changed_by=changed_by,
-            notes=feedback,
-        )
-
-    return None
-
-
-def apply_qa_edits(
-    df_golden: pd.DataFrame, df_qa: pd.DataFrame, changed_by: str, qa_filename: str
-) -> pd.DataFrame:
-    df_modified = df_golden.copy()
-    feedback_source_name = pathlib.Path(qa_filename).name
-    base_input_dir = pathlib.Path(qa_filename).parent
-
-    for _, qa_row in df_qa.iterrows():
-        feedback = qa_row.get("feedback")
-        if pd.isna(feedback):
+    for _, qa_row in qa_df.iterrows():
+        feedback = qa_row.get("feedback", "")
+        if not feedback:
             continue
-
         action, match = detect_rule(feedback)
 
         if action == QAAction.DELETE_RECORD and match:
-            record_id = match.group("record_id_to_delete")
-            df_modified = handle_delete_record(
-                df_modified, record_id, feedback_source_name, changed_by, feedback
+            df_mod = handle_delete_record(
+                df_mod,
+                match.group("record_id_to_delete"),
+                src_name,
+                user,
+                feedback,
+                prefix,
             )
             continue
         elif action == QAAction.APPEND_FROM_CSV and match:
-            csv_path = match.group("csv_path_to_add")
-            df_modified = handle_append_from_csv(
-                df_modified,
-                csv_path,
-                base_input_dir,
-                feedback_source_name,
-                changed_by,
+            df_mod = handle_append_from_csv(
+                df_mod,
+                match.group("csv_path_to_add"),
+                base_dir,
+                src_name,
+                user,
                 feedback,
+                prefix,
             )
             continue
 
         record_id = qa_row.get("Row(s)")
-        if pd.isna(record_id) or record_id not in df_modified["RecordID"].values:
+        if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
             continue
 
-        target_indices = df_modified[df_modified["RecordID"] == record_id].index
+        target_indices = df_mod[df_mod["RecordID"] == record_id].index
         for index in target_indices:
-            row_series = df_modified.loc[index].copy()
-            modified_row = _handle_row_action(
-                row_series,
-                qa_row,
-                action,
-                match,
-                feedback_source_name,
-                changed_by,
-                feedback,
-            )
-            if modified_row is not None:
-                df_modified.loc[index] = modified_row
+            row_series = df_mod.loc[index].copy()
+            record_name = row_series.get("Name", "")
 
-    return df_modified
+            if action == QAAction.DIRECT_SET and match:
+                modified_row = _handle_direct_set_action(
+                    row_series,
+                    qa_row,
+                    match,
+                    df_mod,
+                    record_name,
+                    src_name,
+                    user,
+                    prefix,
+                )
+                df_mod.loc[index] = modified_row
+
+            elif action == QAAction.POLICY_QUERY:
+                log_change(
+                    record_id,
+                    record_name,
+                    qa_row.get("Column", "Policy Question"),
+                    "N/A",
+                    "N/A",
+                    src_name,
+                    feedback,
+                    user,
+                    QAAction.POLICY_QUERY,
+                    prefix,
+                )
+    return df_mod
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Apply a QA/edits file to a dataset.")
-    parser.add_argument(
-        "--input_csv",
-        type=pathlib.Path,
-        required=True,
-        help="Path to the input dataset CSV.",
-    )
-    parser.add_argument(
-        "--qa_csv",
-        type=pathlib.Path,
-        required=True,
-        help="Path to the QA/edits CSV file.",
-    )
-    parser.add_argument(
-        "--output_csv",
-        type=pathlib.Path,
-        required=True,
-        help="Path to save the processed dataset CSV.",
-    )
-    parser.add_argument(
-        "--changelog",
-        type=pathlib.Path,
-        required=True,
-        help="Path to save the changelog for this run.",
-    )
-    parser.add_argument(
-        "--changed_by",
-        type=str,
-        required=True,
-        help="Identifier for who is running the script.",
-    )
+    parser = argparse.ArgumentParser(description="Apply a QA/edits file.")
+    parser.add_argument("--input_csv", type=pathlib.Path, required=True)
+    parser.add_argument("--qa_csv", type=pathlib.Path, required=True)
+    parser.add_argument("--output_csv", type=pathlib.Path, required=True)
+    parser.add_argument("--changelog", type=pathlib.Path, required=True)
+    parser.add_argument("--changed_by", type=str, required=True)
     args = parser.parse_args()
-
     try:
         df_input = pd.read_csv(args.input_csv, dtype=str).fillna("")
-        df_qa = pd.read_csv(args.qa_csv, dtype=str).fillna("")
-    except FileNotFoundError as e:
-        print(f"Error: A file was not found - {e}", file=sys.stderr)
+    except FileNotFoundError:
+        print(f"Error: Not found '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
 
-    print("Applying QA edits...")
-    df_processed = apply_qa_edits(df_input, df_qa, args.changed_by, str(args.qa_csv))
-    print("Edits applied successfully.")
+    match = re.search(r"v(\d+_\d+)", args.output_csv.stem)
+    prefix = match.group(0) if match else "v_unknown"
+
+    df_processed = apply_qa_edits(df_input, args.qa_csv, args.changed_by, prefix)
 
     df_processed.to_csv(args.output_csv, index=False, encoding="utf-8-sig")
-    print(f"Processed dataset saved to: {args.output_csv}")
-
-    df_changelog = pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS)
-    df_changelog.to_csv(args.changelog, index=False, encoding="utf-8-sig")
-    print(f"Changelog for edits saved to: {args.changelog}")
-
-    print("\nProcessing complete.")
+    pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS).to_csv(
+        args.changelog, index=False, encoding="utf-8-sig"
+    )
+    print(f"Edits applied. Output: {args.output_csv}, Changelog: {args.changelog}")
 
 
 if __name__ == "__main__":
