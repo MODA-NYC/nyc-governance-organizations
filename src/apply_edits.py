@@ -126,13 +126,26 @@ def handle_delete_record(df, id, src, user, notes, prefix):
 
 
 def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
-    path_obj = (
-        base_dir / path_str
-        if not path_str.startswith("data/")
-        else pathlib.Path(path_str)
-    )
+    csv_path_obj = pathlib.Path(path_str)
+
+    # Determine the correct path.
+    if csv_path_obj.is_absolute() or path_str.startswith("data/"):
+        resolved_csv_path = csv_path_obj
+    else:
+        resolved_csv_path = base_dir / csv_path_obj
+
     try:
-        new_records = pd.read_csv(path_obj, dtype=str).fillna("")
+        # Use 'utf-8-sig' to handle potential BOM characters in the CSV file
+        print(f"📥 Attempting to read records from: {resolved_csv_path}")
+        new_records = pd.read_csv(
+            resolved_csv_path, dtype=str, encoding="utf-8-sig"
+        ).fillna("")
+        print(f"✅ Successfully read {len(new_records)} records from CSV.")
+
+        if new_records.empty:
+            print(f"⚠️ Warning: CSV file for append at '{resolved_csv_path}' is empty.")
+            return df
+
         for _, row in new_records.iterrows():
             log_change(
                 row.get("RecordID", "N/A"),
@@ -146,10 +159,22 @@ def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
                 QAAction.APPEND_FROM_CSV,
                 prefix,
             )
+
         return pd.concat([df, new_records], ignore_index=True)
+
     except FileNotFoundError:
-        print(f"CRITICAL ERROR: File not found at '{path_obj}'.", file=sys.stderr)
-    return df
+        error_msg = (
+            "❌ CRITICAL ERROR: File not found for append operation at "
+            f"'{resolved_csv_path}'."
+        )
+        print(error_msg, file=sys.stderr)
+        return df
+    except Exception as e:
+        error_msg = (
+            "❌ CRITICAL ERROR: An unexpected error occurred during CSV append: " f"{e}"
+        )
+        print(error_msg, file=sys.stderr)
+        return df
 
 
 def _handle_direct_set_action(
