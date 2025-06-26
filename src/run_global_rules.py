@@ -8,7 +8,6 @@ from datetime import datetime
 
 import ftfy
 import pandas as pd
-from nameparser import HumanName
 
 changelog_entries, changelog_id_counter = [], 0
 CHANGELOG_COLUMNS = [
@@ -122,48 +121,6 @@ def apply_global_character_fixing(df, user, prefix):
     return df_processed
 
 
-def populate_officer_name_parts(df, user, prefix):
-    df_processed = df.copy()
-    name_cols = [
-        "PrincipalOfficerFullName",
-        "PrincipalOfficerGivenName",
-        "PrincipalOfficerMiddleNameOrInitial",
-        "PrincipalOfficerFamilyName",
-        "PrincipalOfficerSuffix",
-    ]
-    for col in name_cols:
-        if col not in df_processed.columns:
-            df_processed[col] = ""
-    for i, row in df_processed.iterrows():
-        name_str = row.get("PrincipalOfficerName")
-        if isinstance(name_str, str) and name_str.strip():
-            parsed = HumanName(name_str)
-            updates = {
-                "PrincipalOfficerFullName": name_str,
-                "PrincipalOfficerGivenName": parsed.first,
-                "PrincipalOfficerMiddleNameOrInitial": parsed.middle,
-                "PrincipalOfficerFamilyName": parsed.last,
-                "PrincipalOfficerSuffix": parsed.suffix,
-            }
-            for col, new_val in updates.items():
-                old_val = row.get(col)
-                if new_val and old_val != new_val:
-                    log_change(
-                        row["RecordID"],
-                        row["Name"],
-                        col,
-                        old_val,
-                        new_val,
-                        "System_NameParseRule",
-                        f"Parsed from: '{name_str}'",
-                        user,
-                        "NAME_PARSE_SUCCESS",
-                        prefix,
-                    )
-                    df_processed.loc[i, col] = new_val
-    return df_processed
-
-
 def apply_mayoral_budget_code_rule(df, user, prefix):
     df_processed = df.copy()
     condition = df_processed["OrganizationType"] == "Mayoral Office"
@@ -238,12 +195,25 @@ def main():
         print(f"Error: Not found '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
 
+    # --- Ensure required Principal Officer name columns exist ---
+    print("Ensuring all required name-part columns are present...")
+    name_cols_to_ensure = [
+        "PrincipalOfficerFullName",
+        "PrincipalOfficerGivenName",
+        "PrincipalOfficerMiddleNameOrInitial",
+        "PrincipalOfficerFamilyName",
+        "PrincipalOfficerSuffix",
+    ]
+    for col in name_cols_to_ensure:
+        if col not in df.columns:
+            print(f"Adding missing column: '{col}'")
+            df[col] = ""
+
     match = re.search(r"v(\d+_\d+)", args.output_csv.stem)
     prefix = match.group(0) if match else "v_unknown"
 
     df_processed = apply_global_character_fixing(df, args.changed_by, prefix)
     df_processed = apply_global_deduplication(df_processed, args.changed_by, prefix)
-    df_processed = populate_officer_name_parts(df_processed, args.changed_by, prefix)
     df_processed = apply_mayoral_budget_code_rule(df_processed, args.changed_by, prefix)
     df_processed = format_budget_codes(df_processed, args.changed_by, prefix)
 

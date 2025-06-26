@@ -22,7 +22,7 @@ RULES = {
     r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
     r"^\s*Append records from CSV\s+"
     r"(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": QAAction.APPEND_FROM_CSV,
-    r"Set (?P<column>\w+) to (?P<value>.+)": QAAction.DIRECT_SET,
+    r"Set (?P<column>[\w_]+) to (?P<value>.+)": QAAction.DIRECT_SET,
     r"Set to (?P<value>.+)": QAAction.DIRECT_SET,
     r".*\?": QAAction.POLICY_QUERY,
 }
@@ -42,10 +42,12 @@ CHANGELOG_COLUMNS = [
 
 
 def _get_pascal_case_column(df_columns, provided_col_name):
-    """
-    Finds the correct PascalCase column name from a list of columns,
-    trying snake_case as a fallback.
-    """
+    """Finds the correct PascalCase column name, with a snake_case fallback."""
+    if not provided_col_name or pd.isna(provided_col_name):
+        return None
+
+    provided_col_name = str(provided_col_name).strip()
+
     if provided_col_name in df_columns:
         return provided_col_name
 
@@ -53,7 +55,12 @@ def _get_pascal_case_column(df_columns, provided_col_name):
     if pascal_version in df_columns:
         return pascal_version
 
-    return None  # Return None if no match is found
+    # Final fallback for simple case differences
+    for col in df_columns:
+        if col.lower() == provided_col_name.lower():
+            return col
+
+    return None
 
 
 def log_change(
@@ -70,21 +77,20 @@ def log_change(
 ):
     global changelog_entries, changelog_id_counter
     changelog_id_counter += 1
-    changelog_entries.append(
-        {
-            "ChangeID": f"{version_prefix}_{changelog_id_counter}",
-            "timestamp": datetime.now().isoformat(),
-            "record_id": record_id,
-            "record_name": record_name,
-            "column_changed": column_changed,
-            "old_value": old_value,
-            "new_value": new_value,
-            "feedback_source": feedback_source,
-            "notes": notes,
-            "changed_by": changed_by,
-            "RuleAction": rule_action.value,
-        }
-    )
+    entry = {
+        "ChangeID": f"{version_prefix}_{changelog_id_counter}",
+        "timestamp": datetime.now().isoformat(),
+        "record_id": record_id,
+        "record_name": record_name,
+        "column_changed": column_changed,
+        "old_value": old_value,
+        "new_value": new_value,
+        "feedback_source": feedback_source,
+        "notes": notes,
+        "changed_by": changed_by,
+        "RuleAction": rule_action.value,
+    }
+    changelog_entries.append(entry)
 
 
 def detect_rule(feedback):
@@ -126,26 +132,13 @@ def handle_delete_record(df, id, src, user, notes, prefix):
 
 
 def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
-    csv_path_obj = pathlib.Path(path_str)
-
-    # Determine the correct path.
-    if csv_path_obj.is_absolute() or path_str.startswith("data/"):
-        resolved_csv_path = csv_path_obj
-    else:
-        resolved_csv_path = base_dir / csv_path_obj
-
+    path_obj = (
+        base_dir / path_str
+        if not path_str.startswith("data/")
+        else pathlib.Path(path_str)
+    )
     try:
-        # Use 'utf-8-sig' to handle potential BOM characters in the CSV file
-        print(f"📥 Attempting to read records from: {resolved_csv_path}")
-        new_records = pd.read_csv(
-            resolved_csv_path, dtype=str, encoding="utf-8-sig"
-        ).fillna("")
-        print(f"✅ Successfully read {len(new_records)} records from CSV.")
-
-        if new_records.empty:
-            print(f"⚠️ Warning: CSV file for append at '{resolved_csv_path}' is empty.")
-            return df
-
+        new_records = pd.read_csv(path_obj, dtype=str, encoding="utf-8-sig").fillna("")
         for _, row in new_records.iterrows():
             log_change(
                 row.get("RecordID", "N/A"),
@@ -159,67 +152,107 @@ def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
                 QAAction.APPEND_FROM_CSV,
                 prefix,
             )
-
         return pd.concat([df, new_records], ignore_index=True)
-
     except FileNotFoundError:
-        error_msg = (
-            "❌ CRITICAL ERROR: File not found for append operation at "
-            f"'{resolved_csv_path}'."
+        print(
+            f"❌ CRITICAL ERROR: File not found for append at '{path_obj}'.",
+            file=sys.stderr,
         )
-        print(error_msg, file=sys.stderr)
-        return df
-    except Exception as e:
-        error_msg = (
-            "❌ CRITICAL ERROR: An unexpected error occurred during CSV append: " f"{e}"
-        )
-        print(error_msg, file=sys.stderr)
-        return df
+    return df
 
 
-def _handle_direct_set_action(
-    row_series,
-    qa_row,
-    match,
-    df_mod,
-    record_name,
-    src_name,
-    user,
-    prefix,
+def _process_deletion_or_append(
+    df_mod, action, match, src_name, user, feedback, prefix, base_dir
 ):
-    """Helper function to handle the direct set logic."""
-    provided_col = qa_row.get("Column") or (
-        match.group("column") if "column" in match.groupdict() else None
-    )
-    val_str = match.group("value")
-
-    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
-
-    if pascal_col and val_str is not None:
-        old_val = row_series.get(pascal_col)
-        clean_val = val_str.strip()
-        while (
-            len(clean_val) > 1 and clean_val.startswith('"') and clean_val.endswith('"')
-        ):
-            clean_val = clean_val[1:-1].strip()
-        while (
-            len(clean_val) > 1 and clean_val.startswith("'") and clean_val.endswith("'")
-        ):
-            clean_val = clean_val[1:-1].strip()
-
-        log_change(
-            row_series["RecordID"],
-            record_name,
-            pascal_col,
-            old_val,
-            clean_val,
+    """Handles deletion or appending of records based on the action."""
+    if action == QAAction.DELETE_RECORD:
+        return handle_delete_record(
+            df_mod,
+            match.group("record_id_to_delete"),
             src_name,
-            qa_row.get("feedback"),
             user,
-            QAAction.DIRECT_SET,
+            feedback,
             prefix,
         )
-        row_series[pascal_col] = clean_val
+    if action == QAAction.APPEND_FROM_CSV:
+        return handle_append_from_csv(
+            df_mod,
+            match.group("csv_path_to_add"),
+            base_dir,
+            src_name,
+            user,
+            feedback,
+            prefix,
+        )
+    return df_mod
+
+
+def _apply_direct_set_or_policy_query(
+    row_series, action, match, qa_row, df_mod, src_name, user, feedback, prefix
+):
+    """Applies a direct value set or logs a policy query for a given row."""
+    record_id = row_series["RecordID"]
+    record_name = row_series.get("Name", "")
+
+    if action == QAAction.DIRECT_SET and match:
+        provided_col = qa_row.get("Column") or (
+            match.group("column") if "column" in match.groupdict() else None
+        )
+        pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
+        val_str = match.group("value")
+
+        if not pascal_col:
+            print(
+                f"⚠️ Warning: Skipping edit for RecordID {record_id} "
+                f"due to unresolvable column '{provided_col}'. "
+                f"Feedback: '{feedback}'"
+            )
+            return row_series
+
+        if val_str is not None:
+            old_val = row_series.get(pascal_col)
+            clean_val = val_str.strip()
+            while (
+                len(clean_val) > 1
+                and clean_val.startswith('"')
+                and clean_val.endswith('"')
+            ):
+                clean_val = clean_val[1:-1].strip()
+            while (
+                len(clean_val) > 1
+                and clean_val.startswith("'")
+                and clean_val.endswith("'")
+            ):
+                clean_val = clean_val[1:-1].strip()
+
+            log_change(
+                record_id,
+                record_name,
+                pascal_col,
+                old_val,
+                clean_val,
+                src_name,
+                feedback,
+                user,
+                QAAction.DIRECT_SET,
+                prefix,
+            )
+            row_series[pascal_col] = clean_val
+
+    elif action == QAAction.POLICY_QUERY:
+        pascal_col = _get_pascal_case_column(df_mod.columns, qa_row.get("Column"))
+        log_change(
+            record_id,
+            record_name,
+            pascal_col or "Policy Question",
+            "N/A",
+            "N/A",
+            src_name,
+            feedback,
+            user,
+            QAAction.POLICY_QUERY,
+            prefix,
+        )
     return row_series
 
 
@@ -234,25 +267,9 @@ def apply_qa_edits(df, qa_path, user, prefix):
             continue
         action, match = detect_rule(feedback)
 
-        if action == QAAction.DELETE_RECORD and match:
-            df_mod = handle_delete_record(
-                df_mod,
-                match.group("record_id_to_delete"),
-                src_name,
-                user,
-                feedback,
-                prefix,
-            )
-            continue
-        elif action == QAAction.APPEND_FROM_CSV and match:
-            df_mod = handle_append_from_csv(
-                df_mod,
-                match.group("csv_path_to_add"),
-                base_dir,
-                src_name,
-                user,
-                feedback,
-                prefix,
+        if action in [QAAction.DELETE_RECORD, QAAction.APPEND_FROM_CSV] and match:
+            df_mod = _process_deletion_or_append(
+                df_mod, action, match, src_name, user, feedback, prefix, base_dir
             )
             continue
 
@@ -263,34 +280,19 @@ def apply_qa_edits(df, qa_path, user, prefix):
         target_indices = df_mod[df_mod["RecordID"] == record_id].index
         for index in target_indices:
             row_series = df_mod.loc[index].copy()
-            record_name = row_series.get("Name", "")
+            updated_row = _apply_direct_set_or_policy_query(
+                row_series,
+                action,
+                match,
+                qa_row,
+                df_mod,
+                src_name,
+                user,
+                feedback,
+                prefix,
+            )
+            df_mod.loc[index] = updated_row
 
-            if action == QAAction.DIRECT_SET and match:
-                modified_row = _handle_direct_set_action(
-                    row_series,
-                    qa_row,
-                    match,
-                    df_mod,
-                    record_name,
-                    src_name,
-                    user,
-                    prefix,
-                )
-                df_mod.loc[index] = modified_row
-
-            elif action == QAAction.POLICY_QUERY:
-                log_change(
-                    record_id,
-                    record_name,
-                    qa_row.get("Column", "Policy Question"),
-                    "N/A",
-                    "N/A",
-                    src_name,
-                    feedback,
-                    user,
-                    QAAction.POLICY_QUERY,
-                    prefix,
-                )
     return df_mod
 
 
