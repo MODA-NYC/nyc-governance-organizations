@@ -40,31 +40,25 @@ def main():
         "--output_golden",
         required=True,
         type=pathlib.Path,
-        help=(
-            "Path to save the full, versioned golden dataset (e.g., "
-            "data/output/golden_dataset_v3.csv)."
-        ),
+        help="Path to save the full, versioned golden dataset.",
     )
     parser.add_argument(
         "--output_published",
         required=True,
         type=pathlib.Path,
-        help=(
-            "Path to save the final, transformed, public-facing dataset (e.g., "
-            "data/published/NYCOrgs_v3.csv)."
-        ),
+        help="Path to save the final, transformed, public-facing dataset.",
     )
-
     args = parser.parse_args()
 
     # Load Input CSV
     try:
         df = pd.read_csv(args.input_csv, dtype=str)
     except FileNotFoundError:
-        print(f"Error: Input CSV file not found at '{args.input_csv}'")
+        print(f"Error: Input CSV file not found at '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
 
-    # --- Step 2: Save the full, versioned Golden Dataset ---
+    # --- Step 1: Save the full, versioned Golden Dataset ---
+    # This happens first, before any public-facing transformations.
     print(f"Saving full golden dataset to {args.output_golden}...")
     try:
         args.output_golden.parent.mkdir(parents=True, exist_ok=True)
@@ -74,12 +68,12 @@ def main():
         print(f"Error saving golden dataset: {e}")
         sys.exit(1)
 
-    # --- Step 3: Process and save the Published Dataset ---
+    # --- Step 2: Process and save the Published Dataset ---
     print("\nProcessing data for public export...")
 
     df_public = df.copy()
 
-    # Rename columns
+    # Rename columns for clarity (e.g., GivenName -> FirstName)
     rename_map = {
         "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
         "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
@@ -90,37 +84,31 @@ def main():
     print("Applying filters for public export...")
     rows_before_filter = len(df_public)
 
-    org_chart_col = "InOrgChart"
-    ops_name_col = "Name - Ops"
-
-    in_org_chart = pd.Series([False] * len(df_public), index=df_public.index)
-    has_ops_name = pd.Series([False] * len(df_public), index=df_public.index)
-
-    if org_chart_col in df_public.columns:
-        print(f"Filtering for '{org_chart_col}' is TRUE.")
-        in_org_chart = (
-            df_public[org_chart_col]
-            .astype(str)
-            .str.lower()
-            .map({"true": True})
-            .fillna(False)
-        )
-
-    if ops_name_col in df_public.columns:
-        print(f"Filtering for non-blank '{ops_name_col}'.")
-        has_ops_name = df_public[ops_name_col].notna() & (
-            df_public[ops_name_col].str.strip() != ""
-        )
-
-    df_public = df_public[in_org_chart | has_ops_name].copy()
-
-    rows_after_filter = len(df_public)
-    print(
-        f"Kept {rows_after_filter} rows out of {rows_before_filter} "
-        "after applying combined filter."
+    # Define conditions
+    in_org_chart = (
+        df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
+        .astype(str)
+        .str.lower()
+        .map({"true": True})
+        .fillna(False)
+    )
+    has_ops_name = df_public.get(
+        "Name - Ops", pd.Series([False] * len(df_public))
+    ).notna() & (
+        df_public.get("Name - Ops", pd.Series([""] * len(df_public))).str.strip() != ""
+    )
+    is_mta_exception = (
+        df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
     )
 
-    # Define and select final columns for public output
+    # Apply combined filter
+    df_public = df_public[in_org_chart | has_ops_name | is_mta_exception].copy()
+
+    print(
+        f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
+    )
+
+    # --- Select and order columns for final output ---
     required_output_columns = [
         "RecordID",
         "Name",
@@ -153,7 +141,7 @@ def main():
 
     df_selected = df_public[required_output_columns]
 
-    # Convert headers to snake case
+    # --- Convert headers to snake_case (This is the FINAL transformation) ---
     df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
     print("Converted public column headers to snake_case.")
 
