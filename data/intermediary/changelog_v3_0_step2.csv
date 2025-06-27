@@ -1,0 +1,486 @@
+﻿ChangeID,timestamp,record_id,column_changed,old_value,new_value,feedback_source,notes,changed_by,RuleAction
+1,2025-06-11T14:02:30.256753,NYC_GOID_000026,Description,,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,supplemental_edits_v1.csv,"Set Description to ""The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.""",v3_0_pipeline_run,direct_set
+2,2025-06-11T14:02:30.257163,NYC_GOID_000027,Description,,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,supplemental_edits_v1.csv,"Set Description to ""The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.""",v3_0_pipeline_run,direct_set
+3,2025-06-11T14:02:30.257521,NYC_GOID_000028,Description,,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,supplemental_edits_v1.csv,"Set Description to ""The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.""",v3_0_pipeline_run,direct_set
+4,2025-06-11T14:02:30.257877,NYC_GOID_000029,Description,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,supplemental_edits_v1.csv,"Set Description to ""The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.""",v3_0_pipeline_run,direct_set
+5,2025-06-11T14:02:30.258229,NYC_GOID_000030,Description,,The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.,supplemental_edits_v1.csv,"Set Description to ""The Borough Presidents are the executive officials of each borough. The City Charter gives them authority to: work with the Mayor in preparing the annual executive budget submitted to the City Council and to propose borough budget priorities directly to the council; review and comment on major land use decisions and propose sites for city facilities within their respective boroughs; monitor and modify the delivery of city services within their boroughs; and engage in strategic planning for their boroughs.""",v3_0_pipeline_run,direct_set
+6,2025-06-11T14:02:30.258589,NYC_GOID_000240,Name,Loft Board,New York City Loft Board,supplemental_edits_v1.csv,"Set Name to ""New York City Loft Board""",v3_0_pipeline_run,direct_set
+7,2025-06-11T14:02:30.258923,NYC_GOID_000278,Description,Community Action Board – Dept. of Youth and Community Development,,supplemental_edits_v1.csv,"Set Description to """"",v3_0_pipeline_run,direct_set
+8,2025-06-11T14:02:30.259267,NYC_GOID_000050,Description,"This site is up for historical purposes only. The Charter Revision Commission is charged with reviewing the entire Charter of the City of New York, holding hearings in all five boroughs to solicit public input, and issuing a report outlining findings and recommendations to amend or revise the Charter.","The Charter Revision Commission is charged with reviewing the entire Charter of the City of New York, holding hearings in all five boroughs to solicit public input, and issuing a report outlining findings and recommendations to amend or revise the Charter.",supplemental_edits_v1.csv,"Set Description to ""The Charter Revision Commission is charged with reviewing the entire Charter of the City of New York, holding hearings in all five boroughs to solicit public input, and issuing a report outlining findings and recommendations to amend or revise the Charter.""",v3_0_pipeline_run,direct_set
+9,2025-06-11T14:02:30.259603,NYC_GOID_000312,AlternateOrFormerNames,NYC & Company,,supplemental_edits_v1.csv,"Set AlternateOrFormerNames to """"",v3_0_pipeline_run,direct_set
+10,2025-06-11T14:02:30.259936,NYC_GOID_000248,Acronym,MAYORS FUND,,supplemental_edits_v1.csv,"Set Acronym to """"",v3_0_pipeline_run,direct_set
+11,2025-06-11T14:02:30.260269,NYC_GOID_000234,Acronym,PANY,,supplemental_edits_v1.csv,"Set Acronym to """"",v3_0_pipeline_run,direct_set
+12,2025-06-11T14:02:30.260619,NYC_GOID_000387,Acronym,,PEP,supplemental_edits_v1.csv,"Set Acronym to ""PEP""",v3_0_pipeline_run,direct_set
+13,2025-06-11T14:02:30.260965,NYC_GOID_000387,AlternateOrFormerAcronyms,,,supplemental_edits_v1.csv,"Set AlternateOrFormerAcronyms to """"",v3_0_pipeline_run,direct_set
+14,2025-06-11T14:02:30.261301,NYC_GOID_000276,AlternateOrFormerAcronyms,Mayor's Office of Policy and Planning and Delivery,,supplemental_edits_v1.csv,"Set AlternateOrFormerAcronyms to """"",v3_0_pipeline_run,direct_set
+15,2025-06-11T14:02:30.261641,NYC_GOID_000276,AlternateOrFormerNames,,Mayor's Office of Policy and Planning and Delivery,supplemental_edits_v1.csv,"Set AlternateOrFormerNames to ""Mayor's Office of Policy and Planning and Delivery""",v3_0_pipeline_run,direct_set
+16,2025-06-11T14:02:30.262111,NYC_GOID_000268,PrincipalOfficerName,Jose Bayona,Jd Michaels,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jd Michaels""",v3_0_pipeline_run,direct_set
+17,2025-06-11T14:02:30.262524,NYC_GOID_000276,PrincipalOfficerName,Betsy MacClean,Sherif Soliman,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Sherif Soliman""",v3_0_pipeline_run,direct_set
+18,2025-06-11T14:02:30.262878,NYC_GOID_000276,InOrgChart,,TRUE,supplemental_edits_v1.csv,"Set InOrgChart to ""TRUE""",v3_0_pipeline_run,direct_set
+19,2025-06-11T14:02:30.263237,NYC_GOID_100007,PrincipalOfficerName,Ryan Birchmeier,Kate Smart,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Kate Smart""",v3_0_pipeline_run,direct_set
+20,2025-06-11T14:02:30.263607,NYC_GOID_100010,PrincipalOfficerContactURL,,https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer,supplemental_edits_v1.csv,"Set PrincipalOfficerContactURL to ""https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer""",v3_0_pipeline_run,direct_set
+21,2025-06-11T14:02:30.263954,NYC_GOID_100011,PrincipalOfficerContactURL,,https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer,supplemental_edits_v1.csv,"Set PrincipalOfficerContactURL to ""https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer""",v3_0_pipeline_run,direct_set
+22,2025-06-11T14:02:30.264296,NYC_GOID_100012,PrincipalOfficerContactURL,,https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer,supplemental_edits_v1.csv,"Set PrincipalOfficerContactURL to ""https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer""",v3_0_pipeline_run,direct_set
+23,2025-06-11T14:02:30.264632,NYC_GOID_000166,FoundingYear,,2023,supplemental_edits_v1.csv,"Set FoundingYear to ""2023""",v3_0_pipeline_run,direct_set
+24,2025-06-11T14:02:30.264968,NYC_GOID_000112,FoundingYear,,1989,supplemental_edits_v1.csv,"Set FoundingYear to ""1989""",v3_0_pipeline_run,direct_set
+25,2025-06-11T14:02:30.265308,NYC_GOID_000138,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Department+of+Citywide+Administrative+Services+%28DCAS%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Department+of+Citywide+Administrative+Services+%28DCAS%29""",v3_0_pipeline_run,direct_set
+26,2025-06-11T14:02:30.265655,NYC_GOID_000269,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Mayor%27s+Office+of+Food+Policy+%28MOFP%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Mayor%27s+Office+of+Food+Policy+%28MOFP%29""",v3_0_pipeline_run,direct_set
+27,2025-06-11T14:02:30.265990,NYC_GOID_000328,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=NYC+Service,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=NYC+Service""",v3_0_pipeline_run,direct_set
+28,2025-06-11T14:02:30.266327,NYC_GOID_000377,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+Payroll+Administration+%28OPA%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+Payroll+Administration+%28OPA%29""",v3_0_pipeline_run,direct_set
+29,2025-06-11T14:02:30.266667,NYC_GOID_000027,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Brooklyn+Borough+President+%28BPBK%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Brooklyn+Borough+President+%28BPBK%29""",v3_0_pipeline_run,direct_set
+30,2025-06-11T14:02:30.267002,NYC_GOID_000028,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Manhattan+Borough+President+%28MBPO%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Manhattan+Borough+President+%28MBPO%29""",v3_0_pipeline_run,direct_set
+31,2025-06-11T14:02:30.267335,NYC_GOID_000029,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Queens+Borough+President+%28QBP%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Queens+Borough+President+%28QBP%29""",v3_0_pipeline_run,direct_set
+32,2025-06-11T14:02:30.267925,NYC_GOID_000030,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Staten+Island+Borough+President+%28BPSI%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Staten+Island+Borough+President+%28BPSI%29""",v3_0_pipeline_run,direct_set
+33,2025-06-11T14:02:30.268394,NYC_GOID_000026,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Bronx+Borough+President+%28BPBX%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Bronx+Borough+President+%28BPBX%29""",v3_0_pipeline_run,direct_set
+34,2025-06-11T14:02:30.268767,NYC_GOID_100009,OpenDatasetsURL,,https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+the+City+Clerk+%28OCC%29,supplemental_edits_v1.csv,"Set OpenDatasetsURL to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+the+City+Clerk+%28OCC%29""",v3_0_pipeline_run,direct_set
+35,2025-06-11T14:02:30.269141,NYC_GOID_000161,Name,Deputy Mayor of Health and Human Services,Deputy Mayor for Health and Human Services,supplemental_edits_v1.csv,"Set Name to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,direct_set
+36,2025-06-11T14:02:30.269535,NYC_GOID_000163,Name,Deputy Mayor of Operations,Deputy Mayor for Operations,supplemental_edits_v1.csv,"Set Name to ""Deputy Mayor for Operations""",v3_0_pipeline_run,direct_set
+37,2025-06-11T14:02:30.270176,NYC_GOID_000164,Name,Deputy Mayor of Public Safety,Deputy Mayor for Public Safety,supplemental_edits_v1.csv,"Set Name to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,direct_set
+38,2025-06-11T14:02:30.270887,NYC_GOID_000165,Name,Deputy Mayor of Strategic Initiatives,Deputy Mayor for Strategic Initiatives,supplemental_edits_v1.csv,"Set Name to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,direct_set
+39,2025-06-11T14:02:30.271307,NYC_GOID_000246,Name,Mayor's Chief of Staff,Deputy Mayor for Administration and Chief of Staff,supplemental_edits_v1.csv,"Set Name to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,direct_set
+40,2025-06-11T14:02:30.271683,NYC_GOID_000000,PrincipalOfficerName,,Joseph Morrisroe,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Joseph Morrisroe""",v3_0_pipeline_run,direct_set
+41,2025-06-11T14:02:30.272056,NYC_GOID_000000,PrincipalOfficerTitle,,Deputy Commissioner,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Deputy Commissioner""",v3_0_pipeline_run,direct_set
+42,2025-06-11T14:02:30.272637,NYC_GOID_000003,PrincipalOfficerName,,Sideya Sherman,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Sideya Sherman""",v3_0_pipeline_run,direct_set
+43,2025-06-11T14:02:30.273934,NYC_GOID_000003,PrincipalOfficerTitle,,Chief Equity Officer and Commissioner,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Equity Officer and Commissioner""",v3_0_pipeline_run,direct_set
+44,2025-06-11T14:02:30.274384,NYC_GOID_000007,PrincipalOfficerName,,Lorraine Cortés-Vázquez,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Lorraine Cortés-Vázquez""",v3_0_pipeline_run,direct_set
+45,2025-06-11T14:02:30.274780,NYC_GOID_000007,PrincipalOfficerTitle,,Commissioner,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Commissioner""",v3_0_pipeline_run,direct_set
+46,2025-06-11T14:02:30.275151,NYC_GOID_000012,PrincipalOfficerName,,Risa Weinstock,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Risa Weinstock""",v3_0_pipeline_run,direct_set
+47,2025-06-11T14:02:30.275568,NYC_GOID_000012,PrincipalOfficerTitle,,Chief Executive Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Executive Officer""",v3_0_pipeline_run,direct_set
+48,2025-06-11T14:02:30.276011,NYC_GOID_000015,PrincipalOfficerName,,Melva M. Miller,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Melva M. Miller""",v3_0_pipeline_run,direct_set
+49,2025-06-11T14:02:30.276481,NYC_GOID_000015,PrincipalOfficerTitle,,Chief Executive Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Executive Officer""",v3_0_pipeline_run,direct_set
+50,2025-06-11T14:02:30.276833,NYC_GOID_000017,PrincipalOfficerName,,Tobi Jaiyesimi,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Tobi Jaiyesimi""",v3_0_pipeline_run,direct_set
+51,2025-06-11T14:02:30.277186,NYC_GOID_000017,PrincipalOfficerTitle,,Executive Director and Atlantic Yards Project Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director and Atlantic Yards Project Director""",v3_0_pipeline_run,direct_set
+52,2025-06-11T14:02:30.277528,NYC_GOID_000024,PrincipalOfficerName,,Michelle Morse,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michelle Morse""",v3_0_pipeline_run,direct_set
+53,2025-06-11T14:02:30.277874,NYC_GOID_000024,PrincipalOfficerTitle,,Acting Health Commissioner,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Acting Health Commissioner""",v3_0_pipeline_run,direct_set
+54,2025-06-11T14:02:30.278215,NYC_GOID_000026,PrincipalOfficerName,,Vanessa L. Gibson,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Vanessa L. Gibson""",v3_0_pipeline_run,direct_set
+55,2025-06-11T14:02:30.278547,NYC_GOID_000026,PrincipalOfficerTitle,,Bronx Borough President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Bronx Borough President""",v3_0_pipeline_run,direct_set
+56,2025-06-11T14:02:30.278880,NYC_GOID_000027,PrincipalOfficerName,,Antonio Reynoso,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Antonio Reynoso""",v3_0_pipeline_run,direct_set
+57,2025-06-11T14:02:30.279218,NYC_GOID_000027,PrincipalOfficerTitle,,Brooklyn Borough President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Brooklyn Borough President""",v3_0_pipeline_run,direct_set
+58,2025-06-11T14:02:30.279551,NYC_GOID_000028,PrincipalOfficerName,,Mark D. Levine,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Mark D. Levine""",v3_0_pipeline_run,direct_set
+59,2025-06-11T14:02:30.279894,NYC_GOID_000028,PrincipalOfficerTitle,,Manhattan Borough President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Manhattan Borough President""",v3_0_pipeline_run,direct_set
+60,2025-06-11T14:02:30.280234,NYC_GOID_000029,PrincipalOfficerName,,Donovan J. Richards Jr.,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Donovan J. Richards Jr.""",v3_0_pipeline_run,direct_set
+61,2025-06-11T14:02:30.280600,NYC_GOID_000029,PrincipalOfficerTitle,,Queens Borough President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Queens Borough President""",v3_0_pipeline_run,direct_set
+62,2025-06-11T14:02:30.280933,NYC_GOID_000030,PrincipalOfficerName,,Vito J. Fossella,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Vito J. Fossella""",v3_0_pipeline_run,direct_set
+63,2025-06-11T14:02:30.281263,NYC_GOID_000030,PrincipalOfficerTitle,,Staten Island Borough President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Staten Island Borough President""",v3_0_pipeline_run,direct_set
+64,2025-06-11T14:02:30.281596,NYC_GOID_000034,PrincipalOfficerName,,Eric Landau,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Eric Landau""",v3_0_pipeline_run,direct_set
+65,2025-06-11T14:02:30.281932,NYC_GOID_000034,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+66,2025-06-11T14:02:30.282265,NYC_GOID_000043,PrincipalOfficerName,,Tremaine Wright,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Tremaine Wright""",v3_0_pipeline_run,direct_set
+67,2025-06-11T14:02:30.282604,NYC_GOID_000043,PrincipalOfficerTitle,,Chair,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair""",v3_0_pipeline_run,direct_set
+68,2025-06-11T14:02:30.282936,NYC_GOID_000045,PrincipalOfficerName,,Jason Merwin,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jason Merwin""",v3_0_pipeline_run,direct_set
+69,2025-06-11T14:02:30.283269,NYC_GOID_000045,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+70,2025-06-11T14:02:30.283599,NYC_GOID_000048,PrincipalOfficerName,,Elizabeth W. Smith,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Elizabeth W. Smith""",v3_0_pipeline_run,direct_set
+71,2025-06-11T14:02:30.283933,NYC_GOID_000048,PrincipalOfficerTitle,,President & CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President & CEO""",v3_0_pipeline_run,direct_set
+72,2025-06-11T14:02:30.284377,NYC_GOID_000059,PrincipalOfficerName,,Sean Decatur,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Sean Decatur""",v3_0_pipeline_run,direct_set
+73,2025-06-11T14:02:30.284817,NYC_GOID_000059,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+74,2025-06-11T14:02:30.285309,NYC_GOID_000065,PrincipalOfficerName,,Anne Pasternak,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Anne Pasternak""",v3_0_pipeline_run,direct_set
+75,2025-06-11T14:02:30.286258,NYC_GOID_000065,PrincipalOfficerTitle,,Shelby White and Leon Levy Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Shelby White and Leon Levy Director""",v3_0_pipeline_run,direct_set
+76,2025-06-11T14:02:30.286712,NYC_GOID_000066,PrincipalOfficerName,,Sir Clive Gillinson,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Sir Clive Gillinson""",v3_0_pipeline_run,direct_set
+77,2025-06-11T14:02:30.287091,NYC_GOID_000066,PrincipalOfficerTitle,,Executive and Artistic Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive and Artistic Director""",v3_0_pipeline_run,direct_set
+78,2025-06-11T14:02:30.287872,NYC_GOID_000069,PrincipalOfficerName,,Ellen Keane,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Ellen Keane""",v3_0_pipeline_run,direct_set
+79,2025-06-11T14:02:30.288345,NYC_GOID_000069,PrincipalOfficerTitle,,Executive and Artistic Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive and Artistic Director""",v3_0_pipeline_run,direct_set
+80,2025-06-11T14:02:30.288983,NYC_GOID_000070,PrincipalOfficerName,,Wynton Marsalis,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Wynton Marsalis""",v3_0_pipeline_run,direct_set
+81,2025-06-11T14:02:30.289393,NYC_GOID_000070,PrincipalOfficerTitle,,Managing and Artistic Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Managing and Artistic Director""",v3_0_pipeline_run,direct_set
+82,2025-06-11T14:02:30.289755,NYC_GOID_000071,PrincipalOfficerName,,Lear deBessonet,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Lear deBessonet""",v3_0_pipeline_run,direct_set
+83,2025-06-11T14:02:30.290114,NYC_GOID_000071,PrincipalOfficerTitle,,Artistic Director (incoming),supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Artistic Director (incoming)""",v3_0_pipeline_run,direct_set
+84,2025-06-11T14:02:30.290487,NYC_GOID_000072,PrincipalOfficerName,,Max Hollein,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Max Hollein""",v3_0_pipeline_run,direct_set
+85,2025-06-11T14:02:30.290867,NYC_GOID_000072,PrincipalOfficerTitle,,Marina Kellen French Director and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Marina Kellen French Director and CEO""",v3_0_pipeline_run,direct_set
+86,2025-06-11T14:02:30.291218,NYC_GOID_000075,PrincipalOfficerName,,Glenn D. Lowry,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Glenn D. Lowry""",v3_0_pipeline_run,direct_set
+87,2025-06-11T14:02:30.291712,NYC_GOID_000075,PrincipalOfficerTitle,,David Rockefeller Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""David Rockefeller Director""",v3_0_pipeline_run,direct_set
+88,2025-06-11T14:02:30.292117,NYC_GOID_000077,PrincipalOfficerName,,Jennifer Bernstein,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jennifer Bernstein""",v3_0_pipeline_run,direct_set
+89,2025-06-11T14:02:30.292490,NYC_GOID_000077,PrincipalOfficerTitle,,President and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President and CEO""",v3_0_pipeline_run,direct_set
+90,2025-06-11T14:02:30.293142,NYC_GOID_000078,PrincipalOfficerName,,Jonathan Stafford,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jonathan Stafford""",v3_0_pipeline_run,direct_set
+91,2025-06-11T14:02:30.293527,NYC_GOID_000078,PrincipalOfficerTitle,,Artistic Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Artistic Director""",v3_0_pipeline_run,direct_set
+92,2025-06-11T14:02:30.293887,NYC_GOID_000082,PrincipalOfficerName,,Oskar Eustis,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Oskar Eustis""",v3_0_pipeline_run,direct_set
+93,2025-06-11T14:02:30.294239,NYC_GOID_000082,PrincipalOfficerTitle,,Artistic Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Artistic Director""",v3_0_pipeline_run,direct_set
+94,2025-06-11T14:02:30.294590,NYC_GOID_000091,PrincipalOfficerName,,Thelma Golden,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Thelma Golden""",v3_0_pipeline_run,direct_set
+95,2025-06-11T14:02:30.294940,NYC_GOID_000091,PrincipalOfficerTitle,,Ford Foundation Director and Chief Curator,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Ford Foundation Director and Chief Curator""",v3_0_pipeline_run,direct_set
+96,2025-06-11T14:02:30.295279,NYC_GOID_000094,PrincipalOfficerName,,Adam F. Falk,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Adam F. Falk""",v3_0_pipeline_run,direct_set
+97,2025-06-11T14:02:30.295614,NYC_GOID_000094,PrincipalOfficerTitle,,President and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President and CEO""",v3_0_pipeline_run,direct_set
+98,2025-06-11T14:02:30.295948,NYC_GOID_000098,PrincipalOfficerName,,Dan Garodnick,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Dan Garodnick""",v3_0_pipeline_run,direct_set
+99,2025-06-11T14:02:30.296282,NYC_GOID_000098,PrincipalOfficerTitle,,Chair and Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair and Director""",v3_0_pipeline_run,direct_set
+100,2025-06-11T14:02:30.296630,NYC_GOID_000112,PrincipalOfficerName,,Jumaane Williams,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jumaane Williams""",v3_0_pipeline_run,direct_set
+101,2025-06-11T14:02:30.296970,NYC_GOID_000112,PrincipalOfficerTitle,,Public Advocate (Chair ex officio),supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Public Advocate (Chair ex officio)""",v3_0_pipeline_run,direct_set
+102,2025-06-11T14:02:30.297401,NYC_GOID_000169,PrincipalOfficerName,,Eric Gonzalez,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Eric Gonzalez""",v3_0_pipeline_run,direct_set
+103,2025-06-11T14:02:30.297887,NYC_GOID_000169,PrincipalOfficerTitle,,District Attorney,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""District Attorney""",v3_0_pipeline_run,direct_set
+104,2025-06-11T14:02:30.298316,NYC_GOID_000170,PrincipalOfficerName,,Alvin Bragg Jr.,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Alvin Bragg Jr.""",v3_0_pipeline_run,direct_set
+105,2025-06-11T14:02:30.298762,NYC_GOID_000170,PrincipalOfficerTitle,,District Attorney,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""District Attorney""",v3_0_pipeline_run,direct_set
+106,2025-06-11T14:02:30.299129,NYC_GOID_000172,PrincipalOfficerName,,Michael E. McMahon,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michael E. McMahon""",v3_0_pipeline_run,direct_set
+107,2025-06-11T14:02:30.299486,NYC_GOID_000172,PrincipalOfficerTitle,,District Attorney,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""District Attorney""",v3_0_pipeline_run,direct_set
+108,2025-06-11T14:02:30.300072,NYC_GOID_000175,PrincipalOfficerName,,Regina Myer,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Regina Myer""",v3_0_pipeline_run,direct_set
+109,2025-06-11T14:02:30.300451,NYC_GOID_000175,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+110,2025-06-11T14:02:30.300816,NYC_GOID_000192,PrincipalOfficerName,,Patrick M. Dunn,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Patrick M. Dunn""",v3_0_pipeline_run,direct_set
+111,2025-06-11T14:02:30.301246,NYC_GOID_000192,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+112,2025-06-11T14:02:30.301619,NYC_GOID_000194,PrincipalOfficerName,,Anthony Sama,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Anthony Sama""",v3_0_pipeline_run,direct_set
+113,2025-06-11T14:02:30.301986,NYC_GOID_000194,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+114,2025-06-11T14:02:30.302331,NYC_GOID_000196,PrincipalOfficerName,,Michael Palermo,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michael Palermo""",v3_0_pipeline_run,direct_set
+115,2025-06-11T14:02:30.302676,NYC_GOID_000196,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+116,2025-06-11T14:02:30.303120,NYC_GOID_000204,PrincipalOfficerName,,Alfred C. Cerullo III,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Alfred C. Cerullo III""",v3_0_pipeline_run,direct_set
+117,2025-06-11T14:02:30.303488,NYC_GOID_000204,PrincipalOfficerTitle,,President/CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President/CEO""",v3_0_pipeline_run,direct_set
+118,2025-06-11T14:02:30.303834,NYC_GOID_000208,PrincipalOfficerName,,Steven Cain,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Steven Cain""",v3_0_pipeline_run,direct_set
+119,2025-06-11T14:02:30.304171,NYC_GOID_000208,PrincipalOfficerTitle,,Executive Director/Park Administrator,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director/Park Administrator""",v3_0_pipeline_run,direct_set
+120,2025-06-11T14:02:30.304509,NYC_GOID_000210,PrincipalOfficerName,,Marcel Van Ooyen,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Marcel Van Ooyen""",v3_0_pipeline_run,direct_set
+121,2025-06-11T14:02:30.304839,NYC_GOID_000210,PrincipalOfficerTitle,,President and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President and CEO""",v3_0_pipeline_run,direct_set
+122,2025-06-11T14:02:30.305169,NYC_GOID_000218,PrincipalOfficerName,,Noreen Doyle,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Noreen Doyle""",v3_0_pipeline_run,direct_set
+123,2025-06-11T14:02:30.305504,NYC_GOID_000218,PrincipalOfficerTitle,,President & CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President & CEO""",v3_0_pipeline_run,direct_set
+124,2025-06-11T14:02:30.305831,NYC_GOID_000224,PrincipalOfficerName,,Andrew Kimball,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Andrew Kimball""",v3_0_pipeline_run,direct_set
+125,2025-06-11T14:02:30.306158,NYC_GOID_000224,PrincipalOfficerTitle,,President & CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President & CEO""",v3_0_pipeline_run,direct_set
+126,2025-06-11T14:02:30.306489,NYC_GOID_000230,PrincipalOfficerName,,Terri Carta,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Terri Carta""",v3_0_pipeline_run,direct_set
+127,2025-06-11T14:02:30.306820,NYC_GOID_000230,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+128,2025-06-11T14:02:30.307149,NYC_GOID_000235,PrincipalOfficerName,,Jeanny Pak,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jeanny Pak""",v3_0_pipeline_run,direct_set
+129,2025-06-11T14:02:30.307479,NYC_GOID_000235,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+130,2025-06-11T14:02:30.307811,NYC_GOID_000248,PrincipalOfficerName,,Kate Smith,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Kate Smith""",v3_0_pipeline_run,direct_set
+131,2025-06-11T14:02:30.308143,NYC_GOID_000248,PrincipalOfficerTitle,Executive Director,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+132,2025-06-11T14:02:30.308470,NYC_GOID_000275,PrincipalOfficerName,,Bryan Berge,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Bryan Berge""",v3_0_pipeline_run,direct_set
+133,2025-06-11T14:02:30.308808,NYC_GOID_000275,PrincipalOfficerTitle,,Chief Pension Administrator,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Pension Administrator""",v3_0_pipeline_run,direct_set
+134,2025-06-11T14:02:30.309138,NYC_GOID_000286,PrincipalOfficerName,,Marjorie Velázquez,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Marjorie Velázquez""",v3_0_pipeline_run,direct_set
+135,2025-06-11T14:02:30.309467,NYC_GOID_000286,PrincipalOfficerTitle,,Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Director""",v3_0_pipeline_run,direct_set
+136,2025-06-11T14:02:30.309800,NYC_GOID_000291,PrincipalOfficerName,,Marjorie Sweeney,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Marjorie Sweeney""",v3_0_pipeline_run,direct_set
+137,2025-06-11T14:02:30.310128,NYC_GOID_000291,PrincipalOfficerTitle,,Chief Speechwriter,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Speechwriter""",v3_0_pipeline_run,direct_set
+138,2025-06-11T14:02:30.310462,NYC_GOID_000292,PrincipalOfficerName,,Kayla Mamelak Altus,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Kayla Mamelak Altus""",v3_0_pipeline_run,direct_set
+139,2025-06-11T14:02:30.310792,NYC_GOID_000292,PrincipalOfficerTitle,,Press Secretary,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Press Secretary""",v3_0_pipeline_run,direct_set
+140,2025-06-11T14:02:30.311118,NYC_GOID_000320,PrincipalOfficerName,,Jamie Rubin,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Jamie Rubin""",v3_0_pipeline_run,direct_set
+141,2025-06-11T14:02:30.311443,NYC_GOID_000320,PrincipalOfficerTitle,,Chair,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair""",v3_0_pipeline_run,direct_set
+142,2025-06-11T14:02:30.311786,NYC_GOID_000325,PrincipalOfficerName,,Vlada Kenniff,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Vlada Kenniff""",v3_0_pipeline_run,direct_set
+143,2025-06-11T14:02:30.312119,NYC_GOID_000325,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+144,2025-06-11T14:02:30.312449,NYC_GOID_000344,PrincipalOfficerName,David B. Goldin,Deborah Maher,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Deborah Maher""",v3_0_pipeline_run,direct_set
+145,2025-06-11T14:02:30.312778,NYC_GOID_000344,PrincipalOfficerTitle,Administrative Justice Coordinator,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+146,2025-06-11T14:02:30.313106,NYC_GOID_000351,PrincipalOfficerName,,Amber Cartwright,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Amber Cartwright""",v3_0_pipeline_run,direct_set
+147,2025-06-11T14:02:30.313431,NYC_GOID_000351,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+148,2025-06-11T14:02:30.313770,NYC_GOID_000380,PrincipalOfficerName,,Robert Sarver,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Robert Sarver""",v3_0_pipeline_run,direct_set
+149,2025-06-11T14:02:30.314138,NYC_GOID_000380,PrincipalOfficerTitle,,Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Director""",v3_0_pipeline_run,direct_set
+150,2025-06-11T14:02:30.314477,NYC_GOID_000387,PrincipalOfficerName,,Melissa Aviles-Ramos,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Melissa Aviles-Ramos""",v3_0_pipeline_run,direct_set
+151,2025-06-11T14:02:30.314807,NYC_GOID_000387,PrincipalOfficerTitle,,Chancellor,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chancellor""",v3_0_pipeline_run,direct_set
+152,2025-06-11T14:02:30.315139,NYC_GOID_000394,PrincipalOfficerName,,Morgan Monaco,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Morgan Monaco""",v3_0_pipeline_run,direct_set
+153,2025-06-11T14:02:30.315472,NYC_GOID_000394,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+154,2025-06-11T14:02:30.315818,NYC_GOID_000401,PrincipalOfficerName,,Lois Rosenblatt,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Lois Rosenblatt""",v3_0_pipeline_run,direct_set
+155,2025-06-11T14:02:30.316147,NYC_GOID_000401,PrincipalOfficerTitle,,Public Administrator,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Public Administrator""",v3_0_pipeline_run,direct_set
+156,2025-06-11T14:02:30.316485,NYC_GOID_000405,PrincipalOfficerName,,Deborah Maher,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Deborah Maher""",v3_0_pipeline_run,direct_set
+157,2025-06-11T14:02:30.316811,NYC_GOID_000405,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+158,2025-06-11T14:02:30.317139,NYC_GOID_000412,PrincipalOfficerName,,Edwina Frances Martin,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Edwina Frances Martin""",v3_0_pipeline_run,direct_set
+159,2025-06-11T14:02:30.317472,NYC_GOID_000412,PrincipalOfficerTitle,,Public Administrator,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Public Administrator""",v3_0_pipeline_run,direct_set
+160,2025-06-11T14:02:30.317956,NYC_GOID_000414,PrincipalOfficerName,,Shelton J. Haynes,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Shelton J. Haynes""",v3_0_pipeline_run,direct_set
+161,2025-06-11T14:02:30.318312,NYC_GOID_000414,PrincipalOfficerTitle,,President and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President and CEO""",v3_0_pipeline_run,direct_set
+162,2025-06-11T14:02:30.318644,NYC_GOID_000444,PrincipalOfficerName,,Tom Harris,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Tom Harris""",v3_0_pipeline_run,direct_set
+163,2025-06-11T14:02:30.318985,NYC_GOID_000444,PrincipalOfficerTitle,,President,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President""",v3_0_pipeline_run,direct_set
+164,2025-06-11T14:02:30.319315,NYC_GOID_000451,PrincipalOfficerName,,Julie Stein,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Julie Stein""",v3_0_pipeline_run,direct_set
+165,2025-06-11T14:02:30.319655,NYC_GOID_000451,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+166,2025-06-11T14:02:30.320001,NYC_GOID_000457,PrincipalOfficerName,,Scott Hobbs,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Scott Hobbs""",v3_0_pipeline_run,direct_set
+167,2025-06-11T14:02:30.320336,NYC_GOID_000457,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+168,2025-06-11T14:02:30.320665,NYC_GOID_000460,PrincipalOfficerName,,Michael L. Marrella,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michael L. Marrella""",v3_0_pipeline_run,direct_set
+169,2025-06-11T14:02:30.321002,NYC_GOID_000460,PrincipalOfficerTitle,,Chair,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair""",v3_0_pipeline_run,direct_set
+170,2025-06-11T14:02:30.321333,NYC_GOID_000461,PrincipalOfficerName,,Chris Neale,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Chris Neale""",v3_0_pipeline_run,direct_set
+171,2025-06-11T14:02:30.321664,NYC_GOID_000461,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+172,2025-06-11T14:02:30.321995,NYC_GOID_000462,PrincipalOfficerName,,Rob Speyer,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Rob Speyer""",v3_0_pipeline_run,direct_set
+173,2025-06-11T14:02:30.322327,NYC_GOID_000462,PrincipalOfficerTitle,,Chair,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair""",v3_0_pipeline_run,direct_set
+174,2025-06-11T14:02:30.322666,NYC_GOID_000464,PrincipalOfficerName,,Elizabeth L. Hillman,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Elizabeth L. Hillman""",v3_0_pipeline_run,direct_set
+175,2025-06-11T14:02:30.322995,NYC_GOID_000464,PrincipalOfficerTitle,,President and CEO,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""President and CEO""",v3_0_pipeline_run,direct_set
+176,2025-06-11T14:02:30.323326,NYC_GOID_000465,PrincipalOfficerName,,Khady Kamara Nunez,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Khady Kamara Nunez""",v3_0_pipeline_run,direct_set
+177,2025-06-11T14:02:30.323650,NYC_GOID_000465,PrincipalOfficerTitle,,Executive Director,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Executive Director""",v3_0_pipeline_run,direct_set
+178,2025-06-11T14:02:30.323982,NYC_GOID_000476,PrincipalOfficerName,,Janno Lieber,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Janno Lieber""",v3_0_pipeline_run,direct_set
+179,2025-06-11T14:02:30.324322,NYC_GOID_000476,PrincipalOfficerTitle,,Chair and Chief Executive Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chair and Chief Executive Officer""",v3_0_pipeline_run,direct_set
+180,2025-06-11T14:02:30.324655,NYC_GOID_100002,PrincipalOfficerName,,Bridget G. Brennan,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Bridget G. Brennan""",v3_0_pipeline_run,direct_set
+181,2025-06-11T14:02:30.324985,NYC_GOID_100002,PrincipalOfficerTitle,,Special Narcotics Prosecutor,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Special Narcotics Prosecutor""",v3_0_pipeline_run,direct_set
+182,2025-06-11T14:02:30.325313,NYC_GOID_100008,PrincipalOfficerName,,Caroline Rubinstein-Willis,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Caroline Rubinstein-Willis""",v3_0_pipeline_run,direct_set
+183,2025-06-11T14:02:30.325641,NYC_GOID_100008,PrincipalOfficerTitle,,Associate Director for Digital Communications,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Associate Director for Digital Communications""",v3_0_pipeline_run,direct_set
+184,2025-06-11T14:02:30.325964,NYC_GOID_100009,PrincipalOfficerName,,Michael McSweeney,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michael McSweeney""",v3_0_pipeline_run,direct_set
+185,2025-06-11T14:02:30.326289,NYC_GOID_100009,PrincipalOfficerTitle,,City Clerk and Clerk of the Council,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""City Clerk and Clerk of the Council""",v3_0_pipeline_run,direct_set
+186,2025-06-11T14:02:30.326618,NYC_GOID_100010,PrincipalOfficerName,,Kelly Moan,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Kelly Moan""",v3_0_pipeline_run,direct_set
+187,2025-06-11T14:02:30.326948,NYC_GOID_100010,PrincipalOfficerTitle,,Chief Information Security Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Information Security Officer""",v3_0_pipeline_run,direct_set
+188,2025-06-11T14:02:30.327279,NYC_GOID_100011,PrincipalOfficerName,,Martha Norrick,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Martha Norrick""",v3_0_pipeline_run,direct_set
+189,2025-06-11T14:02:30.327611,NYC_GOID_100011,PrincipalOfficerTitle,,Chief Analytics Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Analytics Officer""",v3_0_pipeline_run,direct_set
+190,2025-06-11T14:02:30.327948,NYC_GOID_100012,PrincipalOfficerName,,Michael Fitzpatrick,supplemental_edits_v1.csv,"Set PrincipalOfficerName to ""Michael Fitzpatrick""",v3_0_pipeline_run,direct_set
+191,2025-06-11T14:02:30.328281,NYC_GOID_100012,PrincipalOfficerTitle,,Chief Privacy Officer,supplemental_edits_v1.csv,"Set PrincipalOfficerTitle to ""Chief Privacy Officer""",v3_0_pipeline_run,direct_set
+192,2025-06-11T14:02:30.329587,NYC_GOID_000000,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+193,2025-06-11T14:02:30.329918,NYC_GOID_000000,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Technology and Innovation""",v3_0_pipeline_run,policy_query
+194,2025-06-11T14:02:30.330207,NYC_GOID_000002,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+195,2025-06-11T14:02:30.330547,NYC_GOID_000002,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+196,2025-06-11T14:02:30.330832,NYC_GOID_000026,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+197,2025-06-11T14:02:30.331147,NYC_GOID_000026,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+198,2025-06-11T14:02:30.331434,NYC_GOID_000027,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+199,2025-06-11T14:02:30.331745,NYC_GOID_000027,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+200,2025-06-11T14:02:30.332029,NYC_GOID_000028,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+201,2025-06-11T14:02:30.332343,NYC_GOID_000028,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+202,2025-06-11T14:02:30.332629,NYC_GOID_000029,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+203,2025-06-11T14:02:30.332943,NYC_GOID_000029,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+204,2025-06-11T14:02:30.333226,NYC_GOID_000030,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+205,2025-06-11T14:02:30.333540,NYC_GOID_000030,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+206,2025-06-11T14:02:30.333827,NYC_GOID_000040,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+207,2025-06-11T14:02:30.334164,NYC_GOID_000040,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+208,2025-06-11T14:02:30.334546,NYC_GOID_000047,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+209,2025-06-11T14:02:30.334896,NYC_GOID_000047,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+210,2025-06-11T14:02:30.335191,NYC_GOID_000052,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+211,2025-06-11T14:02:30.335503,NYC_GOID_000052,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+212,2025-06-11T14:02:30.335791,NYC_GOID_000053,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+213,2025-06-11T14:02:30.336103,NYC_GOID_000053,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+214,2025-06-11T14:02:30.336473,NYC_GOID_000096,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+215,2025-06-11T14:02:30.336846,NYC_GOID_000096,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+216,2025-06-11T14:02:30.337141,NYC_GOID_000097,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+217,2025-06-11T14:02:30.337465,NYC_GOID_000097,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+218,2025-06-11T14:02:30.337755,NYC_GOID_000099,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+219,2025-06-11T14:02:30.338078,NYC_GOID_000099,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+220,2025-06-11T14:02:30.338361,NYC_GOID_000102,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+221,2025-06-11T14:02:30.338654,NYC_GOID_000102,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Engagement""",v3_0_pipeline_run,policy_query
+222,2025-06-11T14:02:30.338935,NYC_GOID_000105,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+223,2025-06-11T14:02:30.339254,NYC_GOID_000105,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+224,2025-06-11T14:02:30.339535,NYC_GOID_000109,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+225,2025-06-11T14:02:30.339855,NYC_GOID_000109,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+226,2025-06-11T14:02:30.340138,NYC_GOID_000111,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+227,2025-06-11T14:02:30.340453,NYC_GOID_000111,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+228,2025-06-11T14:02:30.340730,NYC_GOID_000117,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+229,2025-06-11T14:02:30.341019,NYC_GOID_000117,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Engagement""",v3_0_pipeline_run,policy_query
+230,2025-06-11T14:02:30.341317,NYC_GOID_000123,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+231,2025-06-11T14:02:30.341626,NYC_GOID_000123,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+232,2025-06-11T14:02:30.341907,NYC_GOID_000124,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+233,2025-06-11T14:02:30.342225,NYC_GOID_000124,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+234,2025-06-11T14:02:30.342503,NYC_GOID_000128,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+235,2025-06-11T14:02:30.342787,NYC_GOID_000128,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+236,2025-06-11T14:02:30.343066,NYC_GOID_000135,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+237,2025-06-11T14:02:30.343392,NYC_GOID_000135,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+238,2025-06-11T14:02:30.343668,NYC_GOID_000136,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+239,2025-06-11T14:02:30.343970,NYC_GOID_000136,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+240,2025-06-11T14:02:30.344253,NYC_GOID_000137,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+241,2025-06-11T14:02:30.344604,NYC_GOID_000137,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+242,2025-06-11T14:02:30.344881,NYC_GOID_000138,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+243,2025-06-11T14:02:30.345230,NYC_GOID_000138,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+244,2025-06-11T14:02:30.345509,NYC_GOID_000139,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+245,2025-06-11T14:02:30.345863,NYC_GOID_000139,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+246,2025-06-11T14:02:30.346139,NYC_GOID_000140,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+247,2025-06-11T14:02:30.346439,NYC_GOID_000140,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+248,2025-06-11T14:02:30.346717,NYC_GOID_000141,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+249,2025-06-11T14:02:30.347070,NYC_GOID_000141,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+250,2025-06-11T14:02:30.347352,NYC_GOID_000142,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+251,2025-06-11T14:02:30.347650,NYC_GOID_000142,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+252,2025-06-11T14:02:30.347928,NYC_GOID_000143,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+253,2025-06-11T14:02:30.348211,NYC_GOID_000143,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+254,2025-06-11T14:02:30.348488,NYC_GOID_000144,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+255,2025-06-11T14:02:30.348788,NYC_GOID_000144,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+256,2025-06-11T14:02:30.349076,NYC_GOID_000145,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+257,2025-06-11T14:02:30.349370,NYC_GOID_000145,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+258,2025-06-11T14:02:30.349645,NYC_GOID_000146,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+259,2025-06-11T14:02:30.349974,NYC_GOID_000146,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+260,2025-06-11T14:02:30.350253,NYC_GOID_000148,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+261,2025-06-11T14:02:30.350537,NYC_GOID_000148,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+262,2025-06-11T14:02:30.350822,NYC_GOID_000149,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+263,2025-06-11T14:02:30.351248,NYC_GOID_000149,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+264,2025-06-11T14:02:30.351552,NYC_GOID_000150,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+265,2025-06-11T14:02:30.351889,NYC_GOID_000150,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+266,2025-06-11T14:02:30.352179,NYC_GOID_000151,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+267,2025-06-11T14:02:30.352508,NYC_GOID_000151,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+268,2025-06-11T14:02:30.352792,NYC_GOID_000152,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+269,2025-06-11T14:02:30.353097,NYC_GOID_000152,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+270,2025-06-11T14:02:30.353386,NYC_GOID_000153,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+271,2025-06-11T14:02:30.353739,NYC_GOID_000153,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+272,2025-06-11T14:02:30.354016,NYC_GOID_000154,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+273,2025-06-11T14:02:30.354361,NYC_GOID_000154,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+274,2025-06-11T14:02:30.354645,NYC_GOID_000155,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+275,2025-06-11T14:02:30.354953,NYC_GOID_000155,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Department of Social Services""",v3_0_pipeline_run,policy_query
+276,2025-06-11T14:02:30.355231,NYC_GOID_000156,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+277,2025-06-11T14:02:30.355534,NYC_GOID_000156,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Department of Social Services""",v3_0_pipeline_run,policy_query
+278,2025-06-11T14:02:30.355811,NYC_GOID_000157,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+279,2025-06-11T14:02:30.356113,NYC_GOID_000157,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+280,2025-06-11T14:02:30.356389,NYC_GOID_000158,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+281,2025-06-11T14:02:30.356715,NYC_GOID_000158,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+282,2025-06-11T14:02:30.356994,NYC_GOID_000159,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+283,2025-06-11T14:02:30.357311,NYC_GOID_000159,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+284,2025-06-11T14:02:30.357588,NYC_GOID_000161,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+285,2025-06-11T14:02:30.357877,NYC_GOID_000161,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+286,2025-06-11T14:02:30.358155,NYC_GOID_000162,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+287,2025-06-11T14:02:30.358443,NYC_GOID_000162,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+288,2025-06-11T14:02:30.358720,NYC_GOID_000163,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+289,2025-06-11T14:02:30.359008,NYC_GOID_000163,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+290,2025-06-11T14:02:30.359284,NYC_GOID_000164,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+291,2025-06-11T14:02:30.359567,NYC_GOID_000164,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+292,2025-06-11T14:02:30.359844,NYC_GOID_000165,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+293,2025-06-11T14:02:30.360132,NYC_GOID_000165,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+294,2025-06-11T14:02:30.360410,NYC_GOID_000166,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+295,2025-06-11T14:02:30.360694,NYC_GOID_000166,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+296,2025-06-11T14:02:30.360975,NYC_GOID_000168,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+297,2025-06-11T14:02:30.361284,NYC_GOID_000168,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+298,2025-06-11T14:02:30.361563,NYC_GOID_000169,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+299,2025-06-11T14:02:30.361870,NYC_GOID_000169,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+300,2025-06-11T14:02:30.362145,NYC_GOID_000170,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+301,2025-06-11T14:02:30.362459,NYC_GOID_000170,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+302,2025-06-11T14:02:30.362741,NYC_GOID_000171,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+303,2025-06-11T14:02:30.363046,NYC_GOID_000171,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+304,2025-06-11T14:02:30.363324,NYC_GOID_000172,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+305,2025-06-11T14:02:30.363637,NYC_GOID_000172,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+306,2025-06-11T14:02:30.363917,NYC_GOID_000177,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+307,2025-06-11T14:02:30.364275,NYC_GOID_000177,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+308,2025-06-11T14:02:30.364557,NYC_GOID_000185,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+309,2025-06-11T14:02:30.364855,NYC_GOID_000185,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+310,2025-06-11T14:02:30.365136,NYC_GOID_000190,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+311,2025-06-11T14:02:30.365436,NYC_GOID_000190,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office;Comptroller""",v3_0_pipeline_run,policy_query
+312,2025-06-11T14:02:30.365717,NYC_GOID_000191,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+313,2025-06-11T14:02:30.366022,NYC_GOID_000191,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+314,2025-06-11T14:02:30.366298,NYC_GOID_000193,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+315,2025-06-11T14:02:30.366588,NYC_GOID_000193,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+316,2025-06-11T14:02:30.366864,NYC_GOID_000202,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+317,2025-06-11T14:02:30.367205,NYC_GOID_000202,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+318,2025-06-11T14:02:30.367482,NYC_GOID_000215,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+319,2025-06-11T14:02:30.367931,NYC_GOID_000215,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+320,2025-06-11T14:02:30.368235,NYC_GOID_000216,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+321,2025-06-11T14:02:30.368604,NYC_GOID_000216,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+322,2025-06-11T14:02:30.368893,NYC_GOID_000217,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+323,2025-06-11T14:02:30.369290,NYC_GOID_000217,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+324,2025-06-11T14:02:30.369622,NYC_GOID_000222,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+325,2025-06-11T14:02:30.369962,NYC_GOID_000222,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+326,2025-06-11T14:02:30.370244,NYC_GOID_000226,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+327,2025-06-11T14:02:30.370537,NYC_GOID_000226,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+328,2025-06-11T14:02:30.370819,NYC_GOID_000236,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+329,2025-06-11T14:02:30.371175,NYC_GOID_000236,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+330,2025-06-11T14:02:30.371454,NYC_GOID_000238,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+331,2025-06-11T14:02:30.371741,NYC_GOID_000238,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+332,2025-06-11T14:02:30.372020,NYC_GOID_000244,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+333,2025-06-11T14:02:30.372358,NYC_GOID_000244,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+334,2025-06-11T14:02:30.372639,NYC_GOID_000245,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+335,2025-06-11T14:02:30.372958,NYC_GOID_000245,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+336,2025-06-11T14:02:30.373236,NYC_GOID_000246,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+337,2025-06-11T14:02:30.373521,NYC_GOID_000246,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+338,2025-06-11T14:02:30.373803,NYC_GOID_000248,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+339,2025-06-11T14:02:30.374121,NYC_GOID_000248,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+340,2025-06-11T14:02:30.374400,NYC_GOID_000251,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+341,2025-06-11T14:02:30.374707,NYC_GOID_000251,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+342,2025-06-11T14:02:30.374997,NYC_GOID_000252,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+343,2025-06-11T14:02:30.375311,NYC_GOID_000252,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Policy and Planning""",v3_0_pipeline_run,policy_query
+344,2025-06-11T14:02:30.375588,NYC_GOID_000253,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+345,2025-06-11T14:02:30.375911,NYC_GOID_000253,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+346,2025-06-11T14:02:30.376186,NYC_GOID_000255,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+347,2025-06-11T14:02:30.376526,NYC_GOID_000255,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+348,2025-06-11T14:02:30.376802,NYC_GOID_000256,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+349,2025-06-11T14:02:30.377105,NYC_GOID_000256,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Communications""",v3_0_pipeline_run,policy_query
+350,2025-06-11T14:02:30.377385,NYC_GOID_000257,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+351,2025-06-11T14:02:30.377703,NYC_GOID_000257,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+352,2025-06-11T14:02:30.377990,NYC_GOID_000258,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+353,2025-06-11T14:02:30.378349,NYC_GOID_000258,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+354,2025-06-11T14:02:30.378641,NYC_GOID_000259,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+355,2025-06-11T14:02:30.378965,NYC_GOID_000259,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Community Affairs Unit""",v3_0_pipeline_run,policy_query
+356,2025-06-11T14:02:30.379265,NYC_GOID_000260,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+357,2025-06-11T14:02:30.379609,NYC_GOID_000260,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+358,2025-06-11T14:02:30.379895,NYC_GOID_000261,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+359,2025-06-11T14:02:30.380237,NYC_GOID_000261,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+360,2025-06-11T14:02:30.380521,NYC_GOID_000262,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+361,2025-06-11T14:02:30.380818,NYC_GOID_000262,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Climate Officer""",v3_0_pipeline_run,policy_query
+362,2025-06-11T14:02:30.381095,NYC_GOID_000264,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+363,2025-06-11T14:02:30.381413,NYC_GOID_000264,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+364,2025-06-11T14:02:30.381689,NYC_GOID_000265,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+365,2025-06-11T14:02:30.382028,NYC_GOID_000265,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+366,2025-06-11T14:02:30.382308,NYC_GOID_000266,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+367,2025-06-11T14:02:30.382609,NYC_GOID_000266,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+368,2025-06-11T14:02:30.382886,NYC_GOID_000267,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+369,2025-06-11T14:02:30.383199,NYC_GOID_000267,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+370,2025-06-11T14:02:30.383480,NYC_GOID_000268,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+371,2025-06-11T14:02:30.383784,NYC_GOID_000268,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Communications""",v3_0_pipeline_run,policy_query
+372,2025-06-11T14:02:30.384061,NYC_GOID_000269,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+373,2025-06-11T14:02:30.384487,NYC_GOID_000269,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+374,2025-06-11T14:02:30.384856,NYC_GOID_000270,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+375,2025-06-11T14:02:30.385208,NYC_GOID_000270,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+376,2025-06-11T14:02:30.385508,NYC_GOID_000271,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+377,2025-06-11T14:02:30.385868,NYC_GOID_000271,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+378,2025-06-11T14:02:30.386154,NYC_GOID_000272,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+379,2025-06-11T14:02:30.386449,NYC_GOID_000272,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""First Deputy Mayor""",v3_0_pipeline_run,policy_query
+380,2025-06-11T14:02:30.386731,NYC_GOID_000274,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+381,2025-06-11T14:02:30.387070,NYC_GOID_000274,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+382,2025-06-11T14:02:30.387348,NYC_GOID_000275,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+383,2025-06-11T14:02:30.387641,NYC_GOID_000275,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Department of Finance""",v3_0_pipeline_run,policy_query
+384,2025-06-11T14:02:30.387920,NYC_GOID_000278,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+385,2025-06-11T14:02:30.388260,NYC_GOID_000278,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+386,2025-06-11T14:02:30.388536,NYC_GOID_000279,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+387,2025-06-11T14:02:30.388874,NYC_GOID_000279,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+388,2025-06-11T14:02:30.389149,NYC_GOID_000281,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+389,2025-06-11T14:02:30.389499,NYC_GOID_000281,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+390,2025-06-11T14:02:30.389775,NYC_GOID_000284,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+391,2025-06-11T14:02:30.390098,NYC_GOID_000284,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+392,2025-06-11T14:02:30.390379,NYC_GOID_000286,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+393,2025-06-11T14:02:30.390732,NYC_GOID_000286,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+394,2025-06-11T14:02:30.391008,NYC_GOID_000287,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+395,2025-06-11T14:02:30.391327,NYC_GOID_000287,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+396,2025-06-11T14:02:30.391604,NYC_GOID_000291,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+397,2025-06-11T14:02:30.391900,NYC_GOID_000291,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Director of Communications""",v3_0_pipeline_run,policy_query
+398,2025-06-11T14:02:30.392177,NYC_GOID_000292,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+399,2025-06-11T14:02:30.392482,NYC_GOID_000292,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Communications""",v3_0_pipeline_run,policy_query
+400,2025-06-11T14:02:30.392759,NYC_GOID_000293,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+401,2025-06-11T14:02:30.393049,NYC_GOID_000293,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Engagement""",v3_0_pipeline_run,policy_query
+402,2025-06-11T14:02:30.393327,NYC_GOID_000306,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+403,2025-06-11T14:02:30.393633,NYC_GOID_000306,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+404,2025-06-11T14:02:30.393912,NYC_GOID_000310,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+405,2025-06-11T14:02:30.394265,NYC_GOID_000310,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+406,2025-06-11T14:02:30.394543,NYC_GOID_000312,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+407,2025-06-11T14:02:30.394858,NYC_GOID_000312,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+408,2025-06-11T14:02:30.395136,NYC_GOID_000315,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+409,2025-06-11T14:02:30.395438,NYC_GOID_000315,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+410,2025-06-11T14:02:30.395717,NYC_GOID_000318,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+411,2025-06-11T14:02:30.396040,NYC_GOID_000318,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+412,2025-06-11T14:02:30.396318,NYC_GOID_000319,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+413,2025-06-11T14:02:30.396673,NYC_GOID_000319,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+414,2025-06-11T14:02:30.396957,NYC_GOID_000328,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+415,2025-06-11T14:02:30.397295,NYC_GOID_000328,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+416,2025-06-11T14:02:30.397581,NYC_GOID_000337,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+417,2025-06-11T14:02:30.397911,NYC_GOID_000337,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Media and Entertainment""",v3_0_pipeline_run,policy_query
+418,2025-06-11T14:02:30.398194,NYC_GOID_000344,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+419,2025-06-11T14:02:30.398519,NYC_GOID_000344,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+420,2025-06-11T14:02:30.398800,NYC_GOID_000346,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+421,2025-06-11T14:02:30.399124,NYC_GOID_000346,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+422,2025-06-11T14:02:30.399403,NYC_GOID_000347,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+423,2025-06-11T14:02:30.399746,NYC_GOID_000347,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+424,2025-06-11T14:02:30.400023,NYC_GOID_000349,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+425,2025-06-11T14:02:30.400328,NYC_GOID_000349,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+426,2025-06-11T14:02:30.400606,NYC_GOID_000351,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+427,2025-06-11T14:02:30.400998,NYC_GOID_000351,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Strategic Initiatives""",v3_0_pipeline_run,policy_query
+428,2025-06-11T14:02:30.401357,NYC_GOID_000356,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+429,2025-06-11T14:02:30.401703,NYC_GOID_000356,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Health and Human Services""",v3_0_pipeline_run,policy_query
+430,2025-06-11T14:02:30.401994,NYC_GOID_000361,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+431,2025-06-11T14:02:30.402341,NYC_GOID_000361,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+432,2025-06-11T14:02:30.402622,NYC_GOID_000362,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+433,2025-06-11T14:02:30.402959,NYC_GOID_000362,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+434,2025-06-11T14:02:30.403240,NYC_GOID_000363,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+435,2025-06-11T14:02:30.403584,NYC_GOID_000363,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Climate and Environmental Justice""",v3_0_pipeline_run,policy_query
+436,2025-06-11T14:02:30.403863,NYC_GOID_000364,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+437,2025-06-11T14:02:30.404200,NYC_GOID_000364,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Climate and Environmental Justice""",v3_0_pipeline_run,policy_query
+438,2025-06-11T14:02:30.404480,NYC_GOID_000371,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+439,2025-06-11T14:02:30.404799,NYC_GOID_000371,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Chief Counsel to the Mayor and City Hall""",v3_0_pipeline_run,policy_query
+440,2025-06-11T14:02:30.405078,NYC_GOID_000374,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+441,2025-06-11T14:02:30.405360,NYC_GOID_000374,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+442,2025-06-11T14:02:30.405667,NYC_GOID_000377,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+443,2025-06-11T14:02:30.405963,NYC_GOID_000377,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office;Comptroller""",v3_0_pipeline_run,policy_query
+444,2025-06-11T14:02:30.406238,NYC_GOID_000380,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+445,2025-06-11T14:02:30.406574,NYC_GOID_000380,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Administration and Chief of Staff""",v3_0_pipeline_run,policy_query
+446,2025-06-11T14:02:30.406848,NYC_GOID_000382,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+447,2025-06-11T14:02:30.407131,NYC_GOID_000382,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office""",v3_0_pipeline_run,policy_query
+448,2025-06-11T14:02:30.407406,NYC_GOID_000389,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+449,2025-06-11T14:02:30.407711,NYC_GOID_000389,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Public Safety""",v3_0_pipeline_run,policy_query
+450,2025-06-11T14:02:30.407987,NYC_GOID_000392,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+451,2025-06-11T14:02:30.408281,NYC_GOID_000392,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office;Comptroller""",v3_0_pipeline_run,policy_query
+452,2025-06-11T14:02:30.408556,NYC_GOID_000396,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+453,2025-06-11T14:02:30.408861,NYC_GOID_000396,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""The People of the City of New York""",v3_0_pipeline_run,policy_query
+454,2025-06-11T14:02:30.409139,NYC_GOID_000397,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+455,2025-06-11T14:02:30.409489,NYC_GOID_000397,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor of Housing Economic and Workforce Development""",v3_0_pipeline_run,policy_query
+456,2025-06-11T14:02:30.409770,NYC_GOID_000416,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+457,2025-06-11T14:02:30.410067,NYC_GOID_000416,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+458,2025-06-11T14:02:30.410343,NYC_GOID_000436,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+459,2025-06-11T14:02:30.410640,NYC_GOID_000436,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Operations""",v3_0_pipeline_run,policy_query
+460,2025-06-11T14:02:30.410920,NYC_GOID_000468,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+461,2025-06-11T14:02:30.411242,NYC_GOID_000468,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Equity and Racial Justice""",v3_0_pipeline_run,policy_query
+462,2025-06-11T14:02:30.411517,NYC_GOID_100001,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+463,2025-06-11T14:02:30.412620,NYC_GOID_100001,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of the Borough President of The Bronx;Office of the Borough President of Brooklyn;Office of the Borough President of Manhattan;Office of the Borough President of Queens;Office of the Borough President of Staten Island""",v3_0_pipeline_run,policy_query
+464,2025-06-11T14:02:30.412895,NYC_GOID_100002,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+465,2025-06-11T14:02:30.413804,NYC_GOID_100002,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Bronx County District Attorney's Office;Brooklyn District Attorney's Office;Manhattan District Attorney's Office;Queens District Attorney's Office;Office of the District Attorney Richmond County""",v3_0_pipeline_run,policy_query
+466,2025-06-11T14:02:30.414078,NYC_GOID_100003,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+467,2025-06-11T14:02:30.414396,NYC_GOID_100003,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Equity and Racial Justice""",v3_0_pipeline_run,policy_query
+468,2025-06-11T14:02:30.414669,NYC_GOID_100004,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+469,2025-06-11T14:02:30.414986,NYC_GOID_100004,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Equity and Racial Justice""",v3_0_pipeline_run,policy_query
+470,2025-06-11T14:02:30.415259,NYC_GOID_100005,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+471,2025-06-11T14:02:30.415550,NYC_GOID_100005,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Department of Finance""",v3_0_pipeline_run,policy_query
+472,2025-06-11T14:02:30.415827,NYC_GOID_100006,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+473,2025-06-11T14:02:30.416163,NYC_GOID_100006,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Mayor's Office of Climate and Environmental Justice""",v3_0_pipeline_run,policy_query
+474,2025-06-11T14:02:30.416438,NYC_GOID_100007,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+475,2025-06-11T14:02:30.416742,NYC_GOID_100007,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Communications""",v3_0_pipeline_run,policy_query
+476,2025-06-11T14:02:30.417018,NYC_GOID_100008,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+477,2025-06-11T14:02:30.417317,NYC_GOID_100008,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Deputy Mayor for Communications""",v3_0_pipeline_run,policy_query
+478,2025-06-11T14:02:30.417758,NYC_GOID_100009,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+479,2025-06-11T14:02:30.418099,NYC_GOID_100009,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""City Council""",v3_0_pipeline_run,policy_query
+480,2025-06-11T14:02:30.418398,NYC_GOID_100010,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+481,2025-06-11T14:02:30.418721,NYC_GOID_100010,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Technology and Innovation""",v3_0_pipeline_run,policy_query
+482,2025-06-11T14:02:30.419009,NYC_GOID_100011,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+483,2025-06-11T14:02:30.419334,NYC_GOID_100011,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Technology and Innovation""",v3_0_pipeline_run,policy_query
+484,2025-06-11T14:02:30.419620,NYC_GOID_100012,InOrgChart,N/A,N/A,supplemental_edits_v1.csv,"Set to ""TRUE""",v3_0_pipeline_run,policy_query
+485,2025-06-11T14:02:30.419941,NYC_GOID_100012,ReportsTo,N/A,N/A,supplemental_edits_v1.csv,"Set to ""Office of Technology and Innovation""",v3_0_pipeline_run,policy_query

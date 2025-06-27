@@ -27,7 +27,8 @@ def main():
     parser = argparse.ArgumentParser(
         description=(
             "Processes a dataset CSV for final export, creating a versioned golden "
-            "copy and a public-facing, transformed version."
+            "copy and a public-facing, transformed version, both in the "
+            "/published directory."
         )
     )
     parser.add_argument(
@@ -40,25 +41,30 @@ def main():
         "--output_golden",
         required=True,
         type=pathlib.Path,
-        help="Path to save the full, versioned golden dataset.",
+        help=(
+            "Path to save the full, versioned golden dataset (e.g., "
+            "data/published/NYCGO_golden_dataset_v3.csv)."
+        ),
     )
     parser.add_argument(
         "--output_published",
         required=True,
         type=pathlib.Path,
-        help="Path to save the final, transformed, public-facing dataset.",
+        help=(
+            "Path to save the final, transformed, public-facing dataset (e.g., "
+            "data/published/NYCGovernanceOrganizations_v3.csv)."
+        ),
     )
+
     args = parser.parse_args()
 
-    # Load Input CSV
     try:
         df = pd.read_csv(args.input_csv, dtype=str)
     except FileNotFoundError:
-        print(f"Error: Input CSV file not found at '{args.input_csv}'", file=sys.stderr)
+        print(f"Error: Input CSV file not found at '{args.input_csv}'")
         sys.exit(1)
 
-    # --- Step 1: Save the full, versioned Golden Dataset ---
-    # This happens first, before any public-facing transformations.
+    # --- Step 1: Save the full, versioned Golden Dataset to the PUBLISHED directory ---
     print(f"Saving full golden dataset to {args.output_golden}...")
     try:
         args.output_golden.parent.mkdir(parents=True, exist_ok=True)
@@ -73,42 +79,33 @@ def main():
 
     df_public = df.copy()
 
-    # Rename columns for clarity (e.g., GivenName -> FirstName)
-    rename_map = {
-        "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
-        "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
-    }
-    df_public.rename(columns=rename_map, inplace=True)
-
-    # --- Filter for records to include in public output ---
-    print("Applying filters for public export...")
-    rows_before_filter = len(df_public)
-
-    # Define conditions
-    in_org_chart = (
-        df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
-        .astype(str)
-        .str.lower()
-        .map({"true": True})
-        .fillna(False)
-    )
-    has_ops_name = df_public.get(
-        "Name - Ops", pd.Series([False] * len(df_public))
-    ).notna() & (
-        df_public.get("Name - Ops", pd.Series([""] * len(df_public))).str.strip() != ""
-    )
-    is_mta_exception = (
-        df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
+    # Rename, filter, and select columns...
+    df_public.rename(
+        columns={
+            "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
+            "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
+        },
+        inplace=True,
     )
 
-    # Apply combined filter
-    df_public = df_public[in_org_chart | has_ops_name | is_mta_exception].copy()
+    # Compound filter logic
+    if "InOrgChart" in df_public.columns:
+        in_org_chart = df_public["InOrgChart"].astype(str)
+        in_org_chart = in_org_chart.str.lower()
+        in_org_chart = in_org_chart.map({"true": True})
+        in_org_chart = in_org_chart.fillna(False)
+    else:
+        in_org_chart = pd.Series([False] * len(df_public), index=df_public.index)
 
-    print(
-        f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
-    )
+    if "Name - Ops" in df_public.columns:
+        has_ops_name = df_public["Name - Ops"].notna() & (
+            df_public["Name - Ops"].str.strip() != ""
+        )
+    else:
+        has_ops_name = pd.Series([False] * len(df_public), index=df_public.index)
 
-    # --- Select and order columns for final output ---
+    df_public = df_public[in_org_chart | has_ops_name].copy()
+
     required_output_columns = [
         "RecordID",
         "Name",
@@ -132,18 +129,10 @@ def main():
         "ReportsTo",
     ]
 
-    missing_cols = [
-        col for col in required_output_columns if col not in df_public.columns
+    df_selected = df_public[
+        [col for col in required_output_columns if col in df_public.columns]
     ]
-    if missing_cols:
-        print(f"Error: Expected columns missing for public export: {missing_cols}")
-        sys.exit(1)
-
-    df_selected = df_public[required_output_columns]
-
-    # --- Convert headers to snake_case (This is the FINAL transformation) ---
     df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
-    print("Converted public column headers to snake_case.")
 
     # Save final published file
     try:

@@ -151,7 +151,6 @@ def format_budget_codes(df, user, prefix):
     df_processed = df.copy()
     if "BudgetCode" not in df_processed.columns:
         return df_processed
-    new_codes = df_processed["BudgetCode"].copy()
     mask = df_processed["BudgetCode"].notna() & (
         df_processed["BudgetCode"].astype(str).str.strip() != ""
     )
@@ -172,13 +171,12 @@ def format_budget_codes(df, user, prefix):
                     "FORMAT_BUDGET_CODE",
                     prefix,
                 )
-                new_codes.loc[i] = new_val
+                df_processed.loc[i, "BudgetCode"] = new_val
         except (ValueError, TypeError):
             print(
                 f"Warning: Could not format non-numeric BudgetCode '{old_val}' "
                 f"for RecordID {df_processed.loc[i, 'RecordID']}."
             )
-    df_processed["BudgetCode"] = new_codes.astype(str)
     return df_processed
 
 
@@ -195,8 +193,9 @@ def main():
         print(f"Error: Not found '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
 
-    # --- Ensure required Principal Officer name columns exist ---
-    print("Ensuring all required name-part columns are present...")
+    match = re.search(r"v(\d+_\d+)", args.output_csv.stem)
+    prefix = match.group(0) if match else "v_unknown"
+
     name_cols_to_ensure = [
         "PrincipalOfficerFullName",
         "PrincipalOfficerGivenName",
@@ -208,9 +207,6 @@ def main():
         if col not in df.columns:
             print(f"Adding missing column: '{col}'")
             df[col] = ""
-
-    match = re.search(r"v(\d+_\d+)", args.output_csv.stem)
-    prefix = match.group(0) if match else "v_unknown"
 
     df_processed = apply_global_character_fixing(df, args.changed_by, prefix)
     df_processed = apply_global_deduplication(df_processed, args.changed_by, prefix)

@@ -1,0 +1,58 @@
+﻿ChangeID,timestamp,record_id,column_changed,old_value,new_value,feedback_source,notes,changed_by,RuleAction
+1,2025-06-17T15:03:29.356482,NYC_GOID_000139,PrincipalOfficerGivenName,Vilda,Vilda Vera,20250617_edits_to_make.csv,"Set to ""Vilda Vera""",v0_9_pipeline_run,direct_set
+2,2025-06-17T15:03:29.356784,NYC_GOID_000143,PrincipalOfficerFamilyName,Ramos,Aviles-Ramos,20250617_edits_to_make.csv,"Set to ""Aviles-Ramos""",v0_9_pipeline_run,direct_set
+3,2025-06-17T15:03:29.357025,NYC_GOID_000143,PrincipalOfficerFullName,Melissa Aviles Ramos,"Melissa Aviles-Ramos""",20250617_edits_to_make.csv,"Set to Melissa Aviles-Ramos""",v0_9_pipeline_run,direct_set
+4,2025-06-17T15:03:29.357257,NYC_GOID_000236,PrincipalOfficerGivenName,Sarah,Lisa,20250617_edits_to_make.csv,"Set to ""Lisa""",v0_9_pipeline_run,direct_set
+5,2025-06-17T15:03:29.357488,NYC_GOID_000236,PrincipalOfficerFamilyName,Carroll,Kersavage,20250617_edits_to_make.csv,"Set to ""Kersavage""",v0_9_pipeline_run,direct_set
+6,2025-06-17T15:03:29.357714,NYC_GOID_000236,PrincipalOfficerFullName,Sarah Carroll,Lisa Kersavage,20250617_edits_to_make.csv,"Set to ""Lisa Kersavage""",v0_9_pipeline_run,direct_set
+7,2025-06-17T15:03:29.357938,NYC_GOID_000236,PrincipalOfficerTitle,Chair,Executive Director,20250617_edits_to_make.csv,"Set to ""Executive Director""",v0_9_pipeline_run,direct_set
+8,2025-06-17T15:03:29.358164,NYC_GOID_000264,PrincipalOfficerGivenName,Lisa,Kim,20250617_edits_to_make.csv,"Set to ""Kim""",v0_9_pipeline_run,direct_set
+9,2025-06-17T15:03:29.358403,NYC_GOID_000264,PrincipalOfficerFamilyName,Flores,Yu,20250617_edits_to_make.csv,"Set to ""Yu""",v0_9_pipeline_run,direct_set
+10,2025-06-17T15:03:29.358634,NYC_GOID_000264,PrincipalOfficerFullName,Lisa Flores,Kim Yu,20250617_edits_to_make.csv,"Set to ""Kim Yu""",v0_9_pipeline_run,direct_set
+11,2025-06-17T15:03:29.358863,NYC_GOID_000276,PrincipalOfficerGivenName,Sherif,Marc,20250617_edits_to_make.csv,"Set to ""Marc""",v0_9_pipeline_run,direct_set
+12,2025-06-17T15:03:29.359094,NYC_GOID_000276,PrincipalOfficerFamilyName,Soliman,Heinrich,20250617_edits_to_make.csv,"Set to ""Heinrich""",v0_9_pipeline_run,direct_set
+13,2025-06-17T15:03:29.359321,NYC_GOID_000276,PrincipalOfficerFullName,Sherif Soliman,Marc Heinrich,20250617_edits_to_make.csv,"Set to ""Marc Heinrich""",v0_9_pipeline_run,direct_set
+14,2025-06-17T15:03:29.359542,NYC_GOID_000356,PrincipalOfficerGivenName,Michael,Eva,20250617_edits_to_make.csv,"Set to ""Eva""",v0_9_pipeline_run,direct_set
+15,2025-06-17T15:03:29.359763,NYC_GOID_000356,PrincipalOfficerFamilyName,Appleton,Wong,20250617_edits_to_make.csv,"Set to ""Wong""",v0_9_pipeline_run,direct_set
+16,2025-06-17T15:03:29.359986,NYC_GOID_000356,PrincipalOfficerFullName,Michael Appleton,Eva Wong,20250617_edits_to_make.csv,"Set to ""Eva Wong""",v0_9_pipeline_run,direct_set
+17,2025-06-17T15:03:29.360212,NYC_GOID_000003,URL,,https://www.nyc.gov/office-of-the-mayor/news/267-23/mayor-adams-advisory-board-help-guide-city-s-implementation-racial-justice-charter,20250617_edits_to_make.csv,"Set to ""https://www.nyc.gov/office-of-the-mayor/news/267-23/mayor-adams-advisory-board-help-guide-city-s-implementation-racial-justice-charter""",v0_9_pipeline_run,direct_set
+18,2025-06-17T15:03:29.360434,NYC_GOID_000016,URL,,https://esd.ny.gov/atlantic-yards-community-development-corporation,20250617_edits_to_make.csv,"Set to ""https://esd.ny.gov/atlantic-yards-community-development-corporation""",v0_9_pipeline_run,direct_set
+19,2025-06-17T15:03:29.360655,NYC_GOID_000081,URL,https://www.momaps1.org/en,https://www.momaps1.org/,20250617_edits_to_make.csv,"Set to ""https://www.momaps1.org/""",v0_9_pipeline_run,direct_set
+20,2025-06-17T15:03:29.360883,NYC_GOID_000098,URL,https://www.nyc.gov/site/planning/about/commission.page,https://www.nyc.gov/content/planning/pages/commission,20250617_edits_to_make.csv,"Set to ""https://www.nyc.gov/content/planning/pages/commission""",v0_9_pipeline_run,direct_set
+21,2025-06-17T15:03:29.361111,NYC_GOID_000116,URL,,https://www1.nyc.gov/site/dycd/involved/boards-and-councils/community-action-board.page,20250617_edits_to_make.csv,"Set to ""https://www1.nyc.gov/site/dycd/involved/boards-and-councils/community-action-board.page""",v0_9_pipeline_run,direct_set
+22,2025-06-17T15:03:29.361332,NYC_GOID_000201,URL,,https://www.nyc.gov/site/getstuffbuilt/initiatives/get-stuff-built.page,20250617_edits_to_make.csv,"Set to ""https://www.nyc.gov/site/getstuffbuilt/initiatives/get-stuff-built.page""",v0_9_pipeline_run,direct_set
+23,2025-06-17T15:03:29.361555,NYC_GOID_000217,URL,https://www.nyc.gov/site/recovery/index.page,https://www1.nyc.gov/site/housingrecovery/index.page,20250617_edits_to_make.csv,"Set to ""https://www1.nyc.gov/site/housingrecovery/index.page""",v0_9_pipeline_run,direct_set
+24,2025-06-17T15:03:29.361870,NYC_GOID_000222,URL,http://www.ibo.nyc.ny.us/index.html,https://www.ibo.nyc.ny.us/,20250617_edits_to_make.csv,"Set to ""https://www.ibo.nyc.ny.us/""",v0_9_pipeline_run,direct_set
+25,2025-06-17T15:03:29.362215,NYC_GOID_000248,URL,https://www1.nyc.gov/site/fund/about/board-of-directors.page,https://www.nyc.gov/site/fund/index.page,20250617_edits_to_make.csv,"Set to ""https://www.nyc.gov/site/fund/index.page""",v0_9_pipeline_run,direct_set
+26,2025-06-17T15:03:29.362549,NYC_GOID_000309,URL,,https://www.nyc.gov/assets/mwbe/?page=mwbe-advisory-council,20250617_edits_to_make.csv,"Set to ""https://www.nyc.gov/assets/mwbe/?page=mwbe-advisory-council""",v0_9_pipeline_run,direct_set
+27,2025-06-17T15:03:29.362971,NYC_GOID_000318,URL,https://www.nychealthandhospitals.org/?redirect,https://www.nychealthandhospitals.org/,20250617_edits_to_make.csv,"Set to ""https://www.nychealthandhospitals.org/""",v0_9_pipeline_run,direct_set
+28,2025-06-17T15:03:29.363272,NYC_GOID_000026,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+29,2025-06-17T15:03:29.363545,NYC_GOID_000027,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+30,2025-06-17T15:03:29.363808,NYC_GOID_000028,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+31,2025-06-17T15:03:29.364052,NYC_GOID_000029,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+32,2025-06-17T15:03:29.364289,NYC_GOID_000030,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+33,2025-06-17T15:03:29.364522,NYC_GOID_000097,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+34,2025-06-17T15:03:29.364753,NYC_GOID_000123,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+35,2025-06-17T15:03:29.364977,NYC_GOID_000168,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+36,2025-06-17T15:03:29.365205,NYC_GOID_000169,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+37,2025-06-17T15:03:29.365429,NYC_GOID_000170,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+38,2025-06-17T15:03:29.365654,NYC_GOID_000171,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+39,2025-06-17T15:03:29.365876,NYC_GOID_000172,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+40,2025-06-17T15:03:29.366099,NYC_GOID_000222,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+41,2025-06-17T15:03:29.366321,NYC_GOID_000251,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+42,2025-06-17T15:03:29.366549,NYC_GOID_000396,ReportsTo,The People of the City of New York,,20250617_edits_to_make.csv,"Set to """"",v0_9_pipeline_run,direct_set
+43,2025-06-17T15:03:29.366771,NYC_GOID_000143,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+44,2025-06-17T15:03:29.366997,NYC_GOID_000374,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+45,2025-06-17T15:03:29.367220,NYC_GOID_000382,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+46,2025-06-17T15:03:29.367441,NYC_GOID_000246,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+47,2025-06-17T15:03:29.367669,NYC_GOID_000128,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+48,2025-06-17T15:03:29.367891,NYC_GOID_000226,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+49,2025-06-17T15:03:29.368113,NYC_GOID_000226,AlternateOrFormerNames,,Mayor's Office of Office of Intergovernmental Affairs,20250617_edits_to_make.csv,"Set to ""Mayor's Office of Office of Intergovernmental Affairs""",v0_9_pipeline_run,direct_set
+50,2025-06-17T15:03:29.368337,NYC_GOID_000185,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+51,2025-06-17T15:03:29.368560,NYC_GOID_000193,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+52,2025-06-17T15:03:29.368796,NYC_GOID_000238,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+53,2025-06-17T15:03:29.369039,NYC_GOID_000148,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+54,2025-06-17T15:03:29.369283,NYC_GOID_000389,ReportsTo,Deputy Mayor for Public Safety,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+55,2025-06-17T15:03:29.369512,NYC_GOID_000164,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+56,2025-06-17T15:03:29.369739,NYC_GOID_000166,ReportsTo,Mayor's Office,Mayor,20250617_edits_to_make.csv,"Set to ""Mayor""",v0_9_pipeline_run,direct_set
+57,2025-06-17T15:03:29.369965,NYC_GOID_000251,BudgetCode,,002,20250617_edits_to_make.csv,"Set to ""002""",v0_9_pipeline_run,direct_set

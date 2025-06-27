@@ -1,0 +1,259 @@
+﻿ChangeID,timestamp,record_id,column_changed,old_value,new_value,feedback_source,notes,changed_by,RuleAction
+1,2025-06-11T17:08:40.568464,NYC_GOID_000000,PrincipalOfficerFullName,,Joseph Morrisroe,System_NameParseRule,Parsed from: 'Joseph Morrisroe',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+2,2025-06-11T17:08:40.568550,NYC_GOID_000000,PrincipalOfficerGivenName,,Joseph,System_NameParseRule,Parsed from: 'Joseph Morrisroe',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+3,2025-06-11T17:08:40.568586,NYC_GOID_000000,PrincipalOfficerFamilyName,,Morrisroe,System_NameParseRule,Parsed from: 'Joseph Morrisroe',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+4,2025-06-11T17:08:40.568735,NYC_GOID_000003,PrincipalOfficerFullName,,Sideya Sherman,System_NameParseRule,Parsed from: 'Sideya Sherman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+5,2025-06-11T17:08:40.568771,NYC_GOID_000003,PrincipalOfficerGivenName,,Sideya,System_NameParseRule,Parsed from: 'Sideya Sherman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+6,2025-06-11T17:08:40.568802,NYC_GOID_000003,PrincipalOfficerFamilyName,,Sherman,System_NameParseRule,Parsed from: 'Sideya Sherman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+7,2025-06-11T17:08:40.569172,NYC_GOID_000007,PrincipalOfficerFullName,,Lorraine Cortés-Vázquez,System_NameParseRule,Parsed from: 'Lorraine Cortés-Vázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+8,2025-06-11T17:08:40.569210,NYC_GOID_000007,PrincipalOfficerGivenName,,Lorraine,System_NameParseRule,Parsed from: 'Lorraine Cortés-Vázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+9,2025-06-11T17:08:40.569240,NYC_GOID_000007,PrincipalOfficerFamilyName,,Cortés-Vázquez,System_NameParseRule,Parsed from: 'Lorraine Cortés-Vázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+10,2025-06-11T17:08:40.569384,NYC_GOID_000012,PrincipalOfficerFullName,,Risa Weinstock,System_NameParseRule,Parsed from: 'Risa Weinstock',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+11,2025-06-11T17:08:40.569436,NYC_GOID_000012,PrincipalOfficerGivenName,,Risa,System_NameParseRule,Parsed from: 'Risa Weinstock',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+12,2025-06-11T17:08:40.569492,NYC_GOID_000012,PrincipalOfficerFamilyName,,Weinstock,System_NameParseRule,Parsed from: 'Risa Weinstock',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+13,2025-06-11T17:08:40.569632,NYC_GOID_000015,PrincipalOfficerFullName,,Melva M. Miller,System_NameParseRule,Parsed from: 'Melva M. Miller',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+14,2025-06-11T17:08:40.569669,NYC_GOID_000015,PrincipalOfficerGivenName,,Melva,System_NameParseRule,Parsed from: 'Melva M. Miller',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+15,2025-06-11T17:08:40.569699,NYC_GOID_000015,PrincipalOfficerMiddleNameOrInitial,,M.,System_NameParseRule,Parsed from: 'Melva M. Miller',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+16,2025-06-11T17:08:40.569726,NYC_GOID_000015,PrincipalOfficerFamilyName,,Miller,System_NameParseRule,Parsed from: 'Melva M. Miller',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+17,2025-06-11T17:08:40.569824,NYC_GOID_000017,PrincipalOfficerFullName,,Tobi Jaiyesimi,System_NameParseRule,Parsed from: 'Tobi Jaiyesimi',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+18,2025-06-11T17:08:40.569856,NYC_GOID_000017,PrincipalOfficerGivenName,,Tobi,System_NameParseRule,Parsed from: 'Tobi Jaiyesimi',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+19,2025-06-11T17:08:40.569884,NYC_GOID_000017,PrincipalOfficerFamilyName,,Jaiyesimi,System_NameParseRule,Parsed from: 'Tobi Jaiyesimi',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+20,2025-06-11T17:08:40.570109,NYC_GOID_000024,PrincipalOfficerFullName,,Michelle Morse,System_NameParseRule,Parsed from: 'Michelle Morse',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+21,2025-06-11T17:08:40.570142,NYC_GOID_000024,PrincipalOfficerGivenName,,Michelle,System_NameParseRule,Parsed from: 'Michelle Morse',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+22,2025-06-11T17:08:40.570170,NYC_GOID_000024,PrincipalOfficerFamilyName,,Morse,System_NameParseRule,Parsed from: 'Michelle Morse',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+23,2025-06-11T17:08:40.570297,NYC_GOID_000026,PrincipalOfficerFullName,,Vanessa L. Gibson,System_NameParseRule,Parsed from: 'Vanessa L. Gibson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+24,2025-06-11T17:08:40.570328,NYC_GOID_000026,PrincipalOfficerGivenName,,Vanessa,System_NameParseRule,Parsed from: 'Vanessa L. Gibson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+25,2025-06-11T17:08:40.570356,NYC_GOID_000026,PrincipalOfficerMiddleNameOrInitial,,L.,System_NameParseRule,Parsed from: 'Vanessa L. Gibson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+26,2025-06-11T17:08:40.570382,NYC_GOID_000026,PrincipalOfficerFamilyName,,Gibson,System_NameParseRule,Parsed from: 'Vanessa L. Gibson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+27,2025-06-11T17:08:40.570450,NYC_GOID_000027,PrincipalOfficerFullName,,Antonio Reynoso,System_NameParseRule,Parsed from: 'Antonio Reynoso',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+28,2025-06-11T17:08:40.570480,NYC_GOID_000027,PrincipalOfficerGivenName,,Antonio,System_NameParseRule,Parsed from: 'Antonio Reynoso',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+29,2025-06-11T17:08:40.570507,NYC_GOID_000027,PrincipalOfficerFamilyName,,Reynoso,System_NameParseRule,Parsed from: 'Antonio Reynoso',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+30,2025-06-11T17:08:40.570588,NYC_GOID_000028,PrincipalOfficerFullName,,Mark D. Levine,System_NameParseRule,Parsed from: 'Mark D. Levine',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+31,2025-06-11T17:08:40.570617,NYC_GOID_000028,PrincipalOfficerGivenName,,Mark,System_NameParseRule,Parsed from: 'Mark D. Levine',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+32,2025-06-11T17:08:40.570643,NYC_GOID_000028,PrincipalOfficerMiddleNameOrInitial,,D.,System_NameParseRule,Parsed from: 'Mark D. Levine',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+33,2025-06-11T17:08:40.570669,NYC_GOID_000028,PrincipalOfficerFamilyName,,Levine,System_NameParseRule,Parsed from: 'Mark D. Levine',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+34,2025-06-11T17:08:40.570752,NYC_GOID_000029,PrincipalOfficerFullName,,Donovan J. Richards Jr.,System_NameParseRule,Parsed from: 'Donovan J. Richards Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+35,2025-06-11T17:08:40.570784,NYC_GOID_000029,PrincipalOfficerGivenName,,Donovan,System_NameParseRule,Parsed from: 'Donovan J. Richards Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+36,2025-06-11T17:08:40.570811,NYC_GOID_000029,PrincipalOfficerMiddleNameOrInitial,,J.,System_NameParseRule,Parsed from: 'Donovan J. Richards Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+37,2025-06-11T17:08:40.570837,NYC_GOID_000029,PrincipalOfficerFamilyName,,Richards,System_NameParseRule,Parsed from: 'Donovan J. Richards Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+38,2025-06-11T17:08:40.570864,NYC_GOID_000029,PrincipalOfficerSuffix,,Jr.,System_NameParseRule,Parsed from: 'Donovan J. Richards Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+39,2025-06-11T17:08:40.570945,NYC_GOID_000030,PrincipalOfficerFullName,,Vito J. Fossella,System_NameParseRule,Parsed from: 'Vito J. Fossella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+40,2025-06-11T17:08:40.570975,NYC_GOID_000030,PrincipalOfficerGivenName,,Vito,System_NameParseRule,Parsed from: 'Vito J. Fossella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+41,2025-06-11T17:08:40.571008,NYC_GOID_000030,PrincipalOfficerMiddleNameOrInitial,,J.,System_NameParseRule,Parsed from: 'Vito J. Fossella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+42,2025-06-11T17:08:40.571034,NYC_GOID_000030,PrincipalOfficerFamilyName,,Fossella,System_NameParseRule,Parsed from: 'Vito J. Fossella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+43,2025-06-11T17:08:40.571103,NYC_GOID_000034,PrincipalOfficerFullName,,Eric Landau,System_NameParseRule,Parsed from: 'Eric Landau',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+44,2025-06-11T17:08:40.571130,NYC_GOID_000034,PrincipalOfficerGivenName,,Eric,System_NameParseRule,Parsed from: 'Eric Landau',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+45,2025-06-11T17:08:40.571156,NYC_GOID_000034,PrincipalOfficerFamilyName,,Landau,System_NameParseRule,Parsed from: 'Eric Landau',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+46,2025-06-11T17:08:40.571445,NYC_GOID_000043,PrincipalOfficerFullName,,Tremaine Wright,System_NameParseRule,Parsed from: 'Tremaine Wright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+47,2025-06-11T17:08:40.571478,NYC_GOID_000043,PrincipalOfficerGivenName,,Tremaine,System_NameParseRule,Parsed from: 'Tremaine Wright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+48,2025-06-11T17:08:40.571506,NYC_GOID_000043,PrincipalOfficerFamilyName,,Wright,System_NameParseRule,Parsed from: 'Tremaine Wright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+49,2025-06-11T17:08:40.571590,NYC_GOID_000045,PrincipalOfficerFullName,,Jason Merwin,System_NameParseRule,Parsed from: 'Jason Merwin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+50,2025-06-11T17:08:40.571620,NYC_GOID_000045,PrincipalOfficerGivenName,,Jason,System_NameParseRule,Parsed from: 'Jason Merwin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+51,2025-06-11T17:08:40.571647,NYC_GOID_000045,PrincipalOfficerFamilyName,,Merwin,System_NameParseRule,Parsed from: 'Jason Merwin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+52,2025-06-11T17:08:40.571769,NYC_GOID_000048,PrincipalOfficerFullName,,Elizabeth W. Smith,System_NameParseRule,Parsed from: 'Elizabeth W. Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+53,2025-06-11T17:08:40.571800,NYC_GOID_000048,PrincipalOfficerGivenName,,Elizabeth,System_NameParseRule,Parsed from: 'Elizabeth W. Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+54,2025-06-11T17:08:40.571827,NYC_GOID_000048,PrincipalOfficerMiddleNameOrInitial,,W.,System_NameParseRule,Parsed from: 'Elizabeth W. Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+55,2025-06-11T17:08:40.571853,NYC_GOID_000048,PrincipalOfficerFamilyName,,Smith,System_NameParseRule,Parsed from: 'Elizabeth W. Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+56,2025-06-11T17:08:40.572223,NYC_GOID_000059,PrincipalOfficerFullName,,Sean Decatur,System_NameParseRule,Parsed from: 'Sean Decatur',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+57,2025-06-11T17:08:40.572271,NYC_GOID_000059,PrincipalOfficerGivenName,,Sean,System_NameParseRule,Parsed from: 'Sean Decatur',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+58,2025-06-11T17:08:40.572309,NYC_GOID_000059,PrincipalOfficerFamilyName,,Decatur,System_NameParseRule,Parsed from: 'Sean Decatur',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+59,2025-06-11T17:08:40.572482,NYC_GOID_000065,PrincipalOfficerFullName,,Anne Pasternak,System_NameParseRule,Parsed from: 'Anne Pasternak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+60,2025-06-11T17:08:40.572516,NYC_GOID_000065,PrincipalOfficerGivenName,,Anne,System_NameParseRule,Parsed from: 'Anne Pasternak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+61,2025-06-11T17:08:40.572546,NYC_GOID_000065,PrincipalOfficerFamilyName,,Pasternak,System_NameParseRule,Parsed from: 'Anne Pasternak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+62,2025-06-11T17:08:40.572635,NYC_GOID_000066,PrincipalOfficerFullName,,Sir Clive Gillinson,System_NameParseRule,Parsed from: 'Sir Clive Gillinson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+63,2025-06-11T17:08:40.572667,NYC_GOID_000066,PrincipalOfficerGivenName,,Clive,System_NameParseRule,Parsed from: 'Sir Clive Gillinson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+64,2025-06-11T17:08:40.572695,NYC_GOID_000066,PrincipalOfficerFamilyName,,Gillinson,System_NameParseRule,Parsed from: 'Sir Clive Gillinson',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+65,2025-06-11T17:08:40.572802,NYC_GOID_000069,PrincipalOfficerFullName,,Ellen Keane,System_NameParseRule,Parsed from: 'Ellen Keane',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+66,2025-06-11T17:08:40.572834,NYC_GOID_000069,PrincipalOfficerGivenName,,Ellen,System_NameParseRule,Parsed from: 'Ellen Keane',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+67,2025-06-11T17:08:40.572862,NYC_GOID_000069,PrincipalOfficerFamilyName,,Keane,System_NameParseRule,Parsed from: 'Ellen Keane',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+68,2025-06-11T17:08:40.572931,NYC_GOID_000070,PrincipalOfficerFullName,,Wynton Marsalis,System_NameParseRule,Parsed from: 'Wynton Marsalis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+69,2025-06-11T17:08:40.572962,NYC_GOID_000070,PrincipalOfficerGivenName,,Wynton,System_NameParseRule,Parsed from: 'Wynton Marsalis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+70,2025-06-11T17:08:40.572989,NYC_GOID_000070,PrincipalOfficerFamilyName,,Marsalis,System_NameParseRule,Parsed from: 'Wynton Marsalis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+71,2025-06-11T17:08:40.573057,NYC_GOID_000071,PrincipalOfficerFullName,,Lear deBessonet,System_NameParseRule,Parsed from: 'Lear deBessonet',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+72,2025-06-11T17:08:40.573086,NYC_GOID_000071,PrincipalOfficerGivenName,,Lear,System_NameParseRule,Parsed from: 'Lear deBessonet',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+73,2025-06-11T17:08:40.573112,NYC_GOID_000071,PrincipalOfficerFamilyName,,deBessonet,System_NameParseRule,Parsed from: 'Lear deBessonet',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+74,2025-06-11T17:08:40.573179,NYC_GOID_000072,PrincipalOfficerFullName,,Max Hollein,System_NameParseRule,Parsed from: 'Max Hollein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+75,2025-06-11T17:08:40.573207,NYC_GOID_000072,PrincipalOfficerGivenName,,Max,System_NameParseRule,Parsed from: 'Max Hollein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+76,2025-06-11T17:08:40.573234,NYC_GOID_000072,PrincipalOfficerFamilyName,,Hollein,System_NameParseRule,Parsed from: 'Max Hollein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+77,2025-06-11T17:08:40.573350,NYC_GOID_000075,PrincipalOfficerFullName,,Glenn D. Lowry,System_NameParseRule,Parsed from: 'Glenn D. Lowry',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+78,2025-06-11T17:08:40.573384,NYC_GOID_000075,PrincipalOfficerGivenName,,Glenn,System_NameParseRule,Parsed from: 'Glenn D. Lowry',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+79,2025-06-11T17:08:40.573411,NYC_GOID_000075,PrincipalOfficerMiddleNameOrInitial,,D.,System_NameParseRule,Parsed from: 'Glenn D. Lowry',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+80,2025-06-11T17:08:40.573438,NYC_GOID_000075,PrincipalOfficerFamilyName,,Lowry,System_NameParseRule,Parsed from: 'Glenn D. Lowry',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+81,2025-06-11T17:08:40.573527,NYC_GOID_000077,PrincipalOfficerFullName,,Jennifer Bernstein,System_NameParseRule,Parsed from: 'Jennifer Bernstein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+82,2025-06-11T17:08:40.573557,NYC_GOID_000077,PrincipalOfficerGivenName,,Jennifer,System_NameParseRule,Parsed from: 'Jennifer Bernstein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+83,2025-06-11T17:08:40.573584,NYC_GOID_000077,PrincipalOfficerFamilyName,,Bernstein,System_NameParseRule,Parsed from: 'Jennifer Bernstein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+84,2025-06-11T17:08:40.573651,NYC_GOID_000078,PrincipalOfficerFullName,,Jonathan Stafford,System_NameParseRule,Parsed from: 'Jonathan Stafford',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+85,2025-06-11T17:08:40.573680,NYC_GOID_000078,PrincipalOfficerGivenName,,Jonathan,System_NameParseRule,Parsed from: 'Jonathan Stafford',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+86,2025-06-11T17:08:40.573706,NYC_GOID_000078,PrincipalOfficerFamilyName,,Stafford,System_NameParseRule,Parsed from: 'Jonathan Stafford',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+87,2025-06-11T17:08:40.573823,NYC_GOID_000082,PrincipalOfficerFullName,,Oskar Eustis,System_NameParseRule,Parsed from: 'Oskar Eustis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+88,2025-06-11T17:08:40.573854,NYC_GOID_000082,PrincipalOfficerGivenName,,Oskar,System_NameParseRule,Parsed from: 'Oskar Eustis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+89,2025-06-11T17:08:40.573882,NYC_GOID_000082,PrincipalOfficerFamilyName,,Eustis,System_NameParseRule,Parsed from: 'Oskar Eustis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+90,2025-06-11T17:08:40.574074,NYC_GOID_000091,PrincipalOfficerFullName,,Thelma Golden,System_NameParseRule,Parsed from: 'Thelma Golden',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+91,2025-06-11T17:08:40.574105,NYC_GOID_000091,PrincipalOfficerGivenName,,Thelma,System_NameParseRule,Parsed from: 'Thelma Golden',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+92,2025-06-11T17:08:40.574133,NYC_GOID_000091,PrincipalOfficerFamilyName,,Golden,System_NameParseRule,Parsed from: 'Thelma Golden',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+93,2025-06-11T17:08:40.574249,NYC_GOID_000094,PrincipalOfficerFullName,,Adam F. Falk,System_NameParseRule,Parsed from: 'Adam F. Falk',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+94,2025-06-11T17:08:40.574285,NYC_GOID_000094,PrincipalOfficerGivenName,,Adam,System_NameParseRule,Parsed from: 'Adam F. Falk',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+95,2025-06-11T17:08:40.574313,NYC_GOID_000094,PrincipalOfficerMiddleNameOrInitial,,F.,System_NameParseRule,Parsed from: 'Adam F. Falk',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+96,2025-06-11T17:08:40.574339,NYC_GOID_000094,PrincipalOfficerFamilyName,,Falk,System_NameParseRule,Parsed from: 'Adam F. Falk',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+97,2025-06-11T17:08:40.574508,NYC_GOID_000098,PrincipalOfficerFullName,,Dan Garodnick,System_NameParseRule,Parsed from: 'Dan Garodnick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+98,2025-06-11T17:08:40.574541,NYC_GOID_000098,PrincipalOfficerGivenName,,Dan,System_NameParseRule,Parsed from: 'Dan Garodnick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+99,2025-06-11T17:08:40.574569,NYC_GOID_000098,PrincipalOfficerFamilyName,,Garodnick,System_NameParseRule,Parsed from: 'Dan Garodnick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+100,2025-06-11T17:08:40.575022,NYC_GOID_000112,PrincipalOfficerFullName,,Jumaane Williams,System_NameParseRule,Parsed from: 'Jumaane Williams',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+101,2025-06-11T17:08:40.575056,NYC_GOID_000112,PrincipalOfficerGivenName,,Jumaane,System_NameParseRule,Parsed from: 'Jumaane Williams',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+102,2025-06-11T17:08:40.575083,NYC_GOID_000112,PrincipalOfficerFamilyName,,Williams,System_NameParseRule,Parsed from: 'Jumaane Williams',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+103,2025-06-11T17:08:40.576850,NYC_GOID_000169,PrincipalOfficerFullName,,Eric Gonzalez,System_NameParseRule,Parsed from: 'Eric Gonzalez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+104,2025-06-11T17:08:40.576887,NYC_GOID_000169,PrincipalOfficerGivenName,,Eric,System_NameParseRule,Parsed from: 'Eric Gonzalez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+105,2025-06-11T17:08:40.576915,NYC_GOID_000169,PrincipalOfficerFamilyName,,Gonzalez,System_NameParseRule,Parsed from: 'Eric Gonzalez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+106,2025-06-11T17:08:40.576994,NYC_GOID_000170,PrincipalOfficerFullName,,Alvin Bragg Jr.,System_NameParseRule,Parsed from: 'Alvin Bragg Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+107,2025-06-11T17:08:40.577025,NYC_GOID_000170,PrincipalOfficerGivenName,,Alvin,System_NameParseRule,Parsed from: 'Alvin Bragg Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+108,2025-06-11T17:08:40.577052,NYC_GOID_000170,PrincipalOfficerFamilyName,,Bragg,System_NameParseRule,Parsed from: 'Alvin Bragg Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+109,2025-06-11T17:08:40.577078,NYC_GOID_000170,PrincipalOfficerSuffix,,Jr.,System_NameParseRule,Parsed from: 'Alvin Bragg Jr.',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+110,2025-06-11T17:08:40.577201,NYC_GOID_000172,PrincipalOfficerFullName,,Michael E. McMahon,System_NameParseRule,Parsed from: 'Michael E. McMahon',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+111,2025-06-11T17:08:40.577233,NYC_GOID_000172,PrincipalOfficerGivenName,,Michael,System_NameParseRule,Parsed from: 'Michael E. McMahon',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+112,2025-06-11T17:08:40.577261,NYC_GOID_000172,PrincipalOfficerMiddleNameOrInitial,,E.,System_NameParseRule,Parsed from: 'Michael E. McMahon',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+113,2025-06-11T17:08:40.577289,NYC_GOID_000172,PrincipalOfficerFamilyName,,McMahon,System_NameParseRule,Parsed from: 'Michael E. McMahon',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+114,2025-06-11T17:08:40.577379,NYC_GOID_000175,PrincipalOfficerFullName,,Regina Myer,System_NameParseRule,Parsed from: 'Regina Myer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+115,2025-06-11T17:08:40.577411,NYC_GOID_000175,PrincipalOfficerGivenName,,Regina,System_NameParseRule,Parsed from: 'Regina Myer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+116,2025-06-11T17:08:40.577440,NYC_GOID_000175,PrincipalOfficerFamilyName,,Myer,System_NameParseRule,Parsed from: 'Regina Myer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+117,2025-06-11T17:08:40.577809,NYC_GOID_000192,PrincipalOfficerFullName,,Patrick M. Dunn,System_NameParseRule,Parsed from: 'Patrick M. Dunn',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+118,2025-06-11T17:08:40.577842,NYC_GOID_000192,PrincipalOfficerGivenName,,Patrick,System_NameParseRule,Parsed from: 'Patrick M. Dunn',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+119,2025-06-11T17:08:40.577870,NYC_GOID_000192,PrincipalOfficerMiddleNameOrInitial,,M.,System_NameParseRule,Parsed from: 'Patrick M. Dunn',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+120,2025-06-11T17:08:40.577896,NYC_GOID_000192,PrincipalOfficerFamilyName,,Dunn,System_NameParseRule,Parsed from: 'Patrick M. Dunn',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+121,2025-06-11T17:08:40.578003,NYC_GOID_000194,PrincipalOfficerFullName,,Anthony Sama,System_NameParseRule,Parsed from: 'Anthony Sama',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+122,2025-06-11T17:08:40.578035,NYC_GOID_000194,PrincipalOfficerGivenName,,Anthony,System_NameParseRule,Parsed from: 'Anthony Sama',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+123,2025-06-11T17:08:40.578064,NYC_GOID_000194,PrincipalOfficerFamilyName,,Sama,System_NameParseRule,Parsed from: 'Anthony Sama',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+124,2025-06-11T17:08:40.578149,NYC_GOID_000196,PrincipalOfficerFullName,,Michael Palermo,System_NameParseRule,Parsed from: 'Michael Palermo',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+125,2025-06-11T17:08:40.578179,NYC_GOID_000196,PrincipalOfficerGivenName,,Michael,System_NameParseRule,Parsed from: 'Michael Palermo',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+126,2025-06-11T17:08:40.578206,NYC_GOID_000196,PrincipalOfficerFamilyName,,Palermo,System_NameParseRule,Parsed from: 'Michael Palermo',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+127,2025-06-11T17:08:40.578428,NYC_GOID_000204,PrincipalOfficerFullName,,Alfred C. Cerullo III,System_NameParseRule,Parsed from: 'Alfred C. Cerullo III',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+128,2025-06-11T17:08:40.578461,NYC_GOID_000204,PrincipalOfficerGivenName,,Alfred,System_NameParseRule,Parsed from: 'Alfred C. Cerullo III',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+129,2025-06-11T17:08:40.578490,NYC_GOID_000204,PrincipalOfficerMiddleNameOrInitial,,C.,System_NameParseRule,Parsed from: 'Alfred C. Cerullo III',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+130,2025-06-11T17:08:40.578520,NYC_GOID_000204,PrincipalOfficerFamilyName,,Cerullo,System_NameParseRule,Parsed from: 'Alfred C. Cerullo III',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+131,2025-06-11T17:08:40.578548,NYC_GOID_000204,PrincipalOfficerSuffix,,III,System_NameParseRule,Parsed from: 'Alfred C. Cerullo III',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+132,2025-06-11T17:08:40.578654,NYC_GOID_000208,PrincipalOfficerFullName,,Steven Cain,System_NameParseRule,Parsed from: 'Steven Cain',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+133,2025-06-11T17:08:40.578685,NYC_GOID_000208,PrincipalOfficerGivenName,,Steven,System_NameParseRule,Parsed from: 'Steven Cain',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+134,2025-06-11T17:08:40.578713,NYC_GOID_000208,PrincipalOfficerFamilyName,,Cain,System_NameParseRule,Parsed from: 'Steven Cain',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+135,2025-06-11T17:08:40.578813,NYC_GOID_000210,PrincipalOfficerFullName,,Marcel Van Ooyen,System_NameParseRule,Parsed from: 'Marcel Van Ooyen',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+136,2025-06-11T17:08:40.578844,NYC_GOID_000210,PrincipalOfficerGivenName,,Marcel,System_NameParseRule,Parsed from: 'Marcel Van Ooyen',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+137,2025-06-11T17:08:40.578871,NYC_GOID_000210,PrincipalOfficerFamilyName,,Van Ooyen,System_NameParseRule,Parsed from: 'Marcel Van Ooyen',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+138,2025-06-11T17:08:40.579122,NYC_GOID_000218,PrincipalOfficerFullName,,Noreen Doyle,System_NameParseRule,Parsed from: 'Noreen Doyle',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+139,2025-06-11T17:08:40.579155,NYC_GOID_000218,PrincipalOfficerGivenName,,Noreen,System_NameParseRule,Parsed from: 'Noreen Doyle',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+140,2025-06-11T17:08:40.579183,NYC_GOID_000218,PrincipalOfficerFamilyName,,Doyle,System_NameParseRule,Parsed from: 'Noreen Doyle',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+141,2025-06-11T17:08:40.579379,NYC_GOID_000224,PrincipalOfficerFullName,,Andrew Kimball,System_NameParseRule,Parsed from: 'Andrew Kimball',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+142,2025-06-11T17:08:40.579414,NYC_GOID_000224,PrincipalOfficerGivenName,,Andrew,System_NameParseRule,Parsed from: 'Andrew Kimball',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+143,2025-06-11T17:08:40.579442,NYC_GOID_000224,PrincipalOfficerFamilyName,,Kimball,System_NameParseRule,Parsed from: 'Andrew Kimball',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+144,2025-06-11T17:08:40.579566,NYC_GOID_000230,PrincipalOfficerFullName,,Terri Carta,System_NameParseRule,Parsed from: 'Terri Carta',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+145,2025-06-11T17:08:40.579598,NYC_GOID_000230,PrincipalOfficerGivenName,,Terri,System_NameParseRule,Parsed from: 'Terri Carta',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+146,2025-06-11T17:08:40.579626,NYC_GOID_000230,PrincipalOfficerFamilyName,,Carta,System_NameParseRule,Parsed from: 'Terri Carta',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+147,2025-06-11T17:08:40.579814,NYC_GOID_000235,PrincipalOfficerFullName,,Jeanny Pak,System_NameParseRule,Parsed from: 'Jeanny Pak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+148,2025-06-11T17:08:40.579847,NYC_GOID_000235,PrincipalOfficerGivenName,,Jeanny,System_NameParseRule,Parsed from: 'Jeanny Pak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+149,2025-06-11T17:08:40.579875,NYC_GOID_000235,PrincipalOfficerFamilyName,,Pak,System_NameParseRule,Parsed from: 'Jeanny Pak',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+150,2025-06-11T17:08:40.580324,NYC_GOID_000248,PrincipalOfficerFullName,,Kate Smith,System_NameParseRule,Parsed from: 'Kate Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+151,2025-06-11T17:08:40.580357,NYC_GOID_000248,PrincipalOfficerGivenName,,Kate,System_NameParseRule,Parsed from: 'Kate Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+152,2025-06-11T17:08:40.580385,NYC_GOID_000248,PrincipalOfficerFamilyName,,Smith,System_NameParseRule,Parsed from: 'Kate Smith',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+153,2025-06-11T17:08:40.581088,NYC_GOID_000268,PrincipalOfficerFullName,Jose Bayona,Jd Michaels,System_NameParseRule,Parsed from: 'Jd Michaels',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+154,2025-06-11T17:08:40.581122,NYC_GOID_000268,PrincipalOfficerGivenName,Jose,Jd,System_NameParseRule,Parsed from: 'Jd Michaels',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+155,2025-06-11T17:08:40.581150,NYC_GOID_000268,PrincipalOfficerFamilyName,Bayona,Michaels,System_NameParseRule,Parsed from: 'Jd Michaels',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+156,2025-06-11T17:08:40.581420,NYC_GOID_000275,PrincipalOfficerFullName,,Bryan Berge,System_NameParseRule,Parsed from: 'Bryan Berge',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+157,2025-06-11T17:08:40.581453,NYC_GOID_000275,PrincipalOfficerGivenName,,Bryan,System_NameParseRule,Parsed from: 'Bryan Berge',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+158,2025-06-11T17:08:40.581481,NYC_GOID_000275,PrincipalOfficerFamilyName,,Berge,System_NameParseRule,Parsed from: 'Bryan Berge',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+159,2025-06-11T17:08:40.581550,NYC_GOID_000276,PrincipalOfficerFullName,Betsy MacClean,Sherif Soliman,System_NameParseRule,Parsed from: 'Sherif Soliman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+160,2025-06-11T17:08:40.581579,NYC_GOID_000276,PrincipalOfficerGivenName,Betsy,Sherif,System_NameParseRule,Parsed from: 'Sherif Soliman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+161,2025-06-11T17:08:40.581606,NYC_GOID_000276,PrincipalOfficerFamilyName,MacClean,Soliman,System_NameParseRule,Parsed from: 'Sherif Soliman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+162,2025-06-11T17:08:40.581961,NYC_GOID_000286,PrincipalOfficerFullName,,Marjorie Velázquez,System_NameParseRule,Parsed from: 'Marjorie Velázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+163,2025-06-11T17:08:40.581995,NYC_GOID_000286,PrincipalOfficerGivenName,,Marjorie,System_NameParseRule,Parsed from: 'Marjorie Velázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+164,2025-06-11T17:08:40.582023,NYC_GOID_000286,PrincipalOfficerFamilyName,,Velázquez,System_NameParseRule,Parsed from: 'Marjorie Velázquez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+165,2025-06-11T17:08:40.582234,NYC_GOID_000291,PrincipalOfficerFullName,,Marjorie Sweeney,System_NameParseRule,Parsed from: 'Marjorie Sweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+166,2025-06-11T17:08:40.582267,NYC_GOID_000291,PrincipalOfficerGivenName,,Marjorie,System_NameParseRule,Parsed from: 'Marjorie Sweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+167,2025-06-11T17:08:40.582301,NYC_GOID_000291,PrincipalOfficerFamilyName,,Sweeney,System_NameParseRule,Parsed from: 'Marjorie Sweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+168,2025-06-11T17:08:40.582383,NYC_GOID_000292,PrincipalOfficerFullName,,Kayla Mamelak Altus,System_NameParseRule,Parsed from: 'Kayla Mamelak Altus',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+169,2025-06-11T17:08:40.582415,NYC_GOID_000292,PrincipalOfficerGivenName,,Kayla,System_NameParseRule,Parsed from: 'Kayla Mamelak Altus',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+170,2025-06-11T17:08:40.582442,NYC_GOID_000292,PrincipalOfficerMiddleNameOrInitial,,Mamelak,System_NameParseRule,Parsed from: 'Kayla Mamelak Altus',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+171,2025-06-11T17:08:40.582468,NYC_GOID_000292,PrincipalOfficerFamilyName,,Altus,System_NameParseRule,Parsed from: 'Kayla Mamelak Altus',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+172,2025-06-11T17:08:40.583055,NYC_GOID_000320,PrincipalOfficerFullName,,Jamie Rubin,System_NameParseRule,Parsed from: 'Jamie Rubin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+173,2025-06-11T17:08:40.583131,NYC_GOID_000320,PrincipalOfficerGivenName,,Jamie,System_NameParseRule,Parsed from: 'Jamie Rubin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+174,2025-06-11T17:08:40.583165,NYC_GOID_000320,PrincipalOfficerFamilyName,,Rubin,System_NameParseRule,Parsed from: 'Jamie Rubin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+175,2025-06-11T17:08:40.583281,NYC_GOID_000325,PrincipalOfficerFullName,,Vlada Kenniff,System_NameParseRule,Parsed from: 'Vlada Kenniff',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+176,2025-06-11T17:08:40.583315,NYC_GOID_000325,PrincipalOfficerGivenName,,Vlada,System_NameParseRule,Parsed from: 'Vlada Kenniff',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+177,2025-06-11T17:08:40.583345,NYC_GOID_000325,PrincipalOfficerFamilyName,,Kenniff,System_NameParseRule,Parsed from: 'Vlada Kenniff',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+178,2025-06-11T17:08:40.583845,NYC_GOID_000344,PrincipalOfficerFullName,David B. Goldin,Deborah Maher,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+179,2025-06-11T17:08:40.583879,NYC_GOID_000344,PrincipalOfficerGivenName,David,Deborah,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+180,2025-06-11T17:08:40.583919,NYC_GOID_000344,PrincipalOfficerFamilyName,Goldin,Maher,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+181,2025-06-11T17:08:40.584135,NYC_GOID_000351,PrincipalOfficerFullName,,Amber Cartwright,System_NameParseRule,Parsed from: 'Amber Cartwright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+182,2025-06-11T17:08:40.584167,NYC_GOID_000351,PrincipalOfficerGivenName,,Amber,System_NameParseRule,Parsed from: 'Amber Cartwright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+183,2025-06-11T17:08:40.584195,NYC_GOID_000351,PrincipalOfficerFamilyName,,Cartwright,System_NameParseRule,Parsed from: 'Amber Cartwright',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+184,2025-06-11T17:08:40.584642,NYC_GOID_000380,PrincipalOfficerFullName,,Robert Sarver,System_NameParseRule,Parsed from: 'Robert Sarver',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+185,2025-06-11T17:08:40.584675,NYC_GOID_000380,PrincipalOfficerGivenName,,Robert,System_NameParseRule,Parsed from: 'Robert Sarver',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+186,2025-06-11T17:08:40.584702,NYC_GOID_000380,PrincipalOfficerFamilyName,,Sarver,System_NameParseRule,Parsed from: 'Robert Sarver',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+187,2025-06-11T17:08:40.584921,NYC_GOID_000387,PrincipalOfficerFullName,,Melissa Aviles-Ramos,System_NameParseRule,Parsed from: 'Melissa Aviles-Ramos',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+188,2025-06-11T17:08:40.584953,NYC_GOID_000387,PrincipalOfficerGivenName,,Melissa,System_NameParseRule,Parsed from: 'Melissa Aviles-Ramos',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+189,2025-06-11T17:08:40.584980,NYC_GOID_000387,PrincipalOfficerFamilyName,,Aviles-Ramos,System_NameParseRule,Parsed from: 'Melissa Aviles-Ramos',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+190,2025-06-11T17:08:40.585214,NYC_GOID_000394,PrincipalOfficerFullName,,Morgan Monaco,System_NameParseRule,Parsed from: 'Morgan Monaco',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+191,2025-06-11T17:08:40.585246,NYC_GOID_000394,PrincipalOfficerGivenName,,Morgan,System_NameParseRule,Parsed from: 'Morgan Monaco',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+192,2025-06-11T17:08:40.585274,NYC_GOID_000394,PrincipalOfficerFamilyName,,Monaco,System_NameParseRule,Parsed from: 'Morgan Monaco',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+193,2025-06-11T17:08:40.585550,NYC_GOID_000401,PrincipalOfficerFullName,,Lois Rosenblatt,System_NameParseRule,Parsed from: 'Lois Rosenblatt',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+194,2025-06-11T17:08:40.585583,NYC_GOID_000401,PrincipalOfficerGivenName,,Lois,System_NameParseRule,Parsed from: 'Lois Rosenblatt',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+195,2025-06-11T17:08:40.585611,NYC_GOID_000401,PrincipalOfficerFamilyName,,Rosenblatt,System_NameParseRule,Parsed from: 'Lois Rosenblatt',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+196,2025-06-11T17:08:40.585772,NYC_GOID_000405,PrincipalOfficerFullName,,Deborah Maher,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+197,2025-06-11T17:08:40.585804,NYC_GOID_000405,PrincipalOfficerGivenName,,Deborah,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+198,2025-06-11T17:08:40.585832,NYC_GOID_000405,PrincipalOfficerFamilyName,,Maher,System_NameParseRule,Parsed from: 'Deborah Maher',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+199,2025-06-11T17:08:40.586078,NYC_GOID_000412,PrincipalOfficerFullName,,Edwina Frances Martin,System_NameParseRule,Parsed from: 'Edwina Frances Martin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+200,2025-06-11T17:08:40.586116,NYC_GOID_000412,PrincipalOfficerGivenName,,Edwina,System_NameParseRule,Parsed from: 'Edwina Frances Martin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+201,2025-06-11T17:08:40.586143,NYC_GOID_000412,PrincipalOfficerMiddleNameOrInitial,,Frances,System_NameParseRule,Parsed from: 'Edwina Frances Martin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+202,2025-06-11T17:08:40.586171,NYC_GOID_000412,PrincipalOfficerFamilyName,,Martin,System_NameParseRule,Parsed from: 'Edwina Frances Martin',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+203,2025-06-11T17:08:40.586269,NYC_GOID_000414,PrincipalOfficerFullName,,Shelton J. Haynes,System_NameParseRule,Parsed from: 'Shelton J. Haynes',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+204,2025-06-11T17:08:40.586300,NYC_GOID_000414,PrincipalOfficerGivenName,,Shelton,System_NameParseRule,Parsed from: 'Shelton J. Haynes',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+205,2025-06-11T17:08:40.586327,NYC_GOID_000414,PrincipalOfficerMiddleNameOrInitial,,J.,System_NameParseRule,Parsed from: 'Shelton J. Haynes',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+206,2025-06-11T17:08:40.586354,NYC_GOID_000414,PrincipalOfficerFamilyName,,Haynes,System_NameParseRule,Parsed from: 'Shelton J. Haynes',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+207,2025-06-11T17:08:40.586910,NYC_GOID_000444,PrincipalOfficerFullName,,Tom Harris,System_NameParseRule,Parsed from: 'Tom Harris',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+208,2025-06-11T17:08:40.586942,NYC_GOID_000444,PrincipalOfficerGivenName,,Tom,System_NameParseRule,Parsed from: 'Tom Harris',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+209,2025-06-11T17:08:40.586970,NYC_GOID_000444,PrincipalOfficerFamilyName,,Harris,System_NameParseRule,Parsed from: 'Tom Harris',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+210,2025-06-11T17:08:40.587178,NYC_GOID_000451,PrincipalOfficerFullName,,Julie Stein,System_NameParseRule,Parsed from: 'Julie Stein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+211,2025-06-11T17:08:40.587210,NYC_GOID_000451,PrincipalOfficerGivenName,,Julie,System_NameParseRule,Parsed from: 'Julie Stein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+212,2025-06-11T17:08:40.587238,NYC_GOID_000451,PrincipalOfficerFamilyName,,Stein,System_NameParseRule,Parsed from: 'Julie Stein',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+213,2025-06-11T17:08:40.587370,NYC_GOID_000457,PrincipalOfficerFullName,,Scott Hobbs,System_NameParseRule,Parsed from: 'Scott Hobbs',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+214,2025-06-11T17:08:40.587402,NYC_GOID_000457,PrincipalOfficerGivenName,,Scott,System_NameParseRule,Parsed from: 'Scott Hobbs',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+215,2025-06-11T17:08:40.587429,NYC_GOID_000457,PrincipalOfficerFamilyName,,Hobbs,System_NameParseRule,Parsed from: 'Scott Hobbs',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+216,2025-06-11T17:08:40.587588,NYC_GOID_000460,PrincipalOfficerFullName,,Michael L. Marrella,System_NameParseRule,Parsed from: 'Michael L. Marrella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+217,2025-06-11T17:08:40.587620,NYC_GOID_000460,PrincipalOfficerGivenName,,Michael,System_NameParseRule,Parsed from: 'Michael L. Marrella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+218,2025-06-11T17:08:40.587648,NYC_GOID_000460,PrincipalOfficerMiddleNameOrInitial,,L.,System_NameParseRule,Parsed from: 'Michael L. Marrella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+219,2025-06-11T17:08:40.587674,NYC_GOID_000460,PrincipalOfficerFamilyName,,Marrella,System_NameParseRule,Parsed from: 'Michael L. Marrella',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+220,2025-06-11T17:08:40.587742,NYC_GOID_000461,PrincipalOfficerFullName,,Chris Neale,System_NameParseRule,Parsed from: 'Chris Neale',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+221,2025-06-11T17:08:40.587769,NYC_GOID_000461,PrincipalOfficerGivenName,,Chris,System_NameParseRule,Parsed from: 'Chris Neale',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+222,2025-06-11T17:08:40.587795,NYC_GOID_000461,PrincipalOfficerFamilyName,,Neale,System_NameParseRule,Parsed from: 'Chris Neale',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+223,2025-06-11T17:08:40.587861,NYC_GOID_000462,PrincipalOfficerFullName,,Rob Speyer,System_NameParseRule,Parsed from: 'Rob Speyer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+224,2025-06-11T17:08:40.587891,NYC_GOID_000462,PrincipalOfficerGivenName,,Rob,System_NameParseRule,Parsed from: 'Rob Speyer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+225,2025-06-11T17:08:40.587917,NYC_GOID_000462,PrincipalOfficerFamilyName,,Speyer,System_NameParseRule,Parsed from: 'Rob Speyer',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+226,2025-06-11T17:08:40.588015,NYC_GOID_000464,PrincipalOfficerFullName,,Elizabeth L. Hillman,System_NameParseRule,Parsed from: 'Elizabeth L. Hillman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+227,2025-06-11T17:08:40.588047,NYC_GOID_000464,PrincipalOfficerGivenName,,Elizabeth,System_NameParseRule,Parsed from: 'Elizabeth L. Hillman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+228,2025-06-11T17:08:40.588076,NYC_GOID_000464,PrincipalOfficerMiddleNameOrInitial,,L.,System_NameParseRule,Parsed from: 'Elizabeth L. Hillman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+229,2025-06-11T17:08:40.588123,NYC_GOID_000464,PrincipalOfficerFamilyName,,Hillman,System_NameParseRule,Parsed from: 'Elizabeth L. Hillman',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+230,2025-06-11T17:08:40.588238,NYC_GOID_000465,PrincipalOfficerFullName,,Khady Kamara Nunez,System_NameParseRule,Parsed from: 'Khady Kamara Nunez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+231,2025-06-11T17:08:40.588273,NYC_GOID_000465,PrincipalOfficerGivenName,,Khady,System_NameParseRule,Parsed from: 'Khady Kamara Nunez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+232,2025-06-11T17:08:40.588302,NYC_GOID_000465,PrincipalOfficerMiddleNameOrInitial,,Kamara,System_NameParseRule,Parsed from: 'Khady Kamara Nunez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+233,2025-06-11T17:08:40.588328,NYC_GOID_000465,PrincipalOfficerFamilyName,,Nunez,System_NameParseRule,Parsed from: 'Khady Kamara Nunez',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+234,2025-06-11T17:08:40.588581,NYC_GOID_000476,PrincipalOfficerFullName,,Janno Lieber,System_NameParseRule,Parsed from: 'Janno Lieber',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+235,2025-06-11T17:08:40.588614,NYC_GOID_000476,PrincipalOfficerGivenName,,Janno,System_NameParseRule,Parsed from: 'Janno Lieber',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+236,2025-06-11T17:08:40.588643,NYC_GOID_000476,PrincipalOfficerFamilyName,,Lieber,System_NameParseRule,Parsed from: 'Janno Lieber',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+237,2025-06-11T17:08:40.588742,NYC_GOID_100002,PrincipalOfficerFullName,,Bridget G. Brennan,System_NameParseRule,Parsed from: 'Bridget G. Brennan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+238,2025-06-11T17:08:40.588773,NYC_GOID_100002,PrincipalOfficerGivenName,,Bridget,System_NameParseRule,Parsed from: 'Bridget G. Brennan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+239,2025-06-11T17:08:40.588801,NYC_GOID_100002,PrincipalOfficerMiddleNameOrInitial,,G.,System_NameParseRule,Parsed from: 'Bridget G. Brennan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+240,2025-06-11T17:08:40.588828,NYC_GOID_100002,PrincipalOfficerFamilyName,,Brennan,System_NameParseRule,Parsed from: 'Bridget G. Brennan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+241,2025-06-11T17:08:40.589052,NYC_GOID_100007,PrincipalOfficerFullName,Ryan Birchmeier,Kate Smart,System_NameParseRule,Parsed from: 'Kate Smart',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+242,2025-06-11T17:08:40.589083,NYC_GOID_100007,PrincipalOfficerGivenName,Ryan,Kate,System_NameParseRule,Parsed from: 'Kate Smart',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+243,2025-06-11T17:08:40.589111,NYC_GOID_100007,PrincipalOfficerFamilyName,Birchmeier,Smart,System_NameParseRule,Parsed from: 'Kate Smart',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+244,2025-06-11T17:08:40.589178,NYC_GOID_100008,PrincipalOfficerFullName,,Caroline Rubinstein-Willis,System_NameParseRule,Parsed from: 'Caroline Rubinstein-Willis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+245,2025-06-11T17:08:40.589209,NYC_GOID_100008,PrincipalOfficerGivenName,,Caroline,System_NameParseRule,Parsed from: 'Caroline Rubinstein-Willis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+246,2025-06-11T17:08:40.589236,NYC_GOID_100008,PrincipalOfficerFamilyName,,Rubinstein-Willis,System_NameParseRule,Parsed from: 'Caroline Rubinstein-Willis',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+247,2025-06-11T17:08:40.589303,NYC_GOID_100009,PrincipalOfficerFullName,,Michael McSweeney,System_NameParseRule,Parsed from: 'Michael McSweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+248,2025-06-11T17:08:40.589333,NYC_GOID_100009,PrincipalOfficerGivenName,,Michael,System_NameParseRule,Parsed from: 'Michael McSweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+249,2025-06-11T17:08:40.589361,NYC_GOID_100009,PrincipalOfficerFamilyName,,McSweeney,System_NameParseRule,Parsed from: 'Michael McSweeney',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+250,2025-06-11T17:08:40.589426,NYC_GOID_100010,PrincipalOfficerFullName,,Kelly Moan,System_NameParseRule,Parsed from: 'Kelly Moan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+251,2025-06-11T17:08:40.589456,NYC_GOID_100010,PrincipalOfficerGivenName,,Kelly,System_NameParseRule,Parsed from: 'Kelly Moan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+252,2025-06-11T17:08:40.589483,NYC_GOID_100010,PrincipalOfficerFamilyName,,Moan,System_NameParseRule,Parsed from: 'Kelly Moan',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+253,2025-06-11T17:08:40.589553,NYC_GOID_100011,PrincipalOfficerFullName,,Martha Norrick,System_NameParseRule,Parsed from: 'Martha Norrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+254,2025-06-11T17:08:40.589583,NYC_GOID_100011,PrincipalOfficerGivenName,,Martha,System_NameParseRule,Parsed from: 'Martha Norrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+255,2025-06-11T17:08:40.589610,NYC_GOID_100011,PrincipalOfficerFamilyName,,Norrick,System_NameParseRule,Parsed from: 'Martha Norrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+256,2025-06-11T17:08:40.589676,NYC_GOID_100012,PrincipalOfficerFullName,,Michael Fitzpatrick,System_NameParseRule,Parsed from: 'Michael Fitzpatrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+257,2025-06-11T17:08:40.589704,NYC_GOID_100012,PrincipalOfficerGivenName,,Michael,System_NameParseRule,Parsed from: 'Michael Fitzpatrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS
+258,2025-06-11T17:08:40.589731,NYC_GOID_100012,PrincipalOfficerFamilyName,,Fitzpatrick,System_NameParseRule,Parsed from: 'Michael Fitzpatrick',v0_6_pipeline_run,NAME_PARSE_SUCCESS

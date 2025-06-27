@@ -22,9 +22,7 @@ pip-wheel-metadata/
 .DS_Store
 
 # Data Files
-data/output/*
 !data/output/.gitkeep
-data/audit/*
 !data/audit/.gitkeep
 data/input/community_board_new_row_additions_backup.csv
 # data/output/*.csv # Covered by data/output/*
