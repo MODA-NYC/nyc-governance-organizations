@@ -1,0 +1,25 @@
+﻿Source,RecordID,SourceColumn,SourceColumnValue,SourceFeedback,Decision,DecisionNotes
+Ops,,Name,Archival Review Board,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,"The Archival Review Board is a distinct entity from DORIS, as established by the Charter (https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-4399)"
+Ops,,Name,BuildNYC,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,BuildNYC is managed by but legally distinct from NYCEDC (https://edc.nyc/sites/default/files/2020-10/FY20BNYCOperationsAccomplishments.pdf)
+Ops,,Name,Center for Brooklyn History (formerly known Brooklyn Historical Society),SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Missing from golden dataset.
+Ops,,Name,Creative Communications,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100008 - ""Office of Creative Communications"""
+Ops,,Name,Cultural Affairs Advisory Commission,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,"The Cultural Affirs Advisory Commission is distinct from the the Department of Cultural Affairs, established in the City Charter (https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-3985)"
+Ops,,Name,FDNY Department Pension Fund,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100008 - ""Office of Creative Communications"""
+Ops,,Name,Mayor's Office of Nightlife,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,"Active (https://www.nyc.gov/site/sbs/businesses/nightlife.page), and missing from golden dataset"
+Ops,,Name,Mayor's Office of Urban Agriculture,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100006 - ""Mayor's Office of Urban Agriculture"""
+Ops,,Name,Mayor's Office to Prevent Gun Violence,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Active Division (https://www.nyc.gov/site/peacenyc/index.page)
+Ops,,Name,NYC Office of the Special Narcotics Prosecutor,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100002 - ""Office of the Special Narcotics Prosecutor"""
+Ops,,Name,New York City Tourism and Conventions (formerly known New York City & Company Board),SUGGEST_ADD: New record found in source.,LINK_TO,"Ops has 2 records for this (one with old name). Also link this record to the golden record: NYC_GOID_000310 - ""New York City Tourism + Conventions"""
+Ops,,Name,Office Conversions Task Force,SUGGEST_ADD: New record found in source.,INVESTIGATE,"Research confirms task force complete, but successor Division, the Office Conversion Accelorator is active (https://www.nyc.gov/site/officeconversions/index.page)"
+Ops,,Name,Office of Faith-Based and Community Partnerships,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Research confrms active (https://www.nyc.gov/site/cfcp/index.page)
+Ops,,Name,"Office of Film, Theatre, & Broadcasting",SUGGEST_ADD: New record found in source.,INVESTIGATE,"Possible Division of MOME, but not also possibly fully Reorganized into MOME and not a Division any more."
+Ops,,Name,Office of Inspector General NYPD,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Active Division of DOI (https://www.nyc.gov/site/doi/oignypd/web/oignypd.page)
+Ops,,Name,Office of the Chief Medical Examiner,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Missing from golden dataset.
+Ops,,Name,Office of the City Clerk,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100009 - ""Office of the City Clerk"""
+Ops,,Name,Offshore Wind Advisory Council,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Research suggests this is active.
+Ops,,Name,Sheriff,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100005 - ""Sheriff"""
+Ops,,Name,Tax Appeals Tribunal,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Distinct from the Office of Administrative Tax Appeals
+Ops,,Name,Tax Commission,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Distinct from the Office of Administrative Tax Appeals
+Ops,,Name,The Unity Project,SUGGEST_ADD: New record found in source.,LINK_TO,"Same as NYC_GOID_100003 - ""Unity Project"""
+Ops,,Name,Young Men's Initiative Advisory Board,SUGGEST_ADD: New record found in source.,SUGGEST_ADD,The Advisory Board is distinct and there is a webpage for it (https://www.nyc.gov/site/ymi/about/advisory-board.page).
+Ops,,Name,Youth Board (DYCD),SUGGEST_ADD: New record found in source.,SUGGEST_ADD,Active and distinct (https://www.nyc.gov/site/dycd/involved/boards-and-councils/nyc-youth-board.page)
