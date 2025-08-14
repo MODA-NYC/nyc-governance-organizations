@@ -37,6 +37,7 @@ CHANGELOG_COLUMNS = [
     "new_value",
     "feedback_source",
     "notes",
+    "reason",
     "changed_by",
     "RuleAction",
 ]
@@ -63,6 +64,21 @@ def _get_pascal_case_column(df_columns, provided_col_name):
     return None
 
 
+def _sanitize_wrapped_text(text):
+    """Trim surrounding quotes and any stray trailing quotes from a text field."""
+    if text is None:
+        return text
+    s = str(text).strip()
+    while len(s) > 1 and (
+        (s.startswith('"') and s.endswith('"'))
+        or (s.startswith("'") and s.endswith("'"))
+    ):
+        s = s[1:-1].strip()
+    if s.endswith('"') or s.endswith("'"):
+        s = s.rstrip("\"'").strip()
+    return s
+
+
 def log_change(
     record_id,
     record_name,
@@ -71,6 +87,7 @@ def log_change(
     new_value,
     feedback_source,
     notes,
+    reason,
     changed_by,
     rule_action,
     version_prefix,
@@ -87,6 +104,7 @@ def log_change(
         "new_value": new_value,
         "feedback_source": feedback_source,
         "notes": notes,
+        "reason": reason,
         "changed_by": changed_by,
         "RuleAction": rule_action.value,
     }
@@ -101,7 +119,7 @@ def detect_rule(feedback):
     return QAAction.POLICY_QUERY, None
 
 
-def handle_delete_record(df, id, src, user, notes, prefix):
+def handle_delete_record(df, id, src, user, notes, reason, prefix):
     if id in df["RecordID"].values:
         record_name = df[df["RecordID"] == id].iloc[0].get("Name", "N/A")
         log_change(
@@ -112,6 +130,7 @@ def handle_delete_record(df, id, src, user, notes, prefix):
             "N/A",
             src,
             notes,
+            reason,
             user,
             QAAction.DELETE_RECORD,
             prefix,
@@ -125,6 +144,7 @@ def handle_delete_record(df, id, src, user, notes, prefix):
         "N/A",
         src,
         f"Deletion failed: {notes}",
+        reason,
         user,
         QAAction.DELETE_RECORD,
         prefix,
@@ -132,7 +152,7 @@ def handle_delete_record(df, id, src, user, notes, prefix):
     return df
 
 
-def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
+def handle_append_from_csv(df, path_str, base_dir, src, user, notes, reason, prefix):
     path_obj = (
         base_dir / path_str
         if not path_str.startswith("data/")
@@ -149,6 +169,7 @@ def handle_append_from_csv(df, path_str, base_dir, src, user, notes, prefix):
                 row.get("Name"),
                 src,
                 notes,
+                reason,
                 user,
                 QAAction.APPEND_FROM_CSV,
                 prefix,
@@ -181,16 +202,12 @@ def handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback):
         return
 
     val_str = match.group("value")
-    clean_val = val_str.strip()
-    while len(clean_val) > 1 and (
-        (clean_val.startswith('"') and clean_val.endswith('"'))
-        or (clean_val.startswith("'") and clean_val.endswith("'"))
-    ):
-        clean_val = clean_val[1:-1].strip()
+    clean_val = _sanitize_wrapped_text(val_str)
 
     for index in target_indices:
         record_name = df_mod.loc[index, "Name"]
         old_val = df_mod.loc[index, pascal_col]
+        reason = qa_row.get("reason", "")
         log_change(
             record_id,
             record_name,
@@ -199,6 +216,7 @@ def handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback):
             clean_val,
             src_name,
             feedback,
+            reason,
             user,
             QAAction.DIRECT_SET,
             prefix,
@@ -216,6 +234,7 @@ def handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback):
 
     for index in target_indices:
         record_name = df_mod.loc[index, "Name"]
+        reason = qa_row.get("reason", "")
         log_change(
             record_id,
             record_name,
@@ -224,6 +243,7 @@ def handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback):
             "N/A",
             src_name,
             feedback,
+            reason,
             user,
             QAAction.POLICY_QUERY,
             prefix,
@@ -237,8 +257,10 @@ def apply_qa_edits(df, qa_path, user, prefix):
 
     for _, qa_row in qa_df.iterrows():
         feedback = qa_row.get("feedback", "")
+        feedback = _sanitize_wrapped_text(feedback)
         if not feedback:
             continue
+        reason = qa_row.get("reason", "")
         action, match = detect_rule(feedback)
 
         if action == QAAction.DELETE_RECORD and match:
@@ -248,6 +270,7 @@ def apply_qa_edits(df, qa_path, user, prefix):
                 src_name,
                 user,
                 feedback,
+                reason,
                 prefix,
             )
         elif action == QAAction.APPEND_FROM_CSV and match:
@@ -258,6 +281,7 @@ def apply_qa_edits(df, qa_path, user, prefix):
                 src_name,
                 user,
                 feedback,
+                reason,
                 prefix,
             )
         elif action == QAAction.DIRECT_SET and match:

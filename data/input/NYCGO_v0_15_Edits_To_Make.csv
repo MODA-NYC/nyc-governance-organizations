@@ -1,0 +1,7 @@
+Row(s),Column,feedback,reason
+NYC_GOID_000102,reports_to,"Set to "Mayor's Office of Engagement"","Normalized name in the reports_to field."
+NYC_GOID_000117,reports_to,"Set to "Mayor's Office of Engagement"","Normalized name in the reports_to field."
+NYC_GOID_000293,reports_to,"Set to "Mayor's Office of Engagement"","Normalized name in the reports_to field."
+NYC_GOID_000190,reports_to,"Set to "Office of the Mayor;Office of the New York City Comptroller"","Normalized name in the reports_to field."
+NYC_GOID_000377,reports_to,"Set to "Office of the Mayor;Office of the New York City Comptroller"","Normalized name in the reports_to field."
+NYC_GOID_000392,reports_to,"Set to "Office of the Mayor;Office of the New York City Comptroller"","Normalized name in the reports_to field."
