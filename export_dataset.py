@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: E501, C901, B007
 """
 export_dataset.py - Prepares and exports datasets for different destinations.
 
@@ -23,8 +24,9 @@ def to_snake_case(name: str) -> str:
 
 
 ### START OF FINAL CORRECTED HELPER FUNCTION ###
-def add_nycgov_directory_column(df):
-    """Applies business logic to determine if a record should be on the NYC.gov Agency Directory.
+def add_nycgov_directory_column(df):  # noqa: C901
+    """Applies business logic to determine if a record should be on the NYC.gov Agency
+    Directory.
 
     The listed_in_nyc_gov_agency_directory field is TRUE if:
 
@@ -46,7 +48,8 @@ def add_nycgov_directory_column(df):
     * RecordID is in the manual override list
     """
     print(
-        "Applying final, corrected logic for 'listed_in_nyc_gov_agency_directory' column..."
+        "Applying final, corrected logic for 'listed_in_nyc_gov_agency_directory' "
+        "column..."
     )
     df_processed = df.copy()
 
@@ -82,7 +85,9 @@ def add_nycgov_directory_column(df):
 
     if manual_override_true_mask.sum() > 0:
         print(
-            f"Manual override TRUE: {manual_override_true_mask.sum()} records will be forced to TRUE"
+            "Manual override TRUE: "
+            f"{manual_override_true_mask.sum()} "
+            "records will be forced to TRUE"
         )
         for record_id in manual_override_true_record_ids:
             if record_id in df_processed["record_id"].values:
@@ -93,7 +98,9 @@ def add_nycgov_directory_column(df):
 
     if manual_override_false_mask.sum() > 0:
         print(
-            f"Manual override FALSE: {manual_override_false_mask.sum()} records will be forced to FALSE"
+            "Manual override FALSE: "
+            f"{manual_override_false_mask.sum()} "
+            "records will be forced to FALSE"
         )
         for record_id in manual_override_false_record_ids:
             if record_id in df_processed["record_id"].values:
@@ -129,7 +136,8 @@ def add_nycgov_directory_column(df):
     print("Debug - Part A conditions:")
     print(f"  - Records with operational_status = 'active': {is_active.sum()}")
     print(
-        f"  - Records with organization_type != 'nonprofit organization': {is_not_nonprofit.sum()}"
+        "  - Records with organization_type != 'nonprofit organization': "
+        f"{is_not_nonprofit.sum()}"
     )
     print(f"  - Records with URLs containing 'ny.gov': {url_contains_nygov.sum()}")
     print(f"  - Records without 'ny.gov' in URL (or no URL): {url_ok.sum()}")
@@ -157,10 +165,12 @@ def add_nycgov_directory_column(df):
     print("\nDebug - Part B conditions:")
     print(f"  - Records with non-empty URL: {has_url_value.sum()}")
     print(
-        f"  - Records with non-empty principal_officer_full_name: {has_officer_name.sum()}"
+        "  - Records with non-empty principal_officer_full_name: "
+        f"{has_officer_name.sum()}"
     )
     print(
-        f"  - Records with non-empty principal_officer_contact_url: {has_officer_contact_url.sum()}"
+        "  - Records with non-empty principal_officer_contact_url: "
+        f"{has_officer_contact_url.sum()}"
     )
     print(
         f"  - Records with at least one Part B condition met: {contact_info_mask.sum()}"
@@ -176,7 +186,9 @@ def add_nycgov_directory_column(df):
     df_processed["listed_in_nyc_gov_agency_directory"] = final_mask
 
     print(
-        f"\nFinal result: {final_mask.sum()} records meeting the NYC.gov Agency Directory criteria."
+        "\nFinal result: "
+        f"{final_mask.sum()} "
+        "records meeting the NYC.gov Agency Directory criteria."
     )
     print(f"  - Automatic matches: {automatic_mask.sum()}")
     print(f"  - Manual TRUE overrides: {manual_override_true_mask.sum()}")
@@ -186,7 +198,7 @@ def add_nycgov_directory_column(df):
     if final_mask.sum() > 0:
         print("\nFirst 5 records marked as TRUE:")
         true_records = df_processed[final_mask].head(5)
-        for idx, row in true_records.iterrows():
+        for _idx, row in true_records.iterrows():
             is_manual_true = row["record_id"] in manual_override_true_record_ids
             is_manual_false = row["record_id"] in manual_override_false_record_ids
             if is_manual_true:
@@ -196,7 +208,10 @@ def add_nycgov_directory_column(df):
             else:
                 override_note = ""
             print(
-                f"  - {row['name']}{override_note}: URL='{row['url']}', Officer='{row['principal_officer_full_name']}', Contact='{row['principal_officer_contact_url']}'"
+                f"  - {row['name']}{override_note}: "
+                f"URL='{row['url']}', "
+                f"Officer='{row['principal_officer_full_name']}', "
+                f"Contact='{row['principal_officer_contact_url']}'"
             )
 
     # Debug: Show any records with ny.gov URLs that might have slipped through
@@ -208,9 +223,11 @@ def add_nycgov_directory_column(df):
         ]
         if len(nygov_true) > 0:
             print(
-                f"\nWARNING: Found {len(nygov_true)} records with ny.gov URLs marked as TRUE (should be 0):"
+                "\nWARNING: Found "
+                f"{len(nygov_true)} "
+                "records with ny.gov URLs marked as TRUE (should be 0):"
             )
-            for idx, row in nygov_true.iterrows():
+            for _idx, row in nygov_true.iterrows():
                 print(f"  - {row['name']}: URL='{row['url']}'")
 
     return df_processed
@@ -310,7 +327,6 @@ def main():
         "AlternateOrFormerNames",
         "Acronym",
         "AlternateOrFormerAcronyms",
-        "OpenDatasetsURL",
         "PrincipalOfficerFullName",
         "PrincipalOfficerFirstName",
         "PrincipalOfficerLastName",
@@ -331,6 +347,17 @@ def main():
     # --- Convert headers to snake_case ---
     df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
     print("Converted public column headers to snake_case.")
+
+    # --- Normalize in_org_chart: fill blanks as False and coerce to booleans ---
+    if "in_org_chart" in df_selected.columns:
+        df_selected["in_org_chart"] = (
+            df_selected["in_org_chart"]
+            .astype(str)
+            .str.strip()
+            .str.lower()
+            .map({"true": True, "false": False})
+            .fillna(False)
+        )
 
     # --- Add NYC.gov Directory column AFTER snake_case conversion ---
     df_selected = add_nycgov_directory_column(df_selected)
