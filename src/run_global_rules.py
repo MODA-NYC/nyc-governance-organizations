@@ -121,32 +121,6 @@ def apply_global_character_fixing(df, user, prefix):
     return df_processed
 
 
-def apply_mayoral_budget_code_rule(df, user, prefix):
-    df_processed = df.copy()
-    condition = df_processed["OrganizationType"] == "Mayoral Office"
-    for i in df_processed[condition].index:
-        old_val = df_processed.loc[i, "BudgetCode"]
-        if (
-            pd.isna(old_val)
-            or str(old_val).strip() == ""
-            or str(old_val).strip() != "002"
-        ):
-            log_change(
-                df_processed.loc[i, "RecordID"],
-                df_processed.loc[i, "Name"],
-                "BudgetCode",
-                old_val,
-                "002",
-                "System_GlobalRule",
-                "Default budget code for Mayoral Office",
-                user,
-                "CONDITIONAL_SET_BUDGET_CODE",
-                prefix,
-            )
-            df_processed.loc[i, "BudgetCode"] = "002"
-    return df_processed
-
-
 def format_budget_codes(df, user, prefix):
     df_processed = df.copy()
     if "BudgetCode" not in df_processed.columns:
@@ -210,7 +184,6 @@ def main():
 
     df_processed = apply_global_character_fixing(df, args.changed_by, prefix)
     df_processed = apply_global_deduplication(df_processed, args.changed_by, prefix)
-    df_processed = apply_mayoral_budget_code_rule(df_processed, args.changed_by, prefix)
     df_processed = format_budget_codes(df_processed, args.changed_by, prefix)
 
     df_processed.to_csv(args.output_csv, index=False, encoding="utf-8-sig")

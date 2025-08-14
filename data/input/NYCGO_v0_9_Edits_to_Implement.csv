@@ -385,4 +385,3 @@ NYC_GOID_000356,open_datasets_url,"Set to """""
 NYC_GOID_100024,open_datasets_url,"Set to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=New+York+City+Tax+Commission+%28TAXCOMM%29"""
 NYC_GOID_100024,acronym,"Set to ""TAXCOMM"""
 NYC_GOID_100021,open_datasets_url,"Set to ""https://data.cityofnewyork.us/browse?Dataset-Information_Agency=Office+of+Chief+Medical+Examiner+%28OCME%29"""
-_SYSTEM_ACTION,_SYSTEM_ACTION,Append records from CSV data/input/add_missing_mta_entry.csv
