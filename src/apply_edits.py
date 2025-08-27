@@ -23,8 +23,9 @@ RULES = {
     r"^\s*Append records from CSV\s+(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": (
         QAAction.APPEND_FROM_CSV
     ),
-    r"Set (?P<column>[\w_]+) to (?P<value>.+)": QAAction.DIRECT_SET,
-    r"Set to (?P<value>.+)": QAAction.DIRECT_SET,
+    # Allow empty values and optional whitespace after 'to'
+    r"Set (?P<column>[\w_]+) to\s*(?P<value>.*)": QAAction.DIRECT_SET,
+    r"Set to\s*(?P<value>.*)": QAAction.DIRECT_SET,
     r".*\?": QAAction.POLICY_QUERY,
 }
 CHANGELOG_COLUMNS = [
@@ -201,8 +202,13 @@ def handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback):
         )
         return
 
+    # Extract raw value and then sanitize wrappers. If the intent was to set a
+    # field blank (e.g., value == "" after sanitation), preserve that as an
+    # empty string.
     val_str = match.group("value")
     clean_val = _sanitize_wrapped_text(val_str)
+    if clean_val is None:
+        clean_val = ""
 
     for index in target_indices:
         record_name = df_mod.loc[index, "Name"]
@@ -256,12 +262,12 @@ def apply_qa_edits(df, qa_path, user, prefix):
     qa_df = pd.read_csv(qa_path, dtype=str).fillna("")
 
     for _, qa_row in qa_df.iterrows():
-        feedback = qa_row.get("feedback", "")
-        feedback = _sanitize_wrapped_text(feedback)
-        if not feedback:
+        raw_feedback = str(qa_row.get("feedback", ""))
+        feedback = _sanitize_wrapped_text(raw_feedback)
+        if not raw_feedback.strip() and not feedback:
             continue
         reason = qa_row.get("reason", "")
-        action, match = detect_rule(feedback)
+        action, match = detect_rule(raw_feedback)
 
         if action == QAAction.DELETE_RECORD and match:
             df_mod = handle_delete_record(

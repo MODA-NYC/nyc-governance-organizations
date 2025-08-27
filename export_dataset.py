@@ -310,7 +310,18 @@ def main():
     is_mta_exception = (
         df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
     )
-    df_public = df_public[in_org_chart | has_ops_name | is_mta_exception].copy()
+    # New requirement: only export records where OperationalStatus is Active
+    active_only = (
+        df_public.get("OperationalStatus", pd.Series([""] * len(df_public)))
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        == "active"
+    )
+
+    df_public = df_public[
+        (in_org_chart | has_ops_name | is_mta_exception) & active_only
+    ].copy()
     print(
         f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
     )
@@ -322,7 +333,6 @@ def main():
         "NameAlphabetized",
         "OperationalStatus",
         "OrganizationType",
-        "Description",
         "URL",
         "AlternateOrFormerNames",
         "Acronym",
@@ -332,8 +342,8 @@ def main():
         "PrincipalOfficerLastName",
         "PrincipalOfficerTitle",
         "PrincipalOfficerContactURL",
-        "InOrgChart",
         "ReportsTo",
+        "InOrgChart",
     ]
     missing_cols = [
         col for col in required_output_columns if col not in df_public.columns
@@ -370,6 +380,14 @@ def main():
     except Exception as e:
         print(f"Error saving published dataset: {e}")
         sys.exit(1)
+
+    # Also write a copy of the full golden to data/published for convenience
+    try:
+        published_golden_path = args.output_published.parent / args.output_golden.name
+        df.to_csv(published_golden_path, index=False, encoding="utf-8-sig")
+        print(f"✅ Golden dataset also saved to: {published_golden_path}")
+    except Exception as e:
+        print(f"Warning: Failed to save golden to published folder: {e}")
 
 
 if __name__ == "__main__":
