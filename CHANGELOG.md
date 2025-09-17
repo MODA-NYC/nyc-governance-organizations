@@ -10,19 +10,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This section is for upcoming changes.
 
 ### Added
-- Created `CHANGELOG.md` to track project versions and notable changes to the codebase.
+- Append-only audit flow with tracked `data/changelog.csv` and spec in `docs/CHANGELOG_SPEC.md`.
+- Maintenance scripts:
+  - `scripts/maint/make_run_id.py`, `review_changes.py`, `append_changelog.py`
+  - `scripts/maint/ingest_audit_folder.py`, `prepare_run_proposed_changes.py`, `publish_changelog_run.py`
+- Schema guard test: `tests/test_changelog_schema.py` (validates minimal changelog schema).
+- Script index: `SCRIPTS.md` documenting runnable entrypoints.
 
 ### Changed
-- (Nothing yet)
+- Repository structure (no behavior changes):
+  - Runnable entrypoints moved under `scripts/{process,maint}/`
+  - Importable utilities live under `src/`
+- README updated with “Step 4: Publish changelog run” and review → append flow.
+- `.gitignore` refined (allow-list for `data/published/latest/*.csv`, broader cache ignores).
 
 ### Deprecated
 - (Nothing yet)
 
 ### Removed
-- `src/data_exploration.py` (exploratory script, no longer needed).
-- `notebooks/phase2_profile.md` (exploratory notebook, no longer needed).
-- `test_pandas_read.py` (diagnostic script, no longer needed).
-- `README_phase2.8.md` (obsolete documentation).
+- Legacy published CSVs from `data/published/` (now keep curated `data/published/latest/` only).
+- Emptied local `data/input/`, `data/output/`, and `data/intermediary` (archived to `_local_archives/`).
+- Legacy audit artifacts under `data/audit/legacy/*` (history consolidated in `data/changelog.csv`).
 
 ### Fixed
 - (Nothing yet)
