@@ -37,3 +37,9 @@ data/**
 htmlcov/
 *.env
 *.pytest_cache/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+!data/published/latest/
+!data/published/latest/*.csv
