@@ -30,6 +30,7 @@ data/**
 !data/published/manifest.csv
 !data/samples/
 !data/input/public_sources/
+!data/audit/ingest_report.json
 
 # Other
 .coverage

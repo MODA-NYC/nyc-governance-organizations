@@ -29,6 +29,9 @@ Tracked append-only changelog (minimal columns):
 - `operator`
 - `notes`
 
+## Evidence vs. source (legacy vs. new)
+Legacy migrations often cite non-URL provenance; store these in source_ref (free text). For new changes, prefer an evidence_url pointing to an official source (nyc.gov page, Executive Order, press release, Charter section). When no URL exists, leave evidence_url blank and use source_ref.
+
 Notes:
 - The tracked file is append-only and contains only the columns above.
 - Extra review-time fields like `change_kind`, `reason_code`, or `review_status` are not written to the tracked file.
