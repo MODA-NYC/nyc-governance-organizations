@@ -28,6 +28,13 @@ RULES = {
     r"Set to\s*(?P<value>.*)": QAAction.DIRECT_SET,
     r".*\?": QAAction.POLICY_QUERY,
 }
+SYNONYM_COLUMN_MAP = {
+    # Map common snake_case synonyms to the golden dataset's PascalCase columns
+    # Example: edits may reference first/last name, while golden uses Given/Family
+    "principal_officer_first_name": "PrincipalOfficerGivenName",
+    "principal_officer_last_name": "PrincipalOfficerFamilyName",
+    "principal_officer_contact_url": "PrincipalOfficerContactURL",
+}
 CHANGELOG_COLUMNS = [
     "ChangeID",
     "timestamp",
@@ -51,9 +58,15 @@ def _get_pascal_case_column(df_columns, provided_col_name):
     """
     if not provided_col_name or pd.isna(provided_col_name):
         return None
+    provided_lower = str(provided_col_name).strip().lower()
+
+    # First, try explicit synonyms map (handles semantic differences)
+    synonym_target = SYNONYM_COLUMN_MAP.get(provided_lower)
+    if synonym_target and synonym_target in df_columns:
+        return synonym_target
     # Add a fallback for simple case differences
     for col in df_columns:
-        if col.lower() == str(provided_col_name).strip().lower():
+        if col.lower() == provided_lower:
             return col
     # Keep the original logic as a final attempt
     pascal_version = "".join(

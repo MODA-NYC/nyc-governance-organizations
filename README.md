@@ -145,6 +145,29 @@ python compare_datasets.py \
   --output_report_csv data/audit/comparison_report_v2.8.csv
 ~~~
 
+#### 6 · Changelog (append-only) — new audit flow
+The per-run audit artifacts are produced locally under `data/audit/runs/<run_id>/` and ignored by Git. After review, approved rows are appended to the tracked `data/changelog.csv`.
+
+Basic flow:
+~~~bash
+# 1) Create a run id
+python scripts/maint/make_run_id.py > /tmp/run_id
+RUN_ID=$(cat /tmp/run_id)
+
+# 2) Your processing step should write proposed_changes.csv into the run dir
+#    e.g., data/audit/runs/$RUN_ID/proposed_changes.csv
+
+# 3) Review & approve (auto-approve by default)
+python scripts/maint/review_changes.py \
+  --run-dir data/audit/runs/$RUN_ID
+
+# 4) Append approved rows to the append-only changelog (idempotent)
+python scripts/maint/append_changelog.py \
+  --run-dir data/audit/runs/$RUN_ID \
+  --changelog data/changelog.csv \
+  --operator "$USER"
+~~~
+
 ### Script Reference
 
 | Script | Purpose | Key Args |
