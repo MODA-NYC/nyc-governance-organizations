@@ -59,39 +59,62 @@ def compute_run_id(run_id_opt: str | None) -> str:
         return f"{now}_nogit"
 
 
-def load_legacy_changelog(path: Path) -> list[dict]:
+def load_input_rows(path: Path) -> tuple[list[dict], dict]:
+    """Load rows from a step changelog CSV and return (rows, stats).
+
+    Ensures a canonical 'field' value. If only 'column_changed' exists, maps via
+    LEGACY_FIELD_MAP. Rows with unmapped fields are skipped. Applies provenance
+    rules from 'feedback_source'. Preserves free-text 'reason' and 'notes'.
+    """
+    stats = {"skipped_unmapped": 0, "unmapped_fields": set()}
     with path.open("r", newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
-        rows = []
-        for row in reader:
-            # Map legacy column names to proposed schema columns
-            record_id = row.get("record_id") or row.get("RecordID") or ""
-            column_changed = (
-                row.get("column_changed")
-                or row.get("ColumnChanged")
-                or row.get("column")
-                or ""
-            )
-            field = LEGACY_FIELD_MAP.get(column_changed, "")
-            feedback_source = row.get("feedback_source") or row.get("FeedbackSource")
-            evidence_url = feedback_source if is_url(feedback_source) else ""
-            source_ref = "" if evidence_url else (feedback_source or "")
-            rows.append(
-                {
-                    "timestamp_utc": "",  # will backfill later
-                    "run_id": "",  # will set later
-                    "record_id": nfc_trim(record_id),
-                    "field": nfc_trim(field),
-                    "old_value": nfc_trim(row.get("old_value") or row.get("OldValue")),
-                    "new_value": nfc_trim(row.get("new_value") or row.get("NewValue")),
-                    "reason": nfc_trim(row.get("reason") or row.get("Reason")),
-                    "evidence_url": nfc_trim(evidence_url),
-                    "source_ref": nfc_trim(source_ref),
-                    "operator": nfc_trim(row.get("changed_by") or row.get("ChangedBy")),
-                    "notes": nfc_trim(row.get("notes") or row.get("Notes")),
-                }
-            )
-        return rows
+        rows: list[dict] = []
+        for raw in reader:
+            record_id = raw.get("record_id") or raw.get("RecordID") or ""
+            # Determine canonical field
+            field = raw.get("field") or ""
+            if not field:
+                column_changed = (
+                    raw.get("column_changed")
+                    or raw.get("ColumnChanged")
+                    or raw.get("column")
+                    or ""
+                )
+                field = LEGACY_FIELD_MAP.get(column_changed, "")
+                if not field:
+                    stats["skipped_unmapped"] += 1
+                    if column_changed:
+                        stats["unmapped_fields"].add(column_changed)
+                    continue
+
+            # Provenance from feedback_source
+            feedback_source = raw.get("feedback_source") or raw.get("FeedbackSource")
+            evidence_url = ""
+            source_ref = ""
+            if feedback_source:
+                if is_url(feedback_source):
+                    evidence_url = feedback_source
+                else:
+                    source_ref = feedback_source
+
+            row = {
+                "timestamp_utc": nfc_trim(raw.get("timestamp_utc") or ""),
+                "run_id": nfc_trim(raw.get("run_id") or ""),
+                "record_id": nfc_trim(record_id),
+                "field": nfc_trim(field),
+                "old_value": nfc_trim(raw.get("old_value") or raw.get("OldValue")),
+                "new_value": nfc_trim(raw.get("new_value") or raw.get("NewValue")),
+                "reason": nfc_trim(raw.get("reason") or raw.get("Reason")),
+                "evidence_url": nfc_trim(evidence_url or raw.get("evidence_url") or ""),
+                "source_ref": nfc_trim(source_ref or raw.get("source_ref") or ""),
+                "operator": nfc_trim(
+                    raw.get("operator") or raw.get("changed_by") or raw.get("ChangedBy")
+                ),
+                "notes": nfc_trim(raw.get("notes") or raw.get("Notes")),
+            }
+            rows.append(row)
+    return rows, stats
 
 
 def write_csv(path: Path, fieldnames: list[str], rows: list[dict]) -> None:
@@ -139,14 +162,14 @@ def main() -> int:
         out = []
         for r in rows:
             rr = {k: nfc_trim(v) for k, v in r.items()}
-            rr["timestamp_utc"] = ts
+            rr["timestamp_utc"] = rr.get("timestamp_utc") or ts
             rr["run_id"] = run_id
             rr["phase"] = phase
             out.append(rr)
         return out
 
     if args.combined and args.combined.exists():
-        rows = load_legacy_changelog(args.combined)
+        rows, stats_combined = load_input_rows(args.combined)
         stamped = stamp_rows(rows, "combined")
         write_csv(
             run_dir / "proposed_changes.csv",
@@ -171,10 +194,22 @@ def main() -> int:
         summary = {"run_id": run_id, "counts": {"proposed": len(stamped)}}
         (run_dir / "run_summary.json").write_text(json.dumps(summary, indent=2))
         print(f"Prepared combined proposed changes at {run_dir}/proposed_changes.csv")
+        if stats_combined.get("skipped_unmapped"):
+            print(
+                "Skipped "
+                + str(stats_combined["skipped_unmapped"])
+                + " rows with unmapped fields: "
+                + str(sorted(stats_combined["unmapped_fields"]))
+            )
         return 0
 
+    stats_step1 = {"skipped_unmapped": 0, "unmapped_fields": set()}
+    stats_step2 = {"skipped_unmapped": 0, "unmapped_fields": set()}
+
     if args.step1 and args.step1.exists():
-        rows_step1 = stamp_rows(load_legacy_changelog(args.step1), "step1")
+        r1, s1 = load_input_rows(args.step1)
+        stats_step1 = s1
+        rows_step1 = stamp_rows(r1, "step1")
         write_csv(
             run_dir / "proposed_changes_step1.csv",
             (
@@ -199,7 +234,9 @@ def main() -> int:
         )
 
     if args.step2 and args.step2.exists():
-        rows_step2 = stamp_rows(load_legacy_changelog(args.step2), "step2")
+        r2, s2 = load_input_rows(args.step2)
+        stats_step2 = s2
+        rows_step2 = stamp_rows(r2, "step2")
         write_csv(
             run_dir / "proposed_changes_step2.csv",
             (
@@ -247,6 +284,21 @@ def main() -> int:
     summary = {"run_id": run_id, "counts": {"proposed": len(proposed_rows)}}
     (run_dir / "run_summary.json").write_text(json.dumps(summary, indent=2))
     print(f"Prepared proposed changes at {run_dir}/proposed_changes.csv")
+    skipped_total = stats_step1.get("skipped_unmapped", 0) + stats_step2.get(
+        "skipped_unmapped", 0
+    )
+    unmapped_union = sorted(
+        set(stats_step1.get("unmapped_fields", set())).union(
+            set(stats_step2.get("unmapped_fields", set()))
+        )
+    )
+    if skipped_total:
+        print(
+            "Skipped "
+            + str(skipped_total)
+            + " rows with unmapped fields across steps: "
+            + str(unmapped_union)
+        )
     return 0
 
 
