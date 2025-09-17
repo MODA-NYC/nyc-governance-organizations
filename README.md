@@ -168,6 +168,37 @@ python scripts/maint/append_changelog.py \
   --operator "$USER"
 ~~~
 
+### 7 · Step 4: Publish changelog run (review → append → optional commit/release)
+
+If your pipeline emits step-wise changelogs under `data/output/`, use the adapter to prepare per-run proposed changes:
+
+~~~bash
+python scripts/maint/prepare_run_proposed_changes.py \
+  --run-id $RUN_ID \
+  --step1 data/output/changelog_step1.csv \
+  --step2 data/output/changelog_step2.csv
+~~~
+
+Then review → append (dry-run):
+
+~~~bash
+python scripts/maint/publish_changelog_run.py \
+  --run-dir data/audit/runs/$RUN_ID
+~~~
+
+Append & commit (optionally tag/release):
+
+~~~bash
+python scripts/maint/publish_changelog_run.py \
+  --run-dir data/audit/runs/$RUN_ID \
+  --apply --commit --operator "$USER"
+
+# optional tagging/release marker
+python scripts/maint/publish_changelog_run.py \
+  --run-dir data/audit/runs/$RUN_ID \
+  --apply --commit --tag v1.0.0 --release --operator "$USER"
+~~~
+
 ### Script Reference
 
 | Script | Purpose | Key Args |
