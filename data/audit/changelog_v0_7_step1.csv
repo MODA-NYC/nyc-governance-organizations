@@ -1,4 +1,0 @@
-﻿ChangeID,timestamp,record_id,column_changed,old_value,new_value,feedback_source,notes,changed_by,RuleAction
-1,2025-06-11T20:20:53.144999,NYC_GOID_100021,PrincipalOfficerFullName,,Jason Graham,System_NameParseRule,Parsed from: 'Jason Graham',v0_7_pipeline_run,NAME_PARSE_SUCCESS
-2,2025-06-11T20:20:53.145087,NYC_GOID_100021,PrincipalOfficerGivenName,,Jason,System_NameParseRule,Parsed from: 'Jason Graham',v0_7_pipeline_run,NAME_PARSE_SUCCESS
-3,2025-06-11T20:20:53.145122,NYC_GOID_100021,PrincipalOfficerFamilyName,,Graham,System_NameParseRule,Parsed from: 'Jason Graham',v0_7_pipeline_run,NAME_PARSE_SUCCESS
