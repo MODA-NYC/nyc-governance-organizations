@@ -84,7 +84,7 @@ def write_proposed_changes(run_dir, changes, run_id, operator):
 
 ### START OF DIRECTORY FIELD LOGIC (v2) ###
 def add_nycgov_directory_column(
-    df, df_before_snake_case=None, run_id=None
+    df, df_before_snake_case=None, df_previous_export=None, run_id=None
 ):  # noqa: C901
     """Applies business logic (v2) to determine if a record should be on the NYC.gov
     Agency Directory.
@@ -110,7 +110,8 @@ def add_nycgov_directory_column(
 
     Args:
         df: Current dataframe (after snake_case conversion)
-        df_before_snake_case: Original dataframe before snake_case conversion (for old values)
+        df_before_snake_case: Original dataframe before snake_case conversion (deprecated)
+        df_previous_export: Previous export file to compare against for changelog
         run_id: Run identifier for changelog tracking
 
     Returns:
@@ -125,14 +126,14 @@ def add_nycgov_directory_column(
 
     # Capture old values if tracking is enabled
     old_values = {}
-    if run_id and df_before_snake_case is not None:
-        # Check for the field in PascalCase or snake_case in the original
+    if run_id and df_previous_export is not None:
+        # Check for the field in PascalCase or snake_case in the previous export
         old_col = None
         for possible_col in [
             "ListedInNycGovAgencyDirectory",
             "listed_in_nyc_gov_agency_directory",
         ]:
-            if possible_col in df_before_snake_case.columns:
+            if possible_col in df_previous_export.columns:
                 old_col = possible_col
                 break
 
@@ -140,14 +141,22 @@ def add_nycgov_directory_column(
             # Build mapping of record_id -> old value
             record_id_col = None
             for possible_id in ["RecordID", "record_id"]:
-                if possible_id in df_before_snake_case.columns:
+                if possible_id in df_previous_export.columns:
                     record_id_col = possible_id
                     break
 
             if record_id_col:
-                for idx, row in df_before_snake_case.iterrows():
+                for idx, row in df_previous_export.iterrows():
                     old_values[row[record_id_col]] = str(row.get(old_col, ""))
-            print(f"  - Loaded {len(old_values)} old values for change tracking")
+            print(
+                f"  - Loaded {len(old_values)} old values for change tracking from previous export"
+            )
+        else:
+            print(
+                "  - Warning: Previous export does not contain directory field column"
+            )
+    elif run_id and df_previous_export is None:
+        print("  - No previous export provided; will track all values as new")
 
     # --- Exemption Lists for Organization Types ---
     nonprofit_exemptions = [
@@ -491,6 +500,11 @@ def main():
         default="",
         help="Optional: Operator name for changelog tracking",
     )
+    parser.add_argument(
+        "--previous-export",
+        type=pathlib.Path,
+        help="Optional: Path to previous export file (e.g., NYCGovernanceOrganizations_v0_18.csv) for changelog comparison",
+    )
     args = parser.parse_args()
 
     # Load Input CSV
@@ -499,6 +513,20 @@ def main():
     except FileNotFoundError:
         print(f"Error: Input CSV file not found at '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
+
+    # Load previous export if provided (for changelog comparison)
+    df_previous_export = None
+    if args.previous_export:
+        try:
+            df_previous_export = pd.read_csv(args.previous_export, dtype=str)
+            print(f"Loaded previous export from {args.previous_export} for comparison")
+        except FileNotFoundError:
+            print(
+                f"Warning: Previous export file not found at '{args.previous_export}'",
+                file=sys.stderr,
+            )
+        except Exception as e:
+            print(f"Warning: Could not load previous export: {e}", file=sys.stderr)
 
     # --- Step 1: Save the full, versioned Golden Dataset ---
     print(f"Saving full golden dataset to {args.output_golden}...")
@@ -605,6 +633,7 @@ def main():
     result = add_nycgov_directory_column(
         df_selected,
         df_before_snake_case=df_before_snake_case if args.run_dir else None,
+        df_previous_export=df_previous_export,
         run_id=args.run_id,
     )
 

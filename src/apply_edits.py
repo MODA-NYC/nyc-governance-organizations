@@ -316,9 +316,34 @@ def main():
     parser.add_argument("--input_csv", type=pathlib.Path, required=True)
     parser.add_argument("--qa_csv", type=pathlib.Path, required=True)
     parser.add_argument("--output_csv", type=pathlib.Path, required=True)
-    parser.add_argument("--changelog", type=pathlib.Path, required=True)
+    parser.add_argument(
+        "--changelog",
+        type=pathlib.Path,
+        required=True,
+        help=(
+            "Path to OUTPUT changelog file "
+            "(NOT data/changelog.csv - use append_changelog.py for that)"
+        ),
+    )
     parser.add_argument("--changed_by", type=str, required=True)
     args = parser.parse_args()
+
+    # PROTECTION: Prevent overwriting the main append-only changelog
+    if args.changelog.resolve().name == "changelog.csv" and "data/changelog.csv" in str(
+        args.changelog.resolve()
+    ):
+        print(
+            "❌ ERROR: Cannot write directly to data/changelog.csv "
+            "(append-only file).\n"
+            "   This script should write to a temporary changelog "
+            "in data/output/.\n"
+            "   Use scripts/maint/append_changelog.py to append "
+            "to the main changelog.\n"
+            "   Example: --changelog data/output/"
+            "changelog_v0_XX_edits.csv",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     try:
         df_input = pd.read_csv(args.input_csv, dtype=str).fillna("")
     except FileNotFoundError:

@@ -18,13 +18,14 @@ The `listed_in_nyc_gov_agency_directory` field is computed during the export pro
 
 ### 1. Modified Functions
 
-#### `add_nycgov_directory_column(df, df_before_snake_case=None, run_id=None)`
+#### `add_nycgov_directory_column(df, df_before_snake_case=None, df_previous_export=None, run_id=None)`
 
 **Purpose:** Applies directory inclusion logic and tracks changes.
 
 **Parameters:**
 - `df`: Current dataframe (after snake_case conversion)
-- `df_before_snake_case`: Original dataframe for old value comparison
+- `df_before_snake_case`: Original dataframe (deprecated - kept for backward compatibility)
+- `df_previous_export`: Previous version's export file for accurate changelog comparison
 - `run_id`: Run identifier for changelog tracking (optional)
 
 **Returns:**
@@ -33,10 +34,10 @@ The `listed_in_nyc_gov_agency_directory` field is computed during the export pro
 
 **Change Detection:**
 ```python
-# Captures old values from input dataset
+# Captures old values from previous export file (e.g., NYCGovernanceOrganizations_v0_18.csv)
 # Computes new values using business logic
 # Compares normalized boolean representations
-# Returns list of change records
+# Returns list of change records ONLY for actual changes (not all records)
 ```
 
 **Change Record Structure:**
@@ -68,6 +69,7 @@ timestamp_utc,run_id,record_id,field,old_value,new_value,reason,evidence_url,sou
 | `--run-dir` | No | Path to run directory for changelog tracking |
 | `--run-id` | No | Run identifier (e.g., timestamp-hash) |
 | `--operator` | No | Operator name for changelog attribution |
+| `--previous-export` | No | Path to previous export file for accurate change comparison (e.g., `NYCGovernanceOrganizations_v0_18.csv`). **Required for accurate changelog** - without it, all records will be treated as new. |
 
 ### 3. Workflow Integration
 
