@@ -132,9 +132,27 @@ python src/process_golden_dataset.py \
 
 #### 4 · Final Export for Publication
 ~~~bash
-python export_dataset.py \
-  --input_csv  data/output/processed_run2_supplemental.csv \
-  --output_csv data/published/NYCGovernanceOrganizations_v2.8.csv
+# Basic export (no changelog tracking)
+python scripts/process/export_dataset.py \
+  --input_csv data/output/processed_run2_supplemental.csv \
+  --output_golden data/published/NYCGO_golden_dataset_v0_19.csv \
+  --output_published data/published/NYCGovernanceOrganizations_v0_19.csv
+
+# Export WITH changelog tracking for directory field changes
+RUN_ID=$(python scripts/maint/make_run_id.py)
+python scripts/process/export_dataset.py \
+  --input_csv data/output/processed_run2_supplemental.csv \
+  --output_golden data/published/NYCGO_golden_dataset_v0_19.csv \
+  --output_published data/published/NYCGovernanceOrganizations_v0_19.csv \
+  --run-dir data/audit/runs/$RUN_ID \
+  --run-id $RUN_ID \
+  --operator "$USER" \
+  --previous-export data/published/latest/NYCGovernanceOrganizations_v0_18.csv
+
+# Then follow the review → append workflow
+python scripts/maint/review_changes.py --run-dir data/audit/runs/$RUN_ID
+python scripts/maint/append_changelog.py --run-dir data/audit/runs/$RUN_ID \
+  --changelog data/changelog.csv --operator "$USER"
 ~~~
 
 #### 5 · Audit & Compare *(optional)*
@@ -205,7 +223,7 @@ python scripts/maint/publish_changelog_run.py \
 |--------|---------|----------|
 | **manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
 | **process_golden_dataset.py** | Core processor — global rules + QA edits | `--golden` · `--qa` · `--out` · `--changelog` · `--changed-by` |
-| **export_dataset.py** | Final cleanup & column mapping | `--input_csv` · `--output_csv` |
+| **export_dataset.py** | Final cleanup & column mapping; tracks directory field changes | `--input_csv` · `--output_golden` · `--output_published` · `--run-dir` (optional) · `--run-id` (optional) · `--operator` (optional) · `--previous-export` (optional) |
 | **compare_datasets.py** | Audit RecordID adds / drops | `--original_csv` · `--processed_csv` · `--output_report_csv` |
 
 ### Development

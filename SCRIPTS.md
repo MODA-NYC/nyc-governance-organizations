@@ -3,8 +3,9 @@
 ## Process (ETL/exports)
 - `scripts/process/manage_schema.py` — Add/modify columns in CSVs
   `python scripts/process/manage_schema.py --help`
-- `scripts/process/export_dataset.py` — Export cleaned golden & public datasets
+- `scripts/process/export_dataset.py` — Export cleaned golden & public datasets; tracks `listed_in_nyc_gov_agency_directory` changes
   `python scripts/process/export_dataset.py --help`
+  Optional changelog tracking: `--run-dir <path> --run-id <id> --operator <name> --previous-export <path>`
 - `scripts/process/create_crosswalk.py` — Generate crosswalks between source systems
   `python scripts/process/create_crosswalk.py --help`
 
