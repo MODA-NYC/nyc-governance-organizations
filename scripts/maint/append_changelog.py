@@ -5,13 +5,40 @@ import json
 import pathlib
 import sys
 
+SYNCED_RECORD_NAMES: dict[str, str] = {}
+
 
 def read_existing_event_ids(changelog_path: pathlib.Path):
     if not changelog_path.exists() or changelog_path.stat().st_size == 0:
         return set()
     with changelog_path.open("r", newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
-        return {row.get("event_id") for row in reader if row.get("event_id")}
+        event_ids = set()
+        for row in reader:
+            event_id = row.get("event_id")
+            record_id = row.get("record_id", "")
+            record_name = row.get("record_name", "")
+            if event_id:
+                event_ids.add(event_id)
+                if event_id not in SYNCED_RECORD_NAMES and record_id and record_name:
+                    SYNCED_RECORD_NAMES[event_id] = record_name
+        return event_ids
+
+
+def load_record_name_map() -> dict[str, str]:
+    """Return mapping of record_id -> name from current golden dataset."""
+    golden_path = pathlib.Path("data/published/latest/NYCGO_golden_dataset_v0_19.csv")
+    mapping: dict[str, str] = {}
+    if not golden_path.exists():
+        return mapping
+    with golden_path.open("r", newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rid = row.get("RecordID")
+            name = row.get("Name") or ""
+            if rid:
+                mapping[rid] = name
+    return mapping
 
 
 def append_rows(changelog_path: pathlib.Path, fieldnames, rows):
@@ -23,6 +50,10 @@ def append_rows(changelog_path: pathlib.Path, fieldnames, rows):
             writer.writeheader()
         for r in rows:
             writer.writerow(r)
+            event_id = r.get("event_id")
+            record_name = r.get("record_name", "")
+            if event_id and record_name:
+                SYNCED_RECORD_NAMES[event_id] = record_name
 
 
 def main():
@@ -35,6 +66,11 @@ def main():
     )
     parser.add_argument("--operator", type=str, default="")
     parser.add_argument("--require-new", action="store_true")
+    parser.add_argument(
+        "--skip-record-name-sync",
+        action="store_true",
+        help="Do not try to backfill record_name from golden dataset",
+    )
     args = parser.parse_args()
 
     reviewed_path = args.run_dir / "reviewed_changes.csv"
@@ -52,6 +88,10 @@ def main():
 
     approved = [r for r in reviewed_rows if r.get("review_status") == "approved"]
 
+    record_name_map = {}
+    if not args.skip_record_name_sync:
+        record_name_map = load_record_name_map()
+
     existing = read_existing_event_ids(args.changelog)
     to_append = []
     for r in approved:
@@ -68,11 +108,17 @@ def main():
         if source_ref.startswith("http://") or source_ref.startswith("https://"):
             source_ref = ""
         operator = args.operator or r.get("operator", "")
+        record_name = r.get("record_name", "")
+        if not record_name and not args.skip_record_name_sync:
+            record_name = record_name_map.get(r.get("record_id", ""), "")
+        if r.get("event_id") in SYNCED_RECORD_NAMES and not record_name:
+            record_name = SYNCED_RECORD_NAMES[r.get("event_id")]
         out_row = {
             "event_id": r.get("event_id", ""),
             "timestamp_utc": r.get("timestamp_utc", ""),
             "run_id": r.get("run_id", ""),
             "record_id": r.get("record_id", ""),
+            "record_name": record_name,
             "field": r.get("field", ""),
             "old_value": r.get("old_value", ""),
             "new_value": r.get("new_value", ""),
@@ -95,6 +141,7 @@ def main():
         "timestamp_utc",
         "run_id",
         "record_id",
+        "record_name",
         "field",
         "old_value",
         "new_value",

@@ -98,6 +98,7 @@ def test_write_proposed_changes():
         changes = [
             {
                 "record_id": "NYC_GOID_000001",
+                "record_name": "Agency A",
                 "field": "listed_in_nyc_gov_agency_directory",
                 "old_value": "False",
                 "new_value": "True",
@@ -107,6 +108,7 @@ def test_write_proposed_changes():
             },
             {
                 "record_id": "NYC_GOID_000002",
+                "record_name": "Agency B",
                 "field": "listed_in_nyc_gov_agency_directory",
                 "old_value": "",
                 "new_value": "False",
@@ -136,6 +138,7 @@ def test_write_proposed_changes():
             "timestamp_utc",
             "run_id",
             "record_id",
+            "record_name",
             "field",
             "old_value",
             "new_value",

@@ -50,6 +50,7 @@ def run_append(run_dir: Path, changelog: Path, operator: str) -> int:
         str(changelog),
         "--operator",
         operator,
+        "--skip-record-name-sync",
     ]
     return run_cmd(cmd)
 

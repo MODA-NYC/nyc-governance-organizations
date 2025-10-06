@@ -43,6 +43,7 @@ def write_proposed_changes(run_dir, changes, run_id, operator):
         "timestamp_utc",
         "run_id",
         "record_id",
+        "record_name",
         "field",
         "old_value",
         "new_value",
@@ -66,6 +67,7 @@ def write_proposed_changes(run_dir, changes, run_id, operator):
                     "timestamp_utc": timestamp,
                     "run_id": run_id or "",
                     "record_id": change["record_id"],
+                    "record_name": change.get("record_name", ""),
                     "field": change["field"],
                     "old_value": change.get("old_value", ""),
                     "new_value": change["new_value"],
@@ -440,6 +442,7 @@ def add_nycgov_directory_column(
                 changes.append(
                     {
                         "record_id": record_id,
+                        "record_name": org_name_val,
                         "field": "listed_in_nyc_gov_agency_directory",
                         "old_value": old_normalized,
                         "new_value": new_normalized,

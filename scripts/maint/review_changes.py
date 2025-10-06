@@ -75,6 +75,7 @@ def main():
         "timestamp_utc",
         "run_id",
         "record_id",
+        "record_name",
         "field",
         "old_value",
         "new_value",
@@ -95,6 +96,7 @@ def main():
         # Preserve optional 'reason' and 'source_ref' if present
         for k in [
             "record_id",
+            "record_name",
             "field",
             "old_value",
             "new_value",
@@ -143,6 +145,7 @@ def main():
         "timestamp_utc",
         "run_id",
         "record_id",
+        "record_name",
         "field",
         "old_value",
         "new_value",

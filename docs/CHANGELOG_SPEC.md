@@ -20,6 +20,7 @@ Tracked append-only changelog (minimal columns):
 - `timestamp_utc`
 - `run_id`
 - `record_id`
+- `record_name`
 - `field`
 - `old_value`
 - `new_value`
