@@ -1,6 +1,6 @@
 # Append-only changelog: spec and workflow
 
-This repo maintains a single, append-only changelog at `data/changelog.csv` that tracks approved changes across runs. Per-run artifacts are written under `data/audit/runs/<run_id>/` and are ignored by Git.
+This repo maintains a single, append-only changelog at `data/changelog.csv` that tracks approved changes across runs. Per-run artifacts are written under `data/audit/runs/<run_id>/` and are ignored by Git. See [`docs/run_artifacts.md`](run_artifacts.md) for the baseline structure of each run folder and the required subdirectories.
 
 ## Why append-only
 - Provenance: every approved change has a stable `event_id` and `run_id`.

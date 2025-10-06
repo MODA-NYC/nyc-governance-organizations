@@ -1,6 +1,6 @@
 [project]
 name = "nyc-governance-organizations"
-version = "0.1.0"
+version = "1.0.0-dev"
 description = "Project for processing NYC governance organizations data."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -48,7 +48,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-py-modules = ["process_golden_dataset", "data_exploration"]
+packages = ["nycgo_pipeline"]
+
+[project.scripts]
+run-nycgo-pipeline = "scripts.pipeline.run_pipeline:main"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

@@ -10,7 +10,7 @@ import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
 
-from src import process_golden_dataset
+from nycgo_pipeline import qa_edits as apply_edits_module
 
 # Sample columns for consistent DataFrames, defined globally for the test module
 SAMPLE_COLS = [
@@ -29,14 +29,14 @@ def clear_changelog(monkeypatch):
     # Create a new empty list for changelog_entries for each test
     # This ensures test isolation.
     new_changelog = []
-    monkeypatch.setattr(process_golden_dataset, "changelog_entries", new_changelog)
+    monkeypatch.setattr(apply_edits_module, "changelog_entries", new_changelog)
     # Reset the changelog counter for each test
-    monkeypatch.setattr(process_golden_dataset, "changelog_id_counter", 0)
+    monkeypatch.setattr(apply_edits_module, "changelog_id_counter", 0)
     return new_changelog  # Return it so tests can inspect it if needed
 
 
 def test_changelog_columns_definition():
-    assert process_golden_dataset.CHANGELOG_COLUMNS == [
+    assert apply_edits_module.CHANGELOG_COLUMNS == [
         "ChangeID",  # New column for unique change ID
         "timestamp",
         "record_id",
@@ -68,7 +68,7 @@ def test_name_replacement(clear_changelog):
     changed_by = "Tester"
 
     # Apply the handler
-    modified_row = process_golden_dataset.handle_direct_set(
+    modified_row = apply_edits_module.handle_direct_set(
         row_series, column_to_edit, new_name, record_id, feedback_source, changed_by
     )
 
@@ -85,7 +85,7 @@ def test_name_replacement(clear_changelog):
     assert log_entry["new_value"] == new_name
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
-    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.DIRECT_SET.value
+    assert log_entry["RuleAction"] == apply_edits_module.QAAction.DIRECT_SET.value
 
 
 def test_blank_out_value(clear_changelog):
@@ -98,7 +98,7 @@ def test_blank_out_value(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_blank_value(
+    modified_row = apply_edits_module.handle_blank_value(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -112,6 +112,7 @@ def test_blank_out_value(clear_changelog):
     assert log_entry["new_value"] == ""
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
+    assert log_entry["RuleAction"] == apply_edits_module.QAAction.POLICY_QUERY.value
 
 
 def test_char_fix_strip_whitespace(clear_changelog):
@@ -126,7 +127,7 @@ def test_char_fix_strip_whitespace(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_char_fix(
+    modified_row = apply_edits_module.handle_char_fix(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -148,7 +149,7 @@ def test_char_fix_no_change(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_char_fix(
+    modified_row = apply_edits_module.handle_char_fix(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -171,7 +172,7 @@ def test_deduplicate_semicolon_list(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -196,7 +197,7 @@ def test_deduplicate_semicolon_list_no_duplicates(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -217,7 +218,7 @@ def test_deduplicate_semicolon_list_empty_input(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -236,7 +237,7 @@ def test_deduplicate_semicolon_list_single_item(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -256,7 +257,7 @@ def test_deduplicate_semicolon_list_with_only_semicolons(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -278,7 +279,7 @@ def test_deduplicate_semicolon_non_string_input(clear_changelog):
     feedback_source = "Test"
     changed_by = "Tester"
 
-    modified_row = process_golden_dataset.handle_dedup_semicolon(
+    modified_row = apply_edits_module.handle_dedup_semicolon(
         row_series, column_to_edit, record_id, feedback_source, changed_by
     )
 
@@ -305,7 +306,7 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     changed_by = "PolicyBot"
 
     # Call the handle_policy_query function
-    modified_row = process_golden_dataset.handle_policy_query(
+    modified_row = apply_edits_module.handle_policy_query(
         row_series,
         column_to_edit,
         original_feedback,
@@ -336,7 +337,7 @@ def test_policy_query_logs_and_does_not_mutate(clear_changelog):
     ), "Logged notes do not match original feedback"
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["changed_by"] == changed_by
-    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.POLICY_QUERY.value
+    assert log_entry["RuleAction"] == apply_edits_module.QAAction.POLICY_QUERY.value
 
 
 # Tests for REMOVE_ACTING_PREFIX
@@ -458,10 +459,10 @@ def test_remove_acting_prefix(  # noqa: C901
     changed_by = "test_user"
     qa_filename = "test_qa.csv"
 
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         golden_data, qa_data, changed_by, qa_filename
     )
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
 
     expected_data = pd.DataFrame([{"RecordID": record_id, column: expected_title}])
 
@@ -560,7 +561,7 @@ def test_blank_value_on_departure(clear_changelog):
     )
 
     # Apply the QA edits, which should now trigger POLICY_QUERY instead of BLANK_VALUE
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         golden_data, qa_data, changed_by, feedback_source
     )
 
@@ -578,7 +579,7 @@ def test_blank_value_on_departure(clear_changelog):
     assert log_entry["feedback_source"] == feedback_source
     assert log_entry["notes"] == feedback_text  # Original feedback preserved in notes
     assert log_entry["changed_by"] == changed_by
-    assert log_entry["RuleAction"] == process_golden_dataset.QAAction.POLICY_QUERY.value
+    assert log_entry["RuleAction"] == apply_edits_module.QAAction.POLICY_QUERY.value
 
 
 @pytest.mark.parametrize(
@@ -642,7 +643,7 @@ def test_blank_value_on_departure_parametrized(
         [{"Row(s)": record_id, "Column": column_to_edit, "feedback": feedback}]
     )
 
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         golden_data, qa_data, changed_by, feedback_source
     )
 
@@ -667,7 +668,7 @@ def test_blank_value_on_departure_parametrized(
         assert log_entry["new_value"] == "N/A"
         assert (
             log_entry["RuleAction"]
-            == process_golden_dataset.QAAction.POLICY_QUERY.value
+            == apply_edits_module.QAAction.POLICY_QUERY.value
         )
     else:
         # For unmatched patterns, also expect POLICY_QUERY action and N/A values
@@ -675,7 +676,7 @@ def test_blank_value_on_departure_parametrized(
         assert log_entry["new_value"] == "N/A"
         assert (
             log_entry["RuleAction"]
-            == process_golden_dataset.QAAction.POLICY_QUERY.value
+            == apply_edits_module.QAAction.POLICY_QUERY.value
         )
 
 
@@ -728,7 +729,7 @@ def test_apply_global_deduplication(clear_changelog):
         DEDUP_SEMICOLON = "dedup_semicolon"
 
     # Call the function
-    df_result = process_golden_dataset.apply_global_deduplication(
+    df_result = apply_edits_module.apply_global_deduplication(
         df_input,
         "test_user",
         mock_log_change,
@@ -875,11 +876,11 @@ def test_global_character_fixing(clear_changelog):
     df_input = pd.DataFrame(test_data)
 
     # Call the function
-    df_result = process_golden_dataset.apply_global_character_fixing(
+    df_result = apply_edits_module.apply_global_character_fixing(
         df_input,
         "TestGlobalCharFix",
-        process_golden_dataset.log_change,
-        process_golden_dataset.QAAction,
+        apply_edits_module.log_change,
+        apply_edits_module.QAAction,
     )
 
     # Test that the function returns a new DataFrame
@@ -968,7 +969,7 @@ def test_global_character_fixing(clear_changelog):
         assert "ChangeID" in log_entry
         assert log_entry["feedback_source"] == "System_GlobalCharFix"
         assert log_entry["changed_by"] == "TestGlobalCharFix"
-        assert log_entry["RuleAction"] == process_golden_dataset.QAAction.CHAR_FIX.value
+        assert log_entry["RuleAction"] == apply_edits_module.QAAction.CHAR_FIX.value
         assert "Global character/Unicode fixing applied to" in log_entry["notes"]
 
         # Verify the column changed is in our text_columns_to_fix
@@ -1019,7 +1020,7 @@ def test_delete_existing_record(clear_changelog):
     }
     df_qa = pd.DataFrame(qa_data)
 
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_delete", "qa_delete_ops.csv"
     )
 
@@ -1028,7 +1029,7 @@ def test_delete_existing_record(clear_changelog):
     assert len(processed_df) == len(df_golden) - 1
 
     # Assert changelog
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == 1
     log_entry = changelog_df.iloc[0]
     assert log_entry["record_id"] == record_id_to_delete
@@ -1038,7 +1039,7 @@ def test_delete_existing_record(clear_changelog):
     assert log_entry["feedback_source"] == "qa_delete_ops.csv"
     assert log_entry["notes"] == f"Delete RecordID {record_id_to_delete}"
     assert log_entry["changed_by"] == "test_user_delete"
-    expected_action = process_golden_dataset.QAAction.DELETE_RECORD.value
+    expected_action = apply_edits_module.QAAction.DELETE_RECORD.value
     assert log_entry["RuleAction"] == expected_action
 
 
@@ -1054,7 +1055,7 @@ def test_delete_nonexistent_record(clear_changelog):
     df_qa = pd.DataFrame(qa_data)
 
     initial_df_copy = df_golden.copy()
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_delete_fail", "qa_delete_fail.csv"
     )
 
@@ -1062,7 +1063,7 @@ def test_delete_nonexistent_record(clear_changelog):
     assert_frame_equal(processed_df, initial_df_copy)
 
     # Assert changelog
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == 1
     log_entry = changelog_df.iloc[0]
     assert log_entry["record_id"] == non_existent_record_id
@@ -1076,7 +1077,7 @@ def test_delete_nonexistent_record(clear_changelog):
     assert log_entry["notes"] == expected_notes
     assert log_entry["changed_by"] == "test_user_delete_fail"
     # The rule action is still delete, but it failed
-    expected_action = process_golden_dataset.QAAction.DELETE_RECORD.value
+    expected_action = apply_edits_module.QAAction.DELETE_RECORD.value
     assert log_entry["RuleAction"] == expected_action
 
 
@@ -1109,7 +1110,7 @@ def test_append_from_valid_csv(clear_changelog, tmp_path):
     # qa_filename path determines base_input_dir
     dummy_qa_filepath = tmp_path / "qa_append_ops.csv"
 
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_append", str(dummy_qa_filepath)
     )
 
@@ -1121,7 +1122,7 @@ def test_append_from_valid_csv(clear_changelog, tmp_path):
     assert org_d_name_series.iloc[0] == "Org D"
 
     # Assert changelog
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == len(new_records_data)
 
     log_entry_d = changelog_df[changelog_df["record_id"] == "NYC_GOID_004"].iloc[0]
@@ -1131,7 +1132,7 @@ def test_append_from_valid_csv(clear_changelog, tmp_path):
     assert log_entry_d["feedback_source"] == "qa_append_ops.csv"
     assert f"Append records from CSV {append_csv_filename}" in log_entry_d["notes"]
     assert log_entry_d["changed_by"] == "test_user_append"
-    expected_action_append = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    expected_action_append = apply_edits_module.QAAction.APPEND_FROM_CSV.value
     assert log_entry_d["RuleAction"] == expected_action_append
 
     log_entry_e = changelog_df[changelog_df["record_id"] == "NYC_GOID_005"].iloc[0]
@@ -1153,7 +1154,7 @@ def test_append_from_nonexistent_csv(clear_changelog, tmp_path):
     dummy_qa_filepath = tmp_path / "qa_append_nonexistent.csv"
 
     initial_df_copy = df_golden.copy()
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_append_fail", str(dummy_qa_filepath)
     )
 
@@ -1161,7 +1162,7 @@ def test_append_from_nonexistent_csv(clear_changelog, tmp_path):
     assert_frame_equal(processed_df, initial_df_copy)
 
     # Assert changelog
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == 1
     log_entry = changelog_df.iloc[0]
     assert log_entry["record_id"] == "_APPEND_ERROR"
@@ -1175,7 +1176,7 @@ def test_append_from_nonexistent_csv(clear_changelog, tmp_path):
     expected_notes = f"{path_info}: File not found"
     assert expected_notes in log_entry["notes"]
     assert log_entry["changed_by"] == "test_user_append_fail"
-    expected_action_append_fail = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    expected_action_append_fail = apply_edits_module.QAAction.APPEND_FROM_CSV.value
     assert log_entry["RuleAction"] == expected_action_append_fail
 
 
@@ -1204,7 +1205,7 @@ def test_append_from_empty_csv(clear_changelog, tmp_path):
     dummy_qa_filepath = tmp_path / "qa_append_empty.csv"
 
     initial_df_copy = df_golden.copy()
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_append_empty", str(dummy_qa_filepath)
     )
 
@@ -1212,7 +1213,7 @@ def test_append_from_empty_csv(clear_changelog, tmp_path):
     assert_frame_equal(processed_df, initial_df_copy)
 
     # Assert changelog - Expect 1 entry for the load failure
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == 1
     log_entry = changelog_df.iloc[0]
     assert log_entry["record_id"] == "_APPEND_ERROR"
@@ -1227,7 +1228,7 @@ def test_append_from_empty_csv(clear_changelog, tmp_path):
     expected_notes_empty_csv = f"Failed to append from {str(empty_csv_path)}:"
     assert expected_notes_empty_csv in log_entry["notes"]
     assert log_entry["changed_by"] == "test_user_append_empty"
-    expected_action_val = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    expected_action_val = apply_edits_module.QAAction.APPEND_FROM_CSV.value
     assert log_entry["RuleAction"] == expected_action_val
 
 
@@ -1263,7 +1264,7 @@ def test_append_csv_with_schema_mismatch(clear_changelog, tmp_path, capsys):
     df_qa = pd.DataFrame(qa_data)
     dummy_qa_filepath = tmp_path / "qa_append_mismatch_ops.csv"
 
-    processed_df = process_golden_dataset.apply_qa_edits(
+    processed_df = apply_edits_module.apply_qa_edits(
         df_golden.copy(), df_qa, "test_user_append_mismatch", str(dummy_qa_filepath)
     )
 
@@ -1288,12 +1289,12 @@ def test_append_csv_with_schema_mismatch(clear_changelog, tmp_path, capsys):
     assert pd.isna(new_row_url_val)  # New row gets NaN for URL as it was missing
 
     # Assert changelog for the appended row
-    changelog_df = pd.DataFrame(process_golden_dataset.changelog_entries)
+    changelog_df = pd.DataFrame(apply_edits_module.changelog_entries)
     assert len(changelog_df) == 1
     log_entry_f = changelog_df[changelog_df["record_id"] == "NYC_GOID_006"].iloc[0]
     assert log_entry_f["column_changed"] == "_ROW_ADDED"
     assert log_entry_f["new_value"] == "Org F"  # Name of NYC_GOID_006
-    expected_action_mismatch = process_golden_dataset.QAAction.APPEND_FROM_CSV.value
+    expected_action_mismatch = apply_edits_module.QAAction.APPEND_FROM_CSV.value
     assert log_entry_f["RuleAction"] == expected_action_mismatch
 
     # Assert warnings were printed (basic check)
@@ -1322,9 +1323,9 @@ def create_sample_golden_df():
 
 def get_changelog_df():
     """Converts the global changelog_entries list to a DataFrame."""
-    changelog_columns = process_golden_dataset.CHANGELOG_COLUMNS
+    changelog_columns = apply_edits_module.CHANGELOG_COLUMNS
     return pd.DataFrame(
-        process_golden_dataset.changelog_entries, columns=changelog_columns
+        apply_edits_module.changelog_entries, columns=changelog_columns
     )
 
 
@@ -1607,11 +1608,11 @@ def test_populate_split_officer_names(
     )
     changed_by = "test_name_splitter_rule"
 
-    df_processed = process_golden_dataset.populate_split_officer_names(
+    df_processed = apply_edits_module.populate_split_officer_names(
         df_input,
         changed_by,
-        process_golden_dataset.log_change,  # Actual log_change function
-        process_golden_dataset.QAAction,  # Actual QAAction Enum
+        apply_edits_module.log_change,  # Actual log_change function
+        apply_edits_module.QAAction,  # Actual QAAction Enum
     )
 
     # Assert DataFrame changes
@@ -1655,6 +1656,6 @@ def test_populate_split_officer_names(
         # Get the actual enum value for comparison
         expected_rule_action_name = detail["rule_action"].upper()
         expected_rule_action_value = getattr(
-            process_golden_dataset.QAAction, expected_rule_action_name
+            apply_edits_module.QAAction, expected_rule_action_name
         ).value
         assert log_entry["RuleAction"] == expected_rule_action_value

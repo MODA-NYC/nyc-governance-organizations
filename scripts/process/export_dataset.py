@@ -683,5 +683,74 @@ def main():
         print("\n✅ No changes detected in listed_in_nyc_gov_agency_directory field")
 
 
+def main_with_dataframe(
+    df: pd.DataFrame,
+    *,
+    output_golden: pathlib.Path,
+    output_published: pathlib.Path,
+    run_dir: pathlib.Path | None = None,
+    run_id: str | None = None,
+    operator: str | None = None,
+    previous_export: pathlib.Path | None = None,
+):
+    df_input = df.copy()
+    df_previous_export = None
+    if previous_export and previous_export.exists():
+        df_previous_export = pd.read_csv(previous_export, dtype=str)
+
+    output_golden.parent.mkdir(parents=True, exist_ok=True)
+    df_input.to_csv(output_golden, index=False, encoding="utf-8-sig")
+
+    df_public = df_input.copy()
+    rename_map = {
+        "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
+        "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
+    }
+    df_public.rename(columns=rename_map, inplace=True)
+
+    required_output_columns = [
+        "RecordID",
+        "Name",
+        "NameAlphabetized",
+        "OperationalStatus",
+        "OrganizationType",
+        "URL",
+        "AlternateOrFormerNames",
+        "Acronym",
+        "AlternateOrFormerAcronyms",
+        "PrincipalOfficerFullName",
+        "PrincipalOfficerFirstName",
+        "PrincipalOfficerLastName",
+        "PrincipalOfficerTitle",
+        "PrincipalOfficerContactURL",
+        "ReportsTo",
+        "InOrgChart",
+    ]
+    df_selected = df_public[required_output_columns]
+    df_before_snake_case = df_selected.copy()
+    df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
+
+    result = add_nycgov_directory_column(
+        df_selected,
+        df_before_snake_case=df_before_snake_case if run_dir else None,
+        df_previous_export=df_previous_export,
+        run_id=run_id,
+    )
+
+    directory_changes = []
+    if run_dir and isinstance(result, tuple):
+        df_selected, directory_changes = result
+        write_proposed_changes(run_dir, directory_changes, run_id or "", operator or "")
+    else:
+        df_selected = result
+
+    output_published.parent.mkdir(parents=True, exist_ok=True)
+    df_selected.to_csv(output_published, index=False, encoding="utf-8-sig")
+
+    return {
+        "directory_changes": len(directory_changes),
+    }
+
+
 if __name__ == "__main__":
     main()

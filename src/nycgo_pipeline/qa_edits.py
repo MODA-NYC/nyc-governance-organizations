@@ -1,40 +1,18 @@
-#!/usr/bin/env python3
-import argparse
+"""Module for applying QA edits to the golden dataset."""
+
+from __future__ import annotations
+
 import pathlib
 import re
-import sys
 from datetime import datetime
 from enum import Enum
+from typing import Iterable
 
 import pandas as pd
 
-changelog_entries, changelog_id_counter = [], 0
+changelog_entries: list[dict] = []
+changelog_id_counter = 0
 
-
-class QAAction(Enum):
-    DIRECT_SET = "direct_set"
-    POLICY_QUERY = "policy_query"
-    DELETE_RECORD = "delete_record"
-    APPEND_FROM_CSV = "append_from_csv"
-
-
-RULES = {
-    r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
-    r"^\s*Append records from CSV\s+(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": (
-        QAAction.APPEND_FROM_CSV
-    ),
-    # Allow empty values and optional whitespace after 'to'
-    r"Set (?P<column>[\w_]+) to\s*(?P<value>.*)": QAAction.DIRECT_SET,
-    r"Set to\s*(?P<value>.*)": QAAction.DIRECT_SET,
-    r".*\?": QAAction.POLICY_QUERY,
-}
-SYNONYM_COLUMN_MAP = {
-    # Map common snake_case synonyms to the golden dataset's PascalCase columns
-    # Example: edits may reference first/last name, while golden uses Given/Family
-    "principal_officer_first_name": "PrincipalOfficerGivenName",
-    "principal_officer_last_name": "PrincipalOfficerFamilyName",
-    "principal_officer_contact_url": "PrincipalOfficerContactURL",
-}
 CHANGELOG_COLUMNS = [
     "ChangeID",
     "timestamp",
@@ -51,61 +29,76 @@ CHANGELOG_COLUMNS = [
 ]
 
 
-def _get_pascal_case_column(df_columns, provided_col_name):
-    """
-    Finds the correct PascalCase column name from a list of columns,
-    trying snake_case as a fallback.
-    """
+class QAAction(Enum):
+    DIRECT_SET = "direct_set"
+    POLICY_QUERY = "policy_query"
+    DELETE_RECORD = "delete_record"
+    APPEND_FROM_CSV = "append_from_csv"
+
+
+RULES = {
+    r"Delete RecordID (?P<record_id_to_delete>\S+)": QAAction.DELETE_RECORD,
+    r"^\s*Append records from CSV\s+(?P<csv_path_to_add>[\w./-]+\.csv)\s*$": (
+        QAAction.APPEND_FROM_CSV
+    ),
+    r"Set (?P<column>[\w_]+) to\s*(?P<value>.*)": QAAction.DIRECT_SET,
+    r"Set to\s*(?P<value>.*)": QAAction.DIRECT_SET,
+    r".*\?": QAAction.POLICY_QUERY,
+}
+
+SYNONYM_COLUMN_MAP = {
+    "principal_officer_first_name": "PrincipalOfficerGivenName",
+    "principal_officer_last_name": "PrincipalOfficerFamilyName",
+    "principal_officer_contact_url": "PrincipalOfficerContactURL",
+}
+
+
+def reset_changelog() -> None:
+    global changelog_entries, changelog_id_counter
+    changelog_entries = []
+    changelog_id_counter = 0
+
+
+def _get_pascal_case_column(df_columns: Iterable[str], provided_col_name: str | None) -> str | None:
     if not provided_col_name or pd.isna(provided_col_name):
         return None
     provided_lower = str(provided_col_name).strip().lower()
-
-    # First, try explicit synonyms map (handles semantic differences)
     synonym_target = SYNONYM_COLUMN_MAP.get(provided_lower)
     if synonym_target and synonym_target in df_columns:
         return synonym_target
-    # Add a fallback for simple case differences
     for col in df_columns:
         if col.lower() == provided_lower:
             return col
-    # Keep the original logic as a final attempt
-    pascal_version = "".join(
-        word.capitalize() for word in str(provided_col_name).strip().split("_")
-    )
+    pascal_version = "".join(word.capitalize() for word in str(provided_col_name).strip().split("_"))
     if pascal_version in df_columns:
         return pascal_version
-    print(f"⚠️ Warning: Could not find a matching column for '{provided_col_name}'.")
     return None
 
 
-def _sanitize_wrapped_text(text):
-    """Trim surrounding quotes and any stray trailing quotes from a text field."""
+def _sanitize_wrapped_text(text: str | None) -> str | None:
     if text is None:
-        return text
+        return None
     s = str(text).strip()
-    while len(s) > 1 and (
-        (s.startswith('"') and s.endswith('"'))
-        or (s.startswith("'") and s.endswith("'"))
-    ):
+    while len(s) > 1 and ((s.startswith("\"") and s.endswith("\"")) or (s.startswith("'") and s.endswith("'"))):
         s = s[1:-1].strip()
-    if s.endswith('"') or s.endswith("'"):
+    if s.endswith("\"") or s.endswith("'"):
         s = s.rstrip("\"'").strip()
     return s
 
 
 def log_change(
-    record_id,
-    record_name,
-    column_changed,
+    record_id: str,
+    record_name: str,
+    column_changed: str,
     old_value,
     new_value,
-    feedback_source,
-    notes,
-    reason,
-    changed_by,
-    rule_action,
-    version_prefix,
-):
+    feedback_source: str,
+    notes: str,
+    reason: str,
+    changed_by: str,
+    rule_action: QAAction,
+    version_prefix: str,
+) -> None:
     global changelog_entries, changelog_id_counter
     changelog_id_counter += 1
     entry = {
@@ -125,7 +118,7 @@ def log_change(
     changelog_entries.append(entry)
 
 
-def detect_rule(feedback):
+def detect_rule(feedback: str) -> tuple[QAAction, re.Match | None]:
     for pattern, action in RULES.items():
         match = re.search(pattern, feedback, re.IGNORECASE)
         if match:
@@ -133,11 +126,11 @@ def detect_rule(feedback):
     return QAAction.POLICY_QUERY, None
 
 
-def handle_delete_record(df, id, src, user, notes, reason, prefix):
-    if id in df["RecordID"].values:
-        record_name = df[df["RecordID"] == id].iloc[0].get("Name", "N/A")
+def handle_delete_record(df: pd.DataFrame, record_id: str, src: str, user: str, notes: str, reason: str, prefix: str) -> pd.DataFrame:
+    if record_id in df["RecordID"].values:
+        record_name = df[df["RecordID"] == record_id].iloc[0].get("Name", "N/A")
         log_change(
-            id,
+            record_id,
             record_name,
             "_ROW_DELETED",
             record_name,
@@ -149,9 +142,9 @@ def handle_delete_record(df, id, src, user, notes, reason, prefix):
             QAAction.DELETE_RECORD,
             prefix,
         )
-        return df[df["RecordID"] != id].copy()
+        return df[df["RecordID"] != record_id].copy()
     log_change(
-        id,
+        record_id,
         "N/A",
         "_ROW_DELETE_FAILED",
         "Record Not Found",
@@ -166,12 +159,17 @@ def handle_delete_record(df, id, src, user, notes, reason, prefix):
     return df
 
 
-def handle_append_from_csv(df, path_str, base_dir, src, user, notes, reason, prefix):
-    path_obj = (
-        base_dir / path_str
-        if not path_str.startswith("data/")
-        else pathlib.Path(path_str)
-    )
+def handle_append_from_csv(
+    df: pd.DataFrame,
+    path_str: str,
+    base_dir: pathlib.Path,
+    src: str,
+    user: str,
+    notes: str,
+    reason: str,
+    prefix: str,
+) -> pd.DataFrame:
+    path_obj = base_dir / path_str if not path_str.startswith("data/") else pathlib.Path(path_str)
     try:
         new_records = pd.read_csv(path_obj, dtype=str, encoding="utf-8-sig").fillna("")
         for _, row in new_records.iterrows():
@@ -190,39 +188,30 @@ def handle_append_from_csv(df, path_str, base_dir, src, user, notes, reason, pre
             )
         return pd.concat([df, new_records], ignore_index=True)
     except FileNotFoundError:
-        print(
-            f"❌ CRITICAL ERROR: File not found for append at '{path_obj}'.",
-            file=sys.stderr,
-        )
-    return df
+        return df
 
 
-def handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback):
+def handle_direct_set(
+    df_mod: pd.DataFrame,
+    qa_row: pd.Series,
+    match: re.Match,
+    src_name: str,
+    user: str,
+    prefix: str,
+    feedback: str,
+) -> None:
     record_id = qa_row.get("Row(s)")
     if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
         return
-
-    target_indices = df_mod[df_mod["RecordID"] == record_id].index
-
-    provided_col = qa_row.get("Column") or (
-        match.group("column") if "column" in match.groupdict() else None
-    )
+    provided_col = qa_row.get("Column") or (match.group("column") if "column" in match.groupdict() else None)
     pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
     if not pascal_col:
-        print(
-            f"Warning: Skipping edit for RecordID {record_id} "
-            f"due to unresolvable column '{provided_col}'."
-        )
         return
-
-    # Extract raw value and then sanitize wrappers. If the intent was to set a
-    # field blank (e.g., value == "" after sanitation), preserve that as an
-    # empty string.
     val_str = match.group("value")
     clean_val = _sanitize_wrapped_text(val_str)
     if clean_val is None:
         clean_val = ""
-
+    target_indices = df_mod[df_mod["RecordID"] == record_id].index
     for index in target_indices:
         record_name = df_mod.loc[index, "Name"]
         old_val = df_mod.loc[index, pascal_col]
@@ -243,14 +232,19 @@ def handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback):
         df_mod.loc[index, pascal_col] = clean_val
 
 
-def handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback):
+def handle_policy_query(
+    df_mod: pd.DataFrame,
+    qa_row: pd.Series,
+    src_name: str,
+    user: str,
+    prefix: str,
+    feedback: str,
+) -> None:
     record_id = qa_row.get("Row(s)")
     if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
         return
-
-    target_indices = df_mod[df_mod["RecordID"] == record_id].index
     pascal_col = _get_pascal_case_column(df_mod.columns, qa_row.get("Column"))
-
+    target_indices = df_mod[df_mod["RecordID"] == record_id].index
     for index in target_indices:
         record_name = df_mod.loc[index, "Name"]
         reason = qa_row.get("reason", "")
@@ -269,7 +263,12 @@ def handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback):
         )
 
 
-def apply_qa_edits(df, qa_path, user, prefix):
+def apply_qa_edits(
+    df: pd.DataFrame,
+    qa_path: pathlib.Path,
+    user: str,
+    prefix: str,
+) -> pd.DataFrame:
     df_mod = df.copy()
     src_name, base_dir = qa_path.name, qa_path.parent
     qa_df = pd.read_csv(qa_path, dtype=str).fillna("")
@@ -309,60 +308,3 @@ def apply_qa_edits(df, qa_path, user, prefix):
             handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback)
 
     return df_mod
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Apply a QA/edits file.")
-    parser.add_argument("--input_csv", type=pathlib.Path, required=True)
-    parser.add_argument("--qa_csv", type=pathlib.Path, required=True)
-    parser.add_argument("--output_csv", type=pathlib.Path, required=True)
-    parser.add_argument(
-        "--changelog",
-        type=pathlib.Path,
-        required=True,
-        help=(
-            "Path to OUTPUT changelog file "
-            "(NOT data/changelog.csv - use append_changelog.py for that)"
-        ),
-    )
-    parser.add_argument("--changed_by", type=str, required=True)
-    args = parser.parse_args()
-
-    # PROTECTION: Prevent overwriting the main append-only changelog
-    if args.changelog.resolve().name == "changelog.csv" and "data/changelog.csv" in str(
-        args.changelog.resolve()
-    ):
-        print(
-            "❌ ERROR: Cannot write directly to data/changelog.csv "
-            "(append-only file).\n"
-            "   This script should write to a temporary changelog "
-            "in data/output/.\n"
-            "   Use scripts/maint/append_changelog.py to append "
-            "to the main changelog.\n"
-            "   Example: --changelog data/output/"
-            "changelog_v0_XX_edits.csv",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    try:
-        df_input = pd.read_csv(args.input_csv, dtype=str).fillna("")
-    except FileNotFoundError:
-        print(f"Error: Not found '{args.input_csv}'", file=sys.stderr)
-        sys.exit(1)
-
-    match = re.search(r"v(\d+_\d+)", args.output_csv.stem)
-    prefix = match.group(0) if match else "v_unknown"
-
-    df_processed = apply_qa_edits(df_input, args.qa_csv, args.changed_by, prefix)
-
-    args.output_csv.parent.mkdir(parents=True, exist_ok=True)
-    args.changelog.parent.mkdir(parents=True, exist_ok=True)
-    df_processed.to_csv(args.output_csv, index=False, encoding="utf-8-sig")
-    pd.DataFrame(changelog_entries, columns=CHANGELOG_COLUMNS).to_csv(
-        args.changelog, index=False, encoding="utf-8-sig"
-    )
-    print(f"Edits applied. Output: {args.output_csv}, Changelog: {args.changelog}")
-
-
-if __name__ == "__main__":
-    main()

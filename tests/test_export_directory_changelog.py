@@ -12,8 +12,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "process"))
-from export_dataset import add_nycgov_directory_column, write_proposed_changes
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from scripts.process.export_dataset import add_nycgov_directory_column, write_proposed_changes
 
 
 def test_directory_column_change_tracking():

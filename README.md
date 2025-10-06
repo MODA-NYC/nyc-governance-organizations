@@ -7,7 +7,8 @@ An analysis-ready reference of NYC agencies and governance organizaitons—stand
 ### Quick links
 - **Dataset on NYC Open Data (t3jq-9nkf)**: [NYC Agencies and Governance Organizations](https://data.cityofnewyork.us/d/t3jq-9nkf/)
 - **Feedback & corrections (Airtable form)**: [Submit a change request](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form)
-- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
+- **Baseline run artifacts spec**: [`docs/run_artifacts.md`](docs/run_artifacts.md)
+- **Release history**: see [Release History](#release-history) in this README
 - **Contributing (CONTRIBUTING.md)**: (TODO: add)
 
 ## Overview
@@ -39,6 +40,27 @@ Initial public release exposes 17 fields; legal lineage (citations, founding/sun
 | reports_to | Reporting/administrative/oversight relationship |
 | in_org_chart | Flag used for citywide org chart |
 | listed_in_nyc_gov_agency_directory | Flag used for nyc.gov Agency Directory |
+
+## Run artifacts baseline
+
+All processing runs must emit a structured artifact bundle under `data/audit/runs/<run_id>/`. Each bundle contains:
+
+- `inputs/`: golden snapshot used, prior published snapshot, and the edits CSV that triggered the run
+- `outputs/`: regenerated golden dataset, regenerated published dataset, run changelog CSV, and a `run_summary.json` with record counts and key metrics; all outputs remain in pre-release form (`*_pre-release.*`)
+- `review/`: QA aids such as source comparison reports and summary statistics
+
+Run folders follow the convention `YYYYMMDD-HHMM_<descriptor>` with a timezone indicator (UTC recommended). See [`docs/run_artifacts.md`](docs/run_artifacts.md) for detailed guidance plus examples of where review aids should land.
+
+## Versioning & release policy
+
+- Semantic versioning resumes at `v1.0.0` for the next publish event. Code changes before the publish CLI launches use the development version `1.0.0-dev` in `pyproject.toml`.
+- Every run folder must record its dataset linkage in `data/audit/run_manifest.csv` so we can trace published artifacts back to the originating run.
+- Legacy releases up to `2.8.0` are retained for context but new tags will begin at `v1.0.0` once the publish workflow is live.
+
+## Release history
+
+- **Unreleased / in-flight** – pipeline restructure phases (see `PROJECT_PLAN.md`). Focus areas include the `nycgo_pipeline` package, run/publish CLIs, and data layout cleanup.
+- **2.8.0 (2025-06-10)** – Baseline prior to the refactor. Introduced the modular scripts (`manage_schema.py`, `process_golden_dataset.py`, `export_dataset.py`, `compare_datasets.py`), name parsing utilities, the maintenance scripts for the changelog workflow, and the current pytest suite and linting config. This release also added the append-only changelog (`data/changelog.csv`) and accompanying spec in `docs/CHANGELOG_SPEC.md`.
 
 ## API quick start (Socrata)
 Examples use dataset `t3jq-9nkf`.
