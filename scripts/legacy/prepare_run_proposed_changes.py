@@ -102,7 +102,9 @@ def load_input_rows(path: Path) -> tuple[list[dict], dict]:
                 "timestamp_utc": nfc_trim(raw.get("timestamp_utc") or ""),
                 "run_id": nfc_trim(raw.get("run_id") or ""),
                 "record_id": nfc_trim(record_id),
-                "record_name": nfc_trim(raw.get("record_name") or raw.get("Name") or raw.get("name") or ""),
+                "record_name": nfc_trim(
+                    raw.get("record_name") or raw.get("Name") or raw.get("name") or ""
+                ),
                 "field": nfc_trim(field),
                 "old_value": nfc_trim(raw.get("old_value") or raw.get("OldValue")),
                 "new_value": nfc_trim(raw.get("new_value") or raw.get("NewValue")),

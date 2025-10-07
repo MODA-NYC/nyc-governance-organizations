@@ -19,6 +19,18 @@ def ensure_archive_dir(base: Path) -> Path:
     return archive_dir
 
 
+def prune_latest_dir(latest_dir: Path, preserve: set[str]) -> None:
+    if not latest_dir.exists():
+        return
+    for item in latest_dir.iterdir():
+        if item.name in preserve:
+            continue
+        if item.is_dir():
+            shutil.rmtree(item)
+        else:
+            item.unlink()
+
+
 def move_current_latest(
     latest_dir: Path, archive_dir: Path, version: str, run_id: str
 ) -> None:
@@ -36,6 +48,8 @@ def copy_final_outputs(
     outputs_dir = run_dir / "outputs"
     golden_source = outputs_dir / "golden_pre-release.csv"
     published_source = outputs_dir / "published_pre-release.csv"
+    run_summary_source = outputs_dir / "run_summary.json"
+    crosswalk_source = outputs_dir / "crosswalk.csv"
 
     final_golden = latest_dir.parent / f"NYCGO_golden_dataset_{version}_final.csv"
     final_published = (
@@ -46,12 +60,28 @@ def copy_final_outputs(
     shutil.copy2(published_source, final_published)
 
     latest_dir.mkdir(parents=True, exist_ok=True)
-    for src in [final_golden, final_published]:
-        shutil.copy2(src, latest_dir / src.name)
+    preserve = {"crosswalk.csv"}
+    prune_latest_dir(latest_dir, preserve)
+
+    latest_golden = latest_dir / f"NYCGO_golden_dataset_{version}.csv"
+    latest_published = latest_dir / f"NYCGovernanceOrganizations_{version}.csv"
+    shutil.copy2(golden_source, latest_golden)
+    shutil.copy2(published_source, latest_published)
+
+    latest_run_summary: Path | None = None
+    if run_summary_source.exists():
+        latest_run_summary = latest_dir / "run_summary.json"
+        shutil.copy2(run_summary_source, latest_run_summary)
+
+    if crosswalk_source.exists():
+        shutil.copy2(crosswalk_source, latest_dir / "crosswalk.csv")
 
     return {
         "golden_final": final_golden,
         "published_final": final_published,
+        "golden_latest": latest_golden,
+        "published_latest": latest_published,
+        "run_summary_latest": latest_run_summary,
     }
 
 
@@ -164,6 +194,13 @@ def publish_run(
             "version": version,
             "golden_final": str(final_paths["golden_final"]),
             "published_final": str(final_paths["published_final"]),
+            "golden_latest": str(final_paths["golden_latest"]),
+            "published_latest": str(final_paths["published_latest"]),
+            "run_summary_latest": (
+                str(final_paths["run_summary_latest"])
+                if final_paths["run_summary_latest"]
+                else None
+            ),
             "archive_zip": str(zip_path) if zip_path else None,
             "changelog_appended": changelog_appended,
             "changelog_rows_appended": changelog_rows,

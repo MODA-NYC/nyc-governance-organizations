@@ -31,6 +31,7 @@ data/**
 !data/samples/
 !data/input/public_sources/
 !data/audit/ingest_report.json
+data/audit/runs/
 
 # Other
 .coverage
@@ -43,3 +44,4 @@ htmlcov/
 
 !data/published/latest/
 !data/published/latest/*.csv
+data/published/archive/

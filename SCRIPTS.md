@@ -1,5 +1,7 @@
 # Scripts index
 
+`scripts/` contains runnable CLI entry points that shell users invoke directly. Reusable logic lives in the `src/nycgo_pipeline/` package; the CLIs below are thin wrappers around those modules.
+
 ## Process (ETL/exports)
 - `scripts/process/manage_schema.py` — Add/modify columns in CSVs
   `python scripts/process/manage_schema.py --help`
@@ -14,8 +16,9 @@
   `python scripts/maint/compare_datasets.py --help`
 - `scripts/maint/compare_to_source.py` — Compare dataset to a source-of-truth extract
   `python scripts/maint/compare_to_source.py --help`
-- `scripts/maint/process_decisions.py` — Process decision logs / QA outputs
-  `python scripts/maint/process_decisions.py --help`
+- `scripts/maint/compare_field_values.py` — Compare configured fields against a source extract
+  `python scripts/maint/compare_field_values.py --help`
+- `scripts/legacy/` — Historical review/publish tooling retained for archival reference (e.g., `append_changelog.py`, `review_changes.py`, `run_global_rules.py`). New runs should rely on the pipeline + publish CLIs.
 # Core pipeline entry points
 
 - `scripts/pipeline/run_pipeline.py`
@@ -26,4 +29,5 @@
   `python scripts/maint/ingest_audit_folder.py --help`
 
 ## Library
-- `src/utility_case_converter.py` — Case conversion helpers
+- `nycgo_pipeline` (package) — Core pipeline modules (crosswalk, directory changelog, publish, etc.)
+- Legacy helpers such as `utility_case_converter.py` now live under `scripts/legacy/` for reference.

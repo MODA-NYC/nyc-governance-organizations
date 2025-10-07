@@ -7,7 +7,7 @@ An analysis-ready reference of NYC agencies and governance organizaitons—stand
 ### Quick links
 - **Dataset on NYC Open Data (t3jq-9nkf)**: [NYC Agencies and Governance Organizations](https://data.cityofnewyork.us/d/t3jq-9nkf/)
 - **Feedback & corrections (Airtable form)**: [Submit a change request](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form)
-- **Baseline run artifacts spec**: [`docs/run_artifacts.md`](docs/run_artifacts.md)
+- **Baseline run artifacts spec**: [`docs/Run_Artifacts.md`](docs/Run_Artifacts.md)
 - **Release history**: see [Release History](#release-history) in this README
 - **Contributing (CONTRIBUTING.md)**: (TODO: add)
 
@@ -59,7 +59,7 @@ Run folders follow the convention `YYYYMMDD-HHMM_<descriptor>` with a timezone i
 
 ## Release history
 
-- **Unreleased / in-flight** – pipeline restructure phases (see `PROJECT_PLAN.md`). Focus areas include the `nycgo_pipeline` package, run/publish CLIs, and data layout cleanup.
+- **Unreleased / in-flight** – pipeline restructure phases (complete). Focus areas: new `nycgo_pipeline` package, run/publish CLIs, data layout cleanup.
 - **2.8.0 (2025-06-10)** – Baseline prior to the refactor. Introduced the modular scripts (`manage_schema.py`, `process_golden_dataset.py`, `export_dataset.py`, `compare_datasets.py`), name parsing utilities, the maintenance scripts for the changelog workflow, and the current pytest suite and linting config. This release also added the append-only changelog (`data/changelog.csv`) and accompanying spec in `docs/CHANGELOG_SPEC.md`.
 
 ## API quick start (Socrata)

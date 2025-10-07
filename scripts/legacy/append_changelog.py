@@ -56,7 +56,7 @@ def append_rows(changelog_path: pathlib.Path, fieldnames, rows):
                 SYNCED_RECORD_NAMES[event_id] = record_name
 
 
-def main():
+def main():  # noqa: C901 - legacy script retained for archival use
     parser = argparse.ArgumentParser(
         description="Append approved reviewed changes to changelog (idempotent)"
     )
