@@ -13,16 +13,16 @@ from pathlib import Path
 
 import pandas as pd
 
-# This config maps a SourceSystem to its column names in the golden and source files.
-SOURCE_CONFIG = {
-    "Ops": {"golden_col": "Name - Ops", "source_col": "Agency Name"},
-    "CPO": {"golden_col": "Name - CPO", "source_col": "Name - CPO"},
-    "Greenbook": {"golden_col": "Name - Greenbook", "source_col": "Name - Greenbook"},
-    # If source_col is the same as golden_col, it's good practice to define it.
-}
+from nycgo_pipeline.crosswalk import (
+    DEFAULT_SOURCE_CONFIG,
+    SourceConfig,
+    build_crosswalk,
+)
 
 
-def generate_crosswalk(input_path: Path, output_path: Path):
+def generate_crosswalk(
+    input_path: Path, output_path: Path, config: dict[str, SourceConfig] | None = None
+):
     """
     Reads the golden dataset, extracts source names, and creates a crosswalk file.
 
@@ -39,7 +39,7 @@ def generate_crosswalk(input_path: Path, output_path: Path):
 
     # Identify the RecordID column (case-insensitive)
     try:
-        record_id_col = next(col for col in df.columns if col.lower() == "recordid")
+        next(col for col in df.columns if col.lower() == "recordid")
     except StopIteration:
         print(
             "❌ Error: Could not find a 'RecordID' column in the input file.",
@@ -47,56 +47,24 @@ def generate_crosswalk(input_path: Path, output_path: Path):
         )
         sys.exit(1)
 
-    all_source_dfs = []
+    crosswalk = build_crosswalk(
+        df,
+        sources=config,
+    )
 
-    print("Processing sources based on SOURCE_CONFIG...")
-    for source_system, config in SOURCE_CONFIG.items():
-        golden_col = config["golden_col"]
-        source_col = config["source_col"]
-
-        if golden_col not in df.columns:
-            print(
-                f"⚠️ Warning: Golden column '{golden_col}' for source "
-                f"'{source_system}' not found in input file. Skipping."
-            )
-            continue
-
-        # Create a temporary DataFrame for the current source
-        df_source = df[[record_id_col, golden_col]].copy()
-        df_source.dropna(subset=[golden_col], inplace=True)
-        df_source = df_source[df_source[golden_col].str.strip() != ""]
-
-        if df_source.empty:
-            continue
-
-        df_source["SourceSystem"] = source_system
-        df_source["SourceColumn"] = source_col
-        df_source.rename(columns={golden_col: "SourceName"}, inplace=True)
-
-        all_source_dfs.append(df_source)
-
-    if not all_source_dfs:
+    if crosswalk.empty:
         print(
-            "⚠️ Warning: No source data found based on SOURCE_CONFIG. "
+            "⚠️ Warning: No source data found based on configuration. "
             "No output generated."
         )
         return
 
-    # Concatenate all the individual source DataFrames into one
-    df_long = pd.concat(all_source_dfs, ignore_index=True)
-
-    # Rename the record ID column to a consistent name
-    df_long.rename(columns={record_id_col: "RecordID"}, inplace=True)
-
-    # Reorder columns for the final output
-    df_long = df_long[["RecordID", "SourceSystem", "SourceColumn", "SourceName"]]
-
-    print(f"Generated a crosswalk with {len(df_long)} entries.")
+    print(f"Generated a crosswalk with {len(crosswalk)} entries.")
 
     # Save the output file
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        df_long.to_csv(output_path, index=False, encoding="utf-8-sig")
+        crosswalk.to_csv(output_path, index=False, encoding="utf-8-sig")
         print(f"✅ Successfully saved crosswalk to: {output_path}")
     except Exception as e:
         print(f"❌ Error saving output file to '{output_path}': {e}", file=sys.stderr)
@@ -125,7 +93,7 @@ def main():
     )
     args = parser.parse_args()
 
-    generate_crosswalk(args.input_csv, args.output_csv)
+    generate_crosswalk(args.input_csv, args.output_csv, DEFAULT_SOURCE_CONFIG)
 
 
 if __name__ == "__main__":

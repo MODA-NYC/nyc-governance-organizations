@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI wrapper to compare golden vs. source values for configured fields."""
+"""Analyst wrapper to compare selected fields against a source extract."""
 
 from __future__ import annotations
 
@@ -15,38 +15,19 @@ from nycgo_pipeline.source_checks.compare_field_values import (
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Compare field values against a source extract."
+        description="Compare configured fields against a source extract"
     )
-    parser.add_argument(
-        "--golden", type=Path, required=True, help="Path to golden dataset CSV"
-    )
-    parser.add_argument(
-        "--crosswalk", type=Path, required=True, help="Path to crosswalk CSV"
-    )
-    parser.add_argument(
-        "--source-file", type=Path, required=True, help="Path to source extract CSV"
-    )
-    parser.add_argument(
-        "--source-name", type=str, required=True, help="Source system identifier"
-    )
-    parser.add_argument(
-        "--output-csv",
-        type=Path,
-        required=True,
-        help="Destination for discrepancies report",
-    )
+    parser.add_argument("--golden", type=Path, required=True)
+    parser.add_argument("--crosswalk", type=Path, required=True)
+    parser.add_argument("--source-file", type=Path, required=True)
+    parser.add_argument("--source-name-column", type=str, default="Agency Name")
+    parser.add_argument("--output-csv", type=Path, required=True)
     parser.add_argument(
         "--field",
         action="append",
         nargs=2,
         metavar=("GOLDEN_FIELD", "SOURCE_FIELD"),
-        help="Field mapping to compare (can be provided multiple times)",
-    )
-    parser.add_argument(
-        "--source-name-column",
-        type=str,
-        default="Agency Name",
-        help="Column in the source extract containing the organization name",
+        help="Field mapping to compare (repeatable)",
     )
     args = parser.parse_args()
 
@@ -54,7 +35,7 @@ def main() -> int:
         print("❌ At least one --field mapping is required", file=sys.stderr)
         return 1
 
-    field_mappings = {golden: source for golden, source in args.field}
+    field_map = {golden: source for golden, source in args.field}
 
     try:
         df = run_comparison(
@@ -63,7 +44,7 @@ def main() -> int:
             args.source_file,
             SourceConfig(
                 source_name_column=args.source_name_column,
-                field_mappings=field_mappings,
+                field_mappings=field_map,
             ),
         )
     except Exception as exc:  # pragma: no cover - CLI error surface

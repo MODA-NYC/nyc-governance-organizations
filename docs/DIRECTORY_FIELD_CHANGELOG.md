@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `export_dataset.py` script now tracks changes to the `listed_in_nyc_gov_agency_directory` field and integrates with the project's append-only changelog system. This ensures complete audit trails for all changes to agency directory visibility.
+The pipeline now tracks changes to the `listed_in_nyc_gov_agency_directory` field and integrates with the project's append-only changelog system. This ensures complete audit trails for all changes to agency directory visibility.
 
 ## Background
 
@@ -53,13 +53,13 @@ The `listed_in_nyc_gov_agency_directory` field is computed during the export pro
 }
 ```
 
-#### `write_proposed_changes(run_dir, changes, run_id, operator)`
+#### `write_run_changelog(run_dir, changes, run_id, operator)`
 
-**Purpose:** Writes change records to `proposed_changes.csv` in the run directory.
+**Purpose:** Writes change records to `outputs/run_changelog.csv` in the run directory.
 
 **Output Schema:**
 ```
-timestamp_utc,run_id,record_id,field,old_value,new_value,reason,evidence_url,source_ref,operator,notes
+timestamp_utc,run_id,record_id,record_name,field,old_value,new_value,reason,evidence_url,source_ref,operator,notes
 ```
 
 ### 2. CLI Parameters Added to `export_dataset.py`
@@ -73,15 +73,11 @@ timestamp_utc,run_id,record_id,field,old_value,new_value,reason,evidence_url,sou
 
 ### 3. Workflow Integration
 
-The export script integrates with the existing changelog workflow:
-
 ```mermaid
 graph LR
-    A[export_dataset.py<br/>--run-dir] --> B[proposed_changes.csv]
-    B --> C[review_changes.py<br/>compute event_id]
-    C --> D[reviewed_changes.csv]
-    D --> E[append_changelog.py<br/>idempotent append]
-    E --> F[data/changelog.csv]
+    A[pipeline.run_pipeline.py] --> B[outputs/run_changelog.csv]
+    A --> C[outputs/run_summary.json]
+    D[pipeline.publish_run.py --append-changelog] --> E[data/changelog.csv]
 ```
 
 ## Usage
@@ -90,35 +86,13 @@ graph LR
 
 ```bash
 python scripts/process/export_dataset.py \
-  --input_csv data/output/processed.csv \
+  --input_csv data/input/processed.csv \
   --output_golden data/published/NYCGO_golden_v0_19.csv \
   --output_published data/published/NYCGovernanceOrganizations_v0_19.csv
 ```
 
 ### Export with Changelog Tracking
-
-```bash
-# 1. Create run ID
-RUN_ID=$(python scripts/maint/make_run_id.py)
-
-# 2. Run export with tracking
-python scripts/process/export_dataset.py \
-  --input_csv data/output/processed.csv \
-  --output_golden data/published/NYCGO_golden_v0_19.csv \
-  --output_published data/published/NYCGovernanceOrganizations_v0_19.csv \
-  --run-dir data/audit/runs/$RUN_ID \
-  --run-id $RUN_ID \
-  --operator "$USER"
-
-# 3. Review changes
-python scripts/maint/review_changes.py --run-dir data/audit/runs/$RUN_ID
-
-# 4. Append to changelog
-python scripts/maint/append_changelog.py \
-  --run-dir data/audit/runs/$RUN_ID \
-  --changelog data/changelog.csv \
-  --operator "$USER"
-```
+The orchestration CLI wraps this functionality; use `scripts/pipeline/run_pipeline.py` (see README) and review `outputs/run_changelog.csv`.
 
 ### Example Script
 
@@ -249,16 +223,14 @@ This ensures the same logical change is not appended multiple times to `data/cha
 
 ## Changelog Schema
 
-**Per-run files (ignored by git):**
-- `data/audit/runs/<run_id>/proposed_changes.csv`
-- `data/audit/runs/<run_id>/reviewed_changes.csv`
-- `data/audit/runs/<run_id>/run_summary.json`
+- Per-run (ignored by git):
+  - `data/audit/runs/<run_id>/outputs/run_changelog.csv`
+  - `data/audit/runs/<run_id>/outputs/run_summary.json`
+- Tracked (committed): `data/changelog.csv`
 
-**Tracked changelog (committed to git):**
-- `data/changelog.csv` - Append-only, minimal schema:
-
+`data/changelog.csv` maintains the schema:
 ```
-event_id,timestamp_utc,run_id,record_id,field,old_value,new_value,reason,evidence_url,source_ref,operator,notes
+event_id,timestamp_utc,run_id,record_id,record_name,field,old_value,new_value,reason,evidence_url,source_ref,operator,notes
 ```
 
 ## Future Enhancements
@@ -280,8 +252,7 @@ Check that:
 ### Changes not appearing in data/changelog.csv
 
 Verify:
-- `review_changes.py` was run successfully
-- `append_changelog.py` was run with correct `--run-dir`
+- `scripts/pipeline/publish_run.py --append-changelog` completed without errors
 - Event IDs are unique (not already in changelog)
 
 ### Debugging
@@ -293,14 +264,11 @@ python scripts/process/export_dataset.py ... 2>&1 | tee export_debug.log
 
 Inspect intermediate files:
 ```bash
-# View proposed changes
-csvlook data/audit/runs/<run_id>/proposed_changes.csv
-
-# View reviewed changes (with event_id)
-csvlook data/audit/runs/<run_id>/reviewed_changes.csv
+# View run changelog
+csvlook data/audit/runs/<run_id>/outputs/run_changelog.csv
 
 # Check run summary
-cat data/audit/runs/<run_id>/run_summary.json | jq
+jq . data/audit/runs/<run_id>/outputs/run_summary.json
 ```
 
 ## References

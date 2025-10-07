@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+import sys
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
-from scripts.process import export_dataset
+_ROOT = Path(__file__).resolve().parents[2]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+export_dataset = import_module("scripts.process.export_dataset")
 
 
 def export_datasets(

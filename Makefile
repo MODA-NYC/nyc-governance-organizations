@@ -36,13 +36,11 @@ test:
 	echo "Running tests..."
 	@$(PYTHON) -m pytest
 
-.PHONY: run-prepare run-publish-dry run-publish-apply
-run-prepare:
-	@$(PYTHON) scripts/maint/prepare_run_proposed_changes.py --run-id $(RUN_ID) --step1 data/output/changelog_step1.csv --step2 data/output/changelog_step2.csv
-run-publish-dry:
-	@$(PYTHON) scripts/maint/publish_changelog_run.py --run-dir data/audit/runs/$(RUN_ID)
-run-publish-apply:
-	@$(PYTHON) scripts/maint/publish_changelog_run.py --run-dir data/audit/runs/$(RUN_ID) --apply --commit --operator "$(USER)"
+.PHONY: run-pipeline publish-run
+run-pipeline:
+	@$(PYTHON) scripts/pipeline/run_pipeline.py --golden $(GOLDEN) --qa $(QA) --descriptor $(DESCRIPTOR)
+publish-run:
+	@$(PYTHON) scripts/pipeline/publish_run.py --run-dir data/audit/runs/$(RUN_ID) --version $(VERSION) --append-changelog --operator "$(USER)"
 
 format:
 	echo "Formatting code..."

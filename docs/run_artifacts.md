@@ -24,7 +24,7 @@ Each run directory must contain the following subdirectories:
 Mandatory files:
 
 - `golden_snapshot.csv` – immutable copy of the golden dataset used for this run
-- `previous_published_snapshot.csv` – the most recently published dataset before the run
+- `previous_published.csv` – the most recently published dataset before the run
 - `edits_to_apply.csv` – QA or analyst change log that triggered the run (source-of-truth for edits)
 
 Optional additions:
@@ -56,7 +56,7 @@ Stores QA aides generated during the run, such as:
 data/audit/runs/20251006-1430Z_main-refresh/
 ├── inputs/
 │   ├── golden_snapshot.csv
-│   ├── previous_published_snapshot.csv
+│   ├── previous_published.csv
 │   └── edits_to_apply.csv
 ├── outputs/
 │   ├── golden_pre-release.csv

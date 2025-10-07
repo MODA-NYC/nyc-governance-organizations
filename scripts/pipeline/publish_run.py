@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""CLI to publish a completed run: promote artifacts, archive previous versions, and finalize changelog."""
+"""Publish a completed pipeline run."""
 
 from __future__ import annotations
 
 import argparse
-import json
-import shutil
 import sys
-import zipfile
-from datetime import datetime
 from pathlib import Path
 
 from nycgo_pipeline.publish import publish_run
@@ -16,8 +12,18 @@ from nycgo_pipeline.publish import publish_run
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Publish a pipeline run.")
-    parser.add_argument("--run-dir", type=Path, required=True, help="Run directory under data/audit/runs/<run_id>")
-    parser.add_argument("--version", type=str, required=True, help="Semantic version to publish (e.g., v1.0.0)")
+    parser.add_argument(
+        "--run-dir",
+        type=Path,
+        required=True,
+        help="Run directory under data/audit/runs/<run_id>",
+    )
+    parser.add_argument(
+        "--version",
+        type=str,
+        required=True,
+        help="Semantic version to publish (e.g., v1.0.0)",
+    )
     parser.add_argument(
         "--append-changelog",
         action="store_true",
@@ -54,25 +60,25 @@ def ensure_required_files(run_dir: Path) -> dict[str, Path]:
 def main() -> int:
     args = parse_args()
     run_dir = args.run_dir.resolve()
-    run_id = run_dir.name
     try:
-        artifacts = ensure_required_files(run_dir)
+        ensure_required_files(run_dir)
     except FileNotFoundError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 
     operator = args.operator or "publish"
 
-    publish_run(
+    result = publish_run(
         run_dir=run_dir,
         version=args.version,
         operator=operator,
         append_changelog=args.append_changelog,
         archive=not args.no_archive,
-        artifacts=artifacts,
     )
 
     print("Publish complete.")
+    for key, value in result.items():
+        print(f"  {key}: {value}")
     return 0
 
 

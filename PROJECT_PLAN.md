@@ -66,8 +66,10 @@ This document captures the agreed roadmap for reorganizing the publication pipel
 
 ## Phase 3 · Utilities Reorganization
 
-- Move analyst utilities under `tools/`:
-  - `tools/source_checks/` → `compare_to_source.py`, `compare_field_values.py` (update imports to new package).
+- Move analyst utilities under `tools/` with thin wrappers that call into `nycgo_pipeline.source_checks`:
+  - `tools/source_checks/compare_to_source.py`
+  - `tools/source_checks/compare_field_values.py`
+  - Core logic lives in `src/nycgo_pipeline/source_checks/`
   - `tools/changelog/` → helper scripts reused by the publish CLI (if still needed).
   - Retire or archive `compare_datasets.py` if no longer part of standard workflow (e.g., `archive/one-off/compare_datasets.py`).
 - Ensure utilities produce outputs directly within the run folder when invoked by the pipeline.
@@ -109,5 +111,3 @@ This document captures the agreed roadmap for reorganizing the publication pipel
 - Plan to implement in a fresh chat to avoid context drift; reference this document at the outset.
 - Capture decisions and adjustments in this file as the work progresses (e.g., if naming conventions change).
 - After Phase 5, cut release **v1.0** using the new publish process.
-
-

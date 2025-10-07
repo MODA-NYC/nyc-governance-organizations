@@ -117,65 +117,36 @@ make setup             # creates .venv & installs deps
 source .venv/bin/activate
 ~~~
 
-### Data-Processing Workflow
+### Pipeline Workflow
 
 #### 1 · Prepare Schema *(optional)*
 ~~~bash
-python manage_schema.py \
+python scripts/process/manage_schema.py \
   --input_csv  data/input/NYCGovernanceOrganizations_DRAFT_20250410.csv \
   --output_csv data/input/NYCGovernanceOrganizations_DRAFT_20250604.csv \
   --add_columns "PrincipalOfficerFullName,PrincipalOfficerGivenName,PrincipalOfficerMiddleNameOrInitial,PrincipalOfficerFamilyName,PrincipalOfficerSuffix" \
   --default_value ""
 ~~~
 
-#### 2 · Main Processing Run
+#### 2 · Run the pipeline orchestrator
+The new CLI stages inputs, applies global rules + QA edits, exports pre-release outputs, and emits the per-run changelog and summary.
 ~~~bash
-python src/process_golden_dataset.py \
-  --golden    data/input/NYCGovernanceOrganizations_DRAFT_20250604.csv \
-  --qa        data/input/Agency_Name_QA_Edits.csv \
-  --out       data/output/processed_run1_mainQA.csv \
-  --changelog data/output/changelog_run1_mainQA.csv \
-  --changed-by "DataAnalyst_Run1"
+make run-pipeline GOLDEN=data/input/NYCGovernanceOrganizations_DRAFT_20250604.csv \
+                 QA=data/input/Agency_Name_QA_Edits.csv \
+                 DESCRIPTOR=qa-pass
 ~~~
-*Review changelog for `POLICY_QUERY` or `NAME_PARSE_REVIEW_NEEDED` flags.*
+_The CLI will create a run id when one is not supplied and writes artifacts under `data/audit/runs/<run_id>/`._
 
-#### 3 · Supplemental Edits Run
+#### 3 · Review outputs
+- Inspect `data/audit/runs/<run_id>/outputs/run_changelog.csv` and `run_summary.json`.
+- Use aids in `review/` to validate (comparison reports, stats).
+
+#### 4 · Publish the run
+Promote the pre-release artifacts and append changelog rows to the dataset manifest.
 ~~~bash
-python src/process_golden_dataset.py \
-  --golden    data/output/processed_run1_mainQA.csv \
-  --qa        data/input/supplemental_edits_v1.csv \
-  --out       data/output/processed_run2_supplemental.csv \
-  --changelog data/output/changelog_run2_supplemental.csv \
-  --changed-by "DataAnalyst_Run2_Supplemental"
+make publish-run RUN_ID=<run_id> VERSION=v1.0.0
 ~~~
-` supplemental_edits.csv ` can include:
-``Delete RecordID ORG-123`` or
-``Append records from CSV data/input/community_board_new_row_additions.csv``
-
-#### 4 · Final Export for Publication
-~~~bash
-# Basic export (no changelog tracking)
-python scripts/process/export_dataset.py \
-  --input_csv data/output/processed_run2_supplemental.csv \
-  --output_golden data/published/NYCGO_golden_dataset_v0_19.csv \
-  --output_published data/published/NYCGovernanceOrganizations_v0_19.csv
-
-# Export WITH changelog tracking for directory field changes
-RUN_ID=$(python scripts/maint/make_run_id.py)
-python scripts/process/export_dataset.py \
-  --input_csv data/output/processed_run2_supplemental.csv \
-  --output_golden data/published/NYCGO_golden_dataset_v0_19.csv \
-  --output_published data/published/NYCGovernanceOrganizations_v0_19.csv \
-  --run-dir data/audit/runs/$RUN_ID \
-  --run-id $RUN_ID \
-  --operator "$USER" \
-  --previous-export data/published/latest/NYCGovernanceOrganizations_v0_18.csv
-
-# Then follow the review → append workflow
-python scripts/maint/review_changes.py --run-dir data/audit/runs/$RUN_ID
-python scripts/maint/append_changelog.py --run-dir data/audit/runs/$RUN_ID \
-  --changelog data/changelog.csv --operator "$USER"
-~~~
+_Publish creates `_final` artifacts in `data/published/`, updates `latest/`, archives prior `latest/` snapshots, zips the run folder, and appends rows to `data/changelog.csv`._
 
 #### 5 · Audit & Compare *(optional)*
 ~~~bash
@@ -185,68 +156,14 @@ python compare_datasets.py \
   --output_report_csv data/audit/comparison_report_v2.8.csv
 ~~~
 
-#### 6 · Changelog (append-only) — new audit flow
-The per-run audit artifacts are produced locally under `data/audit/runs/<run_id>/` and ignored by Git. After review, approved rows are appended to the tracked `data/changelog.csv`.
-
-Basic flow:
-~~~bash
-# 1) Create a run id
-python scripts/maint/make_run_id.py > /tmp/run_id
-RUN_ID=$(cat /tmp/run_id)
-
-# 2) Your processing step should write proposed_changes.csv into the run dir
-#    e.g., data/audit/runs/$RUN_ID/proposed_changes.csv
-
-# 3) Review & approve (auto-approve by default)
-python scripts/maint/review_changes.py \
-  --run-dir data/audit/runs/$RUN_ID
-
-# 4) Append approved rows to the append-only changelog (idempotent)
-python scripts/maint/append_changelog.py \
-  --run-dir data/audit/runs/$RUN_ID \
-  --changelog data/changelog.csv \
-  --operator "$USER"
-~~~
-
-### 7 · Step 4: Publish changelog run (review → append → optional commit/release)
-
-If your pipeline emits step-wise changelogs under `data/output/`, use the adapter to prepare per-run proposed changes:
-
-~~~bash
-python scripts/maint/prepare_run_proposed_changes.py \
-  --run-id $RUN_ID \
-  --step1 data/output/changelog_step1.csv \
-  --step2 data/output/changelog_step2.csv
-~~~
-
-Then review → append (dry-run):
-
-~~~bash
-python scripts/maint/publish_changelog_run.py \
-  --run-dir data/audit/runs/$RUN_ID
-~~~
-
-Append & commit (optionally tag/release):
-
-~~~bash
-python scripts/maint/publish_changelog_run.py \
-  --run-dir data/audit/runs/$RUN_ID \
-  --apply --commit --operator "$USER"
-
-# optional tagging/release marker
-python scripts/maint/publish_changelog_run.py \
-  --run-dir data/audit/runs/$RUN_ID \
-  --apply --commit --tag v1.0.0 --release --operator "$USER"
-~~~
-
 ### Script Reference
 
 | Script | Purpose | Key Args |
 |--------|---------|----------|
-| **manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
-| **process_golden_dataset.py** | Core processor — global rules + QA edits | `--golden` · `--qa` · `--out` · `--changelog` · `--changed-by` |
-| **export_dataset.py** | Final cleanup & column mapping; tracks directory field changes | `--input_csv` · `--output_golden` · `--output_published` · `--run-dir` (optional) · `--run-id` (optional) · `--operator` (optional) · `--previous-export` (optional) |
-| **compare_datasets.py** | Audit RecordID adds / drops | `--original_csv` · `--processed_csv` · `--output_report_csv` |
+| **pipeline/run_pipeline.py** | End-to-end run orchestration | `--golden` · `--qa` · `--descriptor` · `--previous-export` |
+| **pipeline/publish_run.py** | Promote pre-release artifacts to final | `--run-dir` · `--version` · `--append-changelog` |
+| **process/manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
+| **process/export_dataset.py** | (Legacy) export helper leveraged by pipeline package | `--input_csv` · `--output_golden` · `--output_published` |
 
 ### Development
 

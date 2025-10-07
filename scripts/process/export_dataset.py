@@ -4,9 +4,10 @@
 export_dataset.py - Prepares and exports datasets for different destinations.
 
 This script takes a final, processed "golden" dataset and produces two outputs:
-1.  A versioned copy of the full golden dataset, saved to data/output/.
+1.  A versioned copy of the full golden dataset, saved to the run folder under
+    `data/audit/runs/<run_id>/outputs/`.
 2.  A cleaned, filtered, and transformed public-facing version, saved to
-    data/published/.
+    `data/published/`.
 """
 import argparse
 import csv
@@ -34,8 +35,9 @@ def write_proposed_changes(run_dir, changes, run_id, operator):
         run_id: Run identifier
         operator: Person/system making the change
     """
-    run_dir.mkdir(parents=True, exist_ok=True)
-    proposed_path = run_dir / "proposed_changes.csv"
+    proposed_outputs_dir = run_dir / "outputs"
+    proposed_outputs_dir.mkdir(parents=True, exist_ok=True)
+    proposed_path = proposed_outputs_dir / "run_changelog.csv"
 
     timestamp = datetime.now(timezone.utc).isoformat()
 
@@ -623,14 +625,16 @@ def main():
 
     # --- Normalize in_org_chart: fill blanks as False and coerce to booleans ---
     if "in_org_chart" in df_selected.columns:
-        df_selected["in_org_chart"] = (
+        normalized = (
             df_selected["in_org_chart"]
             .astype(str)
             .str.strip()
             .str.lower()
-            .map({"true": True, "false": False})
-            .fillna(False)
+            .replace({"": "false"})
         )
+        df_selected["in_org_chart"] = normalized.map(
+            {"true": "True", "false": "False"}
+        ).fillna("False")
 
     # --- Add NYC.gov Directory column AFTER snake_case conversion ---
     result = add_nycgov_directory_column(
@@ -708,6 +712,43 @@ def main_with_dataframe(
     }
     df_public.rename(columns=rename_map, inplace=True)
 
+    # Apply the same published dataset filters used by the CLI entrypoint
+    rows_before_filter = len(df_public)
+    in_org_chart = (
+        df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .map({"true": True})
+        .fillna(False)
+    )
+    has_ops_name = (
+        df_public.get("Name - Ops", pd.Series(["" for _ in range(len(df_public))]))
+        .astype(str)
+        .str.strip()
+        .ne("")
+    )
+    is_mta_exception = (
+        df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
+    )
+    active_only = (
+        df_public.get(
+            "OperationalStatus", pd.Series(["" for _ in range(len(df_public))])
+        )
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        == "active"
+    )
+    df_public = df_public[
+        (in_org_chart | has_ops_name | is_mta_exception) & active_only
+    ].copy()
+
+    if rows_before_filter != len(df_public):
+        print(
+            f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
+        )
+
     required_output_columns = [
         "RecordID",
         "Name",
@@ -737,12 +778,24 @@ def main_with_dataframe(
         run_id=run_id,
     )
 
-    directory_changes = []
+    directory_changes: list[dict] = []
     if run_dir and isinstance(result, tuple):
         df_selected, directory_changes = result
         write_proposed_changes(run_dir, directory_changes, run_id or "", operator or "")
     else:
         df_selected = result
+
+    if "in_org_chart" in df_selected.columns:
+        normalized = (
+            df_selected["in_org_chart"]
+            .astype(str)
+            .str.strip()
+            .str.lower()
+            .replace({"": "false"})
+        )
+        df_selected["in_org_chart"] = normalized.map(
+            {"true": "True", "false": "False"}
+        ).fillna("False")
 
     output_published.parent.mkdir(parents=True, exist_ok=True)
     df_selected.to_csv(output_published, index=False, encoding="utf-8-sig")

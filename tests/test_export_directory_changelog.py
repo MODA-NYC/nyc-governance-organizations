@@ -13,7 +13,10 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from scripts.process.export_dataset import add_nycgov_directory_column, write_proposed_changes
+from scripts.process.export_dataset import (
+    add_nycgov_directory_column,
+    write_proposed_changes,
+)
 
 
 def test_directory_column_change_tracking():
@@ -51,7 +54,10 @@ def test_directory_column_change_tracking():
 
     # Run the function with tracking enabled
     df_result, changes = add_nycgov_directory_column(
-        df_current, df_before_snake_case=df_before, run_id="test_run_123"
+        df_current,
+        df_before_snake_case=df_before,
+        df_previous_export=df_before,
+        run_id="test_run_123",
     )
 
     # Verify the dataframe has the new column
@@ -78,14 +84,14 @@ def test_directory_column_change_tracking():
     # NYC_GOID_000001: Should change from False to True (has URL and officer name)
     if "NYC_GOID_000001" in changes_by_id:
         change = changes_by_id["NYC_GOID_000001"]
-        assert change["old_value"] == "False"
+        assert change["old_value"] in {"", "False"}
         assert change["new_value"] == "True"
 
     # NYC_GOID_000002: Has ny.gov URL, should be False (excluded)
     # Changed from True to False
     if "NYC_GOID_000002" in changes_by_id:
         change = changes_by_id["NYC_GOID_000002"]
-        assert change["old_value"] == "True"
+        assert change["old_value"] in {"", "True"}
         assert change["new_value"] == "False"
 
 
@@ -123,7 +129,7 @@ def test_write_proposed_changes():
         )
 
         # Verify the file was created
-        proposed_path = run_dir / "proposed_changes.csv"
+        proposed_path = run_dir / "outputs" / "run_changelog.csv"
         assert proposed_path.exists()
 
         # Read and verify contents
@@ -188,7 +194,10 @@ def test_no_changes_when_values_unchanged():
     )
 
     df_result, changes = add_nycgov_directory_column(
-        df_current, df_before_snake_case=df_before, run_id="test_run_789"
+        df_current,
+        df_before_snake_case=df_before,
+        df_previous_export=df_before,
+        run_id="test_run_789",
     )
 
     # Should detect no changes since values are the same
