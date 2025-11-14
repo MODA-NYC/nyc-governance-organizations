@@ -606,6 +606,11 @@ def main():
         "PrincipalOfficerContactURL",
         "ReportsTo",
         "InOrgChart",
+        # Phase II fields (v2.0.0)
+        "org_chart_oversight",
+        "authorizing_authority",
+        "authorizing_url",
+        "appointments_summary",
     ]
     missing_cols = [
         col for col in required_output_columns if col not in df_public.columns
@@ -766,6 +771,11 @@ def main_with_dataframe(
         "PrincipalOfficerContactURL",
         "ReportsTo",
         "InOrgChart",
+        # Phase II fields (v2.0.0)
+        "org_chart_oversight",
+        "authorizing_authority",
+        "authorizing_url",
+        "appointments_summary",
     ]
     df_selected = df_public[required_output_columns]
     df_before_snake_case = df_selected.copy()

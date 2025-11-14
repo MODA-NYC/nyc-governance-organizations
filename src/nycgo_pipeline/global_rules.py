@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 
 import ftfy
 import pandas as pd
@@ -69,14 +69,18 @@ def log_change(
     )
 
 
-def apply_global_deduplication(df: pd.DataFrame, user: str, prefix: str) -> pd.DataFrame:
+def apply_global_deduplication(
+    df: pd.DataFrame, user: str, prefix: str
+) -> pd.DataFrame:
     df_processed = df.copy()
     for col in ["AlternateOrFormerNames", "AlternateOrFormerAcronyms"]:
         if col in df_processed.columns:
             for i, row in df_processed.iterrows():
                 old_val = row.get(col)
                 if isinstance(old_val, str) and old_val.strip():
-                    items = [item.strip() for item in old_val.split(";") if item.strip()]
+                    items = [
+                        item.strip() for item in old_val.split(";") if item.strip()
+                    ]
                     new_val = ";".join(dict.fromkeys(items))
                     if new_val != old_val:
                         log_change(
@@ -96,7 +100,9 @@ def apply_global_deduplication(df: pd.DataFrame, user: str, prefix: str) -> pd.D
     return df_processed
 
 
-def apply_global_character_fixing(df: pd.DataFrame, user: str, prefix: str) -> pd.DataFrame:
+def apply_global_character_fixing(
+    df: pd.DataFrame, user: str, prefix: str
+) -> pd.DataFrame:
     df_processed = df.copy()
     text_cols: Iterable[str] = [
         "Name",
@@ -113,7 +119,9 @@ def apply_global_character_fixing(df: pd.DataFrame, user: str, prefix: str) -> p
             for i, row in df_processed.iterrows():
                 old_val = row.get(col)
                 if isinstance(old_val, str):
-                    new_val = unicodedata.normalize("NFKC", ftfy.fix_text(old_val)).strip()
+                    new_val = unicodedata.normalize(
+                        "NFKC", ftfy.fix_text(old_val)
+                    ).strip()
                     if new_val != old_val:
                         log_change(
                             row["RecordID"],
@@ -136,7 +144,9 @@ def format_budget_codes(df: pd.DataFrame, user: str, prefix: str) -> pd.DataFram
     df_processed = df.copy()
     if "BudgetCode" not in df_processed.columns:
         return df_processed
-    mask = df_processed["BudgetCode"].notna() & (df_processed["BudgetCode"].astype(str).str.strip() != "")
+    mask = df_processed["BudgetCode"].notna() & (
+        df_processed["BudgetCode"].astype(str).str.strip() != ""
+    )
     for i in df_processed[mask].index:
         old_val = str(df_processed.loc[i, "BudgetCode"]).strip()
         try:
@@ -161,6 +171,93 @@ def format_budget_codes(df: pd.DataFrame, user: str, prefix: str) -> pd.DataFram
     return df_processed
 
 
+def validate_phase_ii_fields(  # noqa: C901
+    df: pd.DataFrame, user: str, prefix: str
+) -> pd.DataFrame:
+    """
+    Validate Phase II fields (v2.0.0 schema).
+
+    Validates:
+    - authorizing_url: Must be valid HTTP/HTTPS URL format
+    - org_chart_oversight: Must match valid RecordID if populated
+    - authorizing_authority: Warn if empty (100% population target)
+    """
+    df_processed = df.copy()
+
+    # Validate authorizing_url format
+    if "authorizing_url" in df_processed.columns:
+        url_pattern = re.compile(r"^https?://[^\s]+$")
+        for _i, row in df_processed.iterrows():  # noqa: B007
+            url_value = row.get("authorizing_url", "").strip()
+            if url_value and not url_pattern.match(url_value):
+                # Check if it's pipe-separated multiple URLs
+                urls = [u.strip() for u in url_value.split("|") if u.strip()]
+                invalid_urls = [u for u in urls if not url_pattern.match(u)]
+                if invalid_urls:
+                    log_change(
+                        row["RecordID"],
+                        row.get("Name", ""),
+                        "authorizing_url",
+                        url_value,
+                        None,  # No automatic fix, just warning
+                        "System_Validation",
+                        f"Invalid URL format: {invalid_urls}",
+                        "VALIDATION_WARNING",
+                        user,
+                        "VALIDATE_URL",
+                        prefix,
+                    )
+
+    # Validate org_chart_oversight references valid RecordID
+    if "org_chart_oversight" in df_processed.columns:
+        valid_record_ids = set(df_processed["RecordID"].tolist())
+        for _i, row in df_processed.iterrows():  # noqa: B007
+            oversight_value = row.get("org_chart_oversight", "").strip()
+            if oversight_value and oversight_value not in valid_record_ids:
+                log_change(
+                    row["RecordID"],
+                    row.get("Name", ""),
+                    "org_chart_oversight",
+                    oversight_value,
+                    None,
+                    "System_Validation",
+                    f"RecordID '{oversight_value}' not found in dataset",
+                    "VALIDATION_WARNING",
+                    user,
+                    "VALIDATE_RECORDID_REF",
+                    prefix,
+                )
+
+    # Check authorizing_authority population (100% target)
+    if "authorizing_authority" in df_processed.columns:
+        empty_count = 0
+        for _i, row in df_processed.iterrows():  # noqa: B007
+            auth_value = row.get("authorizing_authority", "").strip()
+            if not auth_value:
+                empty_count += 1
+        if empty_count > 0:
+            # Log a single warning about missing authorizing_authority values
+            msg = (
+                f"{empty_count} entities missing authorizing_authority "
+                f"(target: 100% population)"
+            )
+            log_change(
+                "DATASET",
+                "DATASET",
+                "authorizing_authority",
+                None,
+                None,
+                "System_Validation",
+                msg,
+                "VALIDATION_WARNING",
+                user,
+                "CHECK_COMPLETENESS",
+                prefix,
+            )
+
+    return df_processed
+
+
 def apply_rules(
     input_csv: Path,
     *,
@@ -171,4 +268,5 @@ def apply_rules(
     df_processed = apply_global_character_fixing(df, changed_by, version_prefix)
     df_processed = apply_global_deduplication(df_processed, changed_by, version_prefix)
     df_processed = format_budget_codes(df_processed, changed_by, version_prefix)
+    df_processed = validate_phase_ii_fields(df_processed, changed_by, version_prefix)
     return df_processed
