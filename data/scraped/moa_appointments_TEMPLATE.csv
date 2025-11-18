@@ -1,0 +1,4 @@
+entity_name,description,url,scraped_date,source_url
+"Board of Correction","The Board of Correction is responsible for establishing minimum standards for the care and custody of persons held in city correctional facilities.","https://www.nyc.gov/site/boc/index.page","2024-11-14T12:00:00","https://www.nyc.gov/content/appointments/pages/boards-commissions"
+"Landmarks Preservation Commission","The Landmarks Preservation Commission is the mayoral agency responsible for identifying and designating landmarks and historic districts in New York City.","https://www.nyc.gov/site/lpc/index.page","2024-11-14T12:00:00","https://www.nyc.gov/content/appointments/pages/boards-commissions"
+"Example Board (No URL)","This is an example of a board without a dedicated website.","","2024-11-14T12:00:00","https://www.nyc.gov/content/appointments/pages/boards-commissions"
