@@ -1,0 +1,28 @@
+record_id,name,organization_type,board_type,notes
+NYC_GOID_000318,NYC Health + Hospitals,Public Benefit or Development Organization,Board of Directors + Personnel Review Board,Has both primary governing board and specialized board
+NYC_GOID_000212,Health and Hospitals Corporation Personnel Review Board,Advisory or Regulatory Organization,Specialized Board,Specialized board for NYC Health + Hospitals
+NYC_GOID_000476,Metropolitan Transportation Authority,Public Benefit or Development Organization,Board of Directors,MTA Board of Directors
+NYC_GOID_000038,Brooklyn Public Library,Nonprofit Organization,Board of Trustees,Public library with Board of Trustees
+NYC_GOID_000335,New York Public Library,Nonprofit Organization,Board of Trustees,Public library with Board of Trustees
+NYC_GOID_000402,Queens Public Library,Nonprofit Organization,Board of Trustees,Public library with Board of Trustees
+NYC_GOID_000099,City University of New York,State Government Agency,Board of Trustees,CUNY Board of Trustees
+NYC_GOID_000100,City University Construction Fund,Public Benefit or Development Organization,Board of Trustees,CUNY Construction Fund Board
+NYC_GOID_000034,Brooklyn Bridge Park Corporation,Public Benefit or Development Organization,Board of Directors,Development corporation with board
+NYC_GOID_000037,Brooklyn Navy Yard Development Corporation,Public Benefit or Development Organization,Board of Directors,Development corporation with board
+NYC_GOID_000125,Convention Center Development Corporation,Public Benefit or Development Organization,Board of Directors,Development corporation with board
+NYC_GOID_000126,Convention Center Operating Corporation (Javits),Public Benefit or Development Organization,Board of Directors,Development corporation with board
+NYC_GOID_000177,Economic Development Corporation,Public Benefit or Development Organization,Board of Directors,NYCEDC Board of Directors
+NYC_GOID_000215,Housing Development Corporation,Public Benefit or Development Organization,Board of Directors,Housing development corporation
+NYC_GOID_000218,Hudson River Park Trust,Public Benefit or Development Organization,Board of Directors,Public benefit corporation
+NYC_GOID_000414,Roosevelt Island Operating Corporation,Public Benefit or Development Organization,Board of Directors,Public benefit corporation
+NYC_GOID_000320,New York City Housing Authority Board,Advisory or Regulatory Organization,Board,NYCHA Board
+NYC_GOID_000416,School Construction Authority,Public Benefit or Development Organization,Board of Trustees,SCA Board of Trustees
+NYC_GOID_000190,Financial Information Services Agency,Public Benefit or Development Organization,Board of Directors,FISA Board of Directors
+NYC_GOID_000377,Office of Payroll Administration,Public Benefit or Development Organization,Board of Directors,OPA Board of Directors
+NYC_GOID_000127,Council for Airport Opportunity,Public Benefit or Development Organization,Board of Directors,CAO Board of Directors
+NYC_GOID_000449,Trust for Governors Island,Public Benefit or Development Organization,Board of Directors,Trust board
+NYC_GOID_000448,Trust for Cultural Resources,Public Benefit or Development Organization,Board of Directors,Trust board
+NYC_GOID_000048,Central Park Conservancy,Nonprofit Organization,Board of Trustees,Nonprofit conservancy
+NYC_GOID_000394,Prospect Park Alliance,Nonprofit Organization,Board of Directors,Nonprofit alliance
+NYC_GOID_000316,New York City Employee Retirement System,Pension Fund,Board of Trustees,NYCERS Board of Trustees
+NYC_GOID_000022,Board of Education Retirement System,Advisory or Regulatory Organization,Board,BERS Board
