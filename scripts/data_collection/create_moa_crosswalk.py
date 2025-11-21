@@ -89,15 +89,24 @@ def find_best_match(  # noqa: C901
         return best_match
 
     # Check alternate names
+    # Note: Alternate name matches are marked as "high" confidence (not "exact")
+    # to flag for manual review, especially for Dissolved entities
     for _, row in nycgo_df.iterrows():
         alt_names = row.get("AlternateOrFormerNames", "")
         if pd.notna(alt_names) and alt_names:
             alt_names_list = [n.strip() for n in str(alt_names).split(";")]
             if moa_name.lower() in [n.lower() for n in alt_names_list]:
+                # Check if entity is Dissolved - downgrade confidence further
+                status = row.get("OperationalStatus", "")
+                if status == "Dissolved":
+                    confidence = "medium"
+                else:
+                    confidence = "high"
+
                 best_match["nycgo_record_id"] = row["RecordID"]
                 best_match["nycgo_name"] = row["Name"]
                 best_match["similarity_score"] = 1.0
-                best_match["match_confidence"] = "exact"
+                best_match["match_confidence"] = confidence
                 return best_match
 
     # Fuzzy matching
@@ -169,7 +178,7 @@ def create_crosswalk(moa_df: pd.DataFrame, nycgo_df: pd.DataFrame) -> pd.DataFra
                 "similarity_score": round(match["similarity_score"], 3),
                 "match_confidence": match["match_confidence"],
                 "needs_manual_review": (
-                    "yes" if match["match_confidence"] in ["low", "none"] else "no"
+                    "no" if match["match_confidence"] == "exact" else "yes"
                 ),
                 "notes": "",
             }
