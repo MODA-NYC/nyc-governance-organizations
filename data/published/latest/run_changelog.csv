@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,changed_by,RuleAction
+20251121-2205_digital-assets-blockchain-with-exception_1,2025-11-21T17:05:52.430600,NYC_GOID_100030,Office of Digital Assets and Blockchain,_ROW_ADDED,N/A,Office of Digital Assets and Blockchain,NYCGO_phase1_edits_digital_assets_blockchain_20251014.csv,New record created with 16 fields,,nathanstorey,direct_set

@@ -114,11 +114,21 @@ def orchestrate_pipeline(
         previous_export,
     )
 
+    # Store both copied paths and original source paths
+    inputs_copied = {name: str(path) for name, path in copied_inputs.items()}
+    inputs_original = {
+        "golden_source": str(golden_source),
+        "qa_sources": [str(qa_path) for qa_path in qa_paths],
+    }
+    if previous_export:
+        inputs_original["previous_export"] = str(previous_export)
+
     summary = {
         "run_id": run_id,
         "changed_by": changed_by,
         "operator": operator,
-        "inputs": {name: str(path) for name, path in copied_inputs.items()},
+        "inputs": inputs_copied,
+        "inputs_original": inputs_original,
         "outputs": {
             "golden_pre_release": str(golden_output),
             "published_pre_release": str(published_output),
