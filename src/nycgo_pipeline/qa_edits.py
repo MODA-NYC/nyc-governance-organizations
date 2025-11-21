@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pathlib
 import re
+from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import Iterable
 
 import pandas as pd
 
@@ -59,7 +59,9 @@ def reset_changelog() -> None:
     changelog_id_counter = 0
 
 
-def _get_pascal_case_column(df_columns: Iterable[str], provided_col_name: str | None) -> str | None:
+def _get_pascal_case_column(
+    df_columns: Iterable[str], provided_col_name: str | None
+) -> str | None:
     if not provided_col_name or pd.isna(provided_col_name):
         return None
     provided_lower = str(provided_col_name).strip().lower()
@@ -69,7 +71,9 @@ def _get_pascal_case_column(df_columns: Iterable[str], provided_col_name: str | 
     for col in df_columns:
         if col.lower() == provided_lower:
             return col
-    pascal_version = "".join(word.capitalize() for word in str(provided_col_name).strip().split("_"))
+    pascal_version = "".join(
+        word.capitalize() for word in str(provided_col_name).strip().split("_")
+    )
     if pascal_version in df_columns:
         return pascal_version
     return None
@@ -79,9 +83,12 @@ def _sanitize_wrapped_text(text: str | None) -> str | None:
     if text is None:
         return None
     s = str(text).strip()
-    while len(s) > 1 and ((s.startswith("\"") and s.endswith("\"")) or (s.startswith("'") and s.endswith("'"))):
+    while len(s) > 1 and (
+        (s.startswith('"') and s.endswith('"'))
+        or (s.startswith("'") and s.endswith("'"))
+    ):
         s = s[1:-1].strip()
-    if s.endswith("\"") or s.endswith("'"):
+    if s.endswith('"') or s.endswith("'"):
         s = s.rstrip("\"'").strip()
     return s
 
@@ -126,7 +133,15 @@ def detect_rule(feedback: str) -> tuple[QAAction, re.Match | None]:
     return QAAction.POLICY_QUERY, None
 
 
-def handle_delete_record(df: pd.DataFrame, record_id: str, src: str, user: str, notes: str, reason: str, prefix: str) -> pd.DataFrame:
+def handle_delete_record(
+    df: pd.DataFrame,
+    record_id: str,
+    src: str,
+    user: str,
+    notes: str,
+    reason: str,
+    prefix: str,
+) -> pd.DataFrame:
     if record_id in df["RecordID"].values:
         record_name = df[df["RecordID"] == record_id].iloc[0].get("Name", "N/A")
         log_change(
@@ -169,7 +184,11 @@ def handle_append_from_csv(
     reason: str,
     prefix: str,
 ) -> pd.DataFrame:
-    path_obj = base_dir / path_str if not path_str.startswith("data/") else pathlib.Path(path_str)
+    path_obj = (
+        base_dir / path_str
+        if not path_str.startswith("data/")
+        else pathlib.Path(path_str)
+    )
     try:
         new_records = pd.read_csv(path_obj, dtype=str, encoding="utf-8-sig").fillna("")
         for _, row in new_records.iterrows():
@@ -201,9 +220,15 @@ def handle_direct_set(
     feedback: str,
 ) -> None:
     record_id = qa_row.get("Row(s)")
-    if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
+    # Handle "NEW" records separately - they are processed in apply_qa_edits
+    # before this function
+    if pd.isna(record_id) or str(record_id).strip().upper() == "NEW":
         return
-    provided_col = qa_row.get("Column") or (match.group("column") if "column" in match.groupdict() else None)
+    if record_id not in df_mod["RecordID"].values:
+        return
+    provided_col = qa_row.get("Column") or (
+        match.group("column") if "column" in match.groupdict() else None
+    )
     pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
     if not pascal_col:
         return
@@ -263,7 +288,74 @@ def handle_policy_query(
         )
 
 
-def apply_qa_edits(
+def _generate_next_record_id(df: pd.DataFrame) -> str:
+    """Generate the next available RecordID in format NYC_GOID_XXXXXX."""
+    existing_ids = df["RecordID"].astype(str)
+    # Extract numeric parts from existing IDs
+    max_num = 0
+    for record_id in existing_ids:
+        if pd.isna(record_id) or not str(record_id).startswith("NYC_GOID_"):
+            continue
+        try:
+            # Extract number from NYC_GOID_XXXXXX format
+            # (handles both 000001 and 100001)
+            num_part = str(record_id).replace("NYC_GOID_", "").strip()
+            num = int(num_part)  # Direct conversion handles leading zeros
+            max_num = max(max_num, num)
+        except (ValueError, AttributeError):
+            continue
+
+    # Generate next ID (use 6-digit format with leading zeros)
+    next_num = max_num + 1
+    return f"NYC_GOID_{next_num:06d}"
+
+
+def _create_new_record(
+    df_mod: pd.DataFrame,
+    new_record_fields: dict,
+    src_name: str,
+    user: str,
+    prefix: str,
+) -> pd.DataFrame:
+    """Create a new record from collected field values."""
+    # Generate RecordID
+    new_record_id = _generate_next_record_id(df_mod)
+
+    # Create new row with all columns initialized to empty string
+    new_row = {col: "" for col in df_mod.columns}
+
+    # Set RecordID
+    new_row["RecordID"] = new_record_id
+
+    # Apply all collected field values
+    for pascal_col, value in new_record_fields.items():
+        if pascal_col in df_mod.columns:
+            new_row[pascal_col] = value
+
+    # Get record name for changelog
+    record_name = new_record_fields.get("Name", "New Record")
+
+    # Log the creation
+    log_change(
+        new_record_id,
+        record_name,
+        "_ROW_ADDED",
+        "N/A",
+        record_name,
+        src_name,
+        f"New record created with {len(new_record_fields)} fields",
+        "",
+        user,
+        QAAction.DIRECT_SET,
+        prefix,
+    )
+
+    # Append new row to dataframe
+    new_df = pd.DataFrame([new_row])
+    return pd.concat([df_mod, new_df], ignore_index=True)
+
+
+def apply_qa_edits(  # noqa: C901
     df: pd.DataFrame,
     qa_path: pathlib.Path,
     user: str,
@@ -273,11 +365,56 @@ def apply_qa_edits(
     src_name, base_dir = qa_path.name, qa_path.parent
     qa_df = pd.read_csv(qa_path, dtype=str).fillna("")
 
+    # First pass: collect all "NEW" record edits
+    new_records: dict[str, dict[str, str]] = {}  # Maps a unique key to field dict
+
+    # Process all rows to collect NEW record data
     for _, qa_row in qa_df.iterrows():
         raw_feedback = str(qa_row.get("feedback", ""))
         feedback = _sanitize_wrapped_text(raw_feedback)
         if not raw_feedback.strip() and not feedback:
             continue
+
+        record_id = str(qa_row.get("Row(s)", "")).strip().upper()
+
+        # Collect NEW record fields
+        if record_id == "NEW":
+            action, match = detect_rule(raw_feedback)
+            if action == QAAction.DIRECT_SET and match:
+                provided_col = qa_row.get("Column") or (
+                    match.group("column") if "column" in match.groupdict() else None
+                )
+                if provided_col:
+                    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
+                    if pascal_col:
+                        val_str = match.group("value")
+                        clean_val = _sanitize_wrapped_text(val_str)
+                        if clean_val is None:
+                            clean_val = ""
+                        # Use a single key for all NEW records in this file
+                        # (assumes one new record per file)
+                        # In future, could use a sequence number or other identifier
+                        key = "NEW_RECORD_0"
+                        if key not in new_records:
+                            new_records[key] = {}
+                        new_records[key][pascal_col] = clean_val
+
+    # Create NEW records before processing edits to existing records
+    for _key, fields in new_records.items():
+        df_mod = _create_new_record(df_mod, fields, src_name, user, prefix)
+
+    # Second pass: process edits to existing records
+    for _, qa_row in qa_df.iterrows():
+        raw_feedback = str(qa_row.get("feedback", ""))
+        feedback = _sanitize_wrapped_text(raw_feedback)
+        if not raw_feedback.strip() and not feedback:
+            continue
+
+        record_id = str(qa_row.get("Row(s)", "")).strip().upper()
+        # Skip NEW records - already processed
+        if record_id == "NEW":
+            continue
+
         reason = qa_row.get("reason", "")
         action, match = detect_rule(raw_feedback)
 

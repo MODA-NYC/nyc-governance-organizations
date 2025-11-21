@@ -557,6 +557,14 @@ def main():
     # --- Filter for records to include in public output ---
     print("Applying filters for public export...")
     rows_before_filter = len(df_public)
+
+    # Published export exceptions: records that should always be included
+    # regardless of in_org_chart status
+    published_export_exceptions = [
+        "NYC_GOID_000476",  # MTA (Metropolitan Transportation Authority)
+        "NYC_GOID_100030",  # Office of Digital Assets and Blockchain
+    ]
+
     in_org_chart = (
         df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
         .astype(str)
@@ -569,9 +577,9 @@ def main():
     ).notna() & (
         df_public.get("Name - Ops", pd.Series([""] * len(df_public))).str.strip() != ""
     )
-    is_mta_exception = (
-        df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
-    )
+    is_export_exception = df_public.get(
+        "RecordID", pd.Series([""] * len(df_public))
+    ).isin(published_export_exceptions)
     # New requirement: only export records where OperationalStatus is Active
     active_only = (
         df_public.get("OperationalStatus", pd.Series([""] * len(df_public)))
@@ -582,7 +590,7 @@ def main():
     )
 
     df_public = df_public[
-        (in_org_chart | has_ops_name | is_mta_exception) & active_only
+        (in_org_chart | has_ops_name | is_export_exception) & active_only
     ].copy()
     print(
         f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
@@ -606,12 +614,16 @@ def main():
         "PrincipalOfficerContactURL",
         "ReportsTo",
         "InOrgChart",
-        # Phase II fields (v2.0.0)
+    ]
+    # Phase II fields (v2.0.0) - optional, only include if present
+    optional_phase_ii_fields = [
         "org_chart_oversight",
         "authorizing_authority",
         "authorizing_url",
         "appointments_summary",
     ]
+
+    # Check for required columns
     missing_cols = [
         col for col in required_output_columns if col not in df_public.columns
     ]
@@ -619,7 +631,15 @@ def main():
         print(f"Error: Expected columns missing for public export: {missing_cols}")
         sys.exit(1)
 
-    df_selected = df_public[required_output_columns]
+    # Add Phase II fields if they exist
+    output_columns = required_output_columns.copy()
+    for field in optional_phase_ii_fields:
+        if field in df_public.columns:
+            output_columns.append(field)
+        else:
+            print(f"Note: Phase II field '{field}' not found in dataset (Phase I mode)")
+
+    df_selected = df_public[output_columns]
 
     # --- Save a copy BEFORE snake_case conversion for change tracking ---
     df_before_snake_case = df_selected.copy()
@@ -718,6 +738,13 @@ def main_with_dataframe(
     df_public.rename(columns=rename_map, inplace=True)
 
     # Apply the same published dataset filters used by the CLI entrypoint
+    # Published export exceptions: records that should always be included
+    # regardless of in_org_chart status
+    published_export_exceptions = [
+        "NYC_GOID_000476",  # MTA (Metropolitan Transportation Authority)
+        "NYC_GOID_100030",  # Office of Digital Assets and Blockchain
+    ]
+
     rows_before_filter = len(df_public)
     in_org_chart = (
         df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
@@ -733,9 +760,9 @@ def main_with_dataframe(
         .str.strip()
         .ne("")
     )
-    is_mta_exception = (
-        df_public.get("RecordID", pd.Series([""] * len(df_public))) == "NYC_GOID_000476"
-    )
+    is_export_exception = df_public.get(
+        "RecordID", pd.Series([""] * len(df_public))
+    ).isin(published_export_exceptions)
     active_only = (
         df_public.get(
             "OperationalStatus", pd.Series(["" for _ in range(len(df_public))])
@@ -746,7 +773,7 @@ def main_with_dataframe(
         == "active"
     )
     df_public = df_public[
-        (in_org_chart | has_ops_name | is_mta_exception) & active_only
+        (in_org_chart | has_ops_name | is_export_exception) & active_only
     ].copy()
 
     if rows_before_filter != len(df_public):
@@ -771,13 +798,22 @@ def main_with_dataframe(
         "PrincipalOfficerContactURL",
         "ReportsTo",
         "InOrgChart",
-        # Phase II fields (v2.0.0)
+    ]
+    # Phase II fields (v2.0.0) - optional, only include if present
+    optional_phase_ii_fields = [
         "org_chart_oversight",
         "authorizing_authority",
         "authorizing_url",
         "appointments_summary",
     ]
-    df_selected = df_public[required_output_columns]
+
+    # Add Phase II fields if they exist
+    output_columns = required_output_columns.copy()
+    for field in optional_phase_ii_fields:
+        if field in df_public.columns:
+            output_columns.append(field)
+
+    df_selected = df_public[output_columns]
     df_before_snake_case = df_selected.copy()
     df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
 
