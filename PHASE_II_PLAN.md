@@ -49,36 +49,32 @@ The existing `reports_to` field conflates two distinct concepts:
 
 ### Schema Changes
 
-#### 1. Redefine reports_to Field
-- **New Definition**: Narrow focus on legal/managerial reporting relationships only
-- **Values**:
-  - Legal reporting entity name (when applicable)
-  - `NULL` or `"Independent"` when no legal reporting exists (e.g., independent boards)
-- **Purpose**: Capture actual statutory/legal management structure
+#### 1. Retire reports_to Field
+- **Action**: Remove `reports_to` field from schema
+- **Rationale**: Field conflated multiple concepts and will be replaced by more specific fields
 
-#### 2. Add org_chart_oversight Field
-- **Type**: Short text field
-- **Definition**: "Who the Mayor's org chart shows as the liaison/overseer"
-- **Purpose**: Purely descriptive, captures administrative oversight as shown on official org charts
-- **Values**: Mayor's office entity or official responsible for coordination/liaison
+#### 2. Add Governance & Oversight Fields
+- **`governance_structure`** (free text) - Describes WHAT type of governance exists
+- **`org_chart_oversight_record_id`** (RecordID) - Links to overseeing entity via RecordID. Replaces `reports_to` for org chart/political oversight relationships
+- **`org_chart_oversight_name`** (text) - Name of overseeing entity (derived from RecordID)
+- **`parent_organization_record_id`** (RecordID) - Links to parent entity via RecordID. Used for specialized boards → parent, divisions → parent department
+- **`parent_organization_name`** (text) - Name of parent entity (derived from RecordID)
 
-#### 3. Add authorizing_authority Field
-- **Type**: Short text field
-- **Definition**: Legal entity or statute that created/authorizes the organization
-- **Purpose**: Capture the source of organizational authority
-- **Examples**: "NYC Charter", "State Law", "Executive Order", specific statute citations
+#### 3. Add Legal Authority Fields
+- **`authorizing_authority`** (free text) - Legal authority that establishes the organization (e.g., "NYC Charter § 2203")
+- **`authorizing_authority_type`** (controlled vocabulary) - Categorizes authority type for queryability (e.g., "NYC Charter", "Mayoral Executive Order", "New York State Law")
+- **`authorizing_url`** (URL) - Link to the legal document or statute
 
-#### 4. Add authorizing_url Field
-- **Type**: URL field
-- **Definition**: Link to the legal document, statute, or charter provision that establishes the organization
-- **Purpose**: Provide direct access to authorizing documentation
-- **Values**: URLs to NYC Charter, state statutes, executive orders, etc.
-
-#### 5. Add appointments_summary Field
-- **Type**: Text field
-- **Definition**: Summary of how key positions are appointed (board members, leadership, etc.)
+#### 4. Add Appointments Field
+- **`appointments_summary`** (free text) - Describes HOW appointments/selection works
 - **Purpose**: Capture appointment mechanisms for Mayor's Office of Appointments tracking
-- **Examples**: "Mayor appoints 5 of 7 board members", "Mayor appoints Executive Director", "Self-governing board"
+- **Examples**: "Board consists of 17 members: 11 appointed by Mayor, 3 by Borough Presidents. Chief Executive selected by Board."
+
+#### 5. RecordID Format Change
+- **Current format**: `NYC_GOID_000318` (uppercase, underscores, leading zeros)
+- **New format**: `100318` (6-digit numeric, no prefix)
+- **Rationale**: Avoids zip code conflicts, easier joins/queries, simpler format
+- **Migration**: Crosswalk file will be provided mapping old IDs to new IDs
 
 ---
 
