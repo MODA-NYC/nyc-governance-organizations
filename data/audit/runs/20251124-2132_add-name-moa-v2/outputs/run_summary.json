@@ -1,0 +1,30 @@
+{
+  "changed_by": "Claude Code",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 149,
+    "qa_changes": 103,
+    "records_after_pipeline": 437
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/inputs/golden_snapshot.csv",
+    "qa_01.csv": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/inputs/qa_01.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/working/NYCGO_golden_dataset_v1.1.2.csv",
+    "qa_sources": [
+      "data/input/NYCGO_phase2_edits_to_make_20251118.csv"
+    ]
+  },
+  "operator": "Claude Code",
+  "outputs": {
+    "golden_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/outputs/golden_pre-release.csv",
+    "published_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/outputs/published_pre-release.csv",
+    "review_artifacts": {
+      "review_manifest": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/review/review_manifest.json"
+    },
+    "run_changelog": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251124-2132_add-name-moa-v2/outputs/run_changelog.csv"
+  },
+  "run_id": "20251124-2132_add-name-moa-v2",
+  "timing_seconds": 0.2
+}

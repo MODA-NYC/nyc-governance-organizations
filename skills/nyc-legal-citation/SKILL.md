@@ -323,6 +323,62 @@ State Law Only: "https://www.nysenate.gov/legislation/laws/PBH/A1260"
 - **Single authority** → Use single URL
 - **Future expansion**: If you need to expose multiple URLs later, consider a separate `nycgo_authorities` table rather than overloading `authorizing_url`
 
+**❌ CRITICAL: What NOT to Use for authorizing_url**
+
+The `authorizing_url` field MUST link to the **actual legal text** (statute, code section, executive order, law). Do NOT use:
+
+**Prohibited URL Types:**
+1. **Informational pages** - General "About" pages, agency websites
+2. **Financial documents** - Comptroller financial statements, annual reports, budgets
+3. **Operational documents** - Meeting minutes, agendas, policies
+4. **News/Press releases** - Announcements, press coverage
+5. **Secondary sources** - Wikipedia, news articles, legal blogs
+6. **Search results pages** - Directory listings, search engines
+7. **Entity websites** - The organization's own website (unless it hosts the legal text)
+
+**❌ WRONG Examples:**
+```yaml
+# BAD: Using financial statements page instead of legal authority
+authorizing_url: "https://comptroller.nyc.gov/statements/wtc-captive-insurance-company-inc-wtc/"
+
+# BAD: Using agency "About" page instead of Charter section
+authorizing_url: "https://www.nyc.gov/site/tlc/about/about-tlc.page"
+
+# BAD: Using entity's own website instead of legal code
+authorizing_url: "https://www.nychealthandhospitals.org/about/"
+
+# BAD: Using Wikipedia instead of statute
+authorizing_url: "https://en.wikipedia.org/wiki/World_Trade_Center_Captive_Insurance_Company"
+```
+
+**✅ CORRECT Examples:**
+```yaml
+# GOOD: Direct link to Charter section
+authorizing_url: "https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-5708"
+
+# GOOD: Direct link to State law
+authorizing_url: "https://www.nysenate.gov/legislation/laws/ISC/7005"
+
+# GOOD: Direct link to Executive Order text
+authorizing_url: "https://www1.nyc.gov/assets/home/downloads/pdf/executive-orders/2019/eo-1.pdf"
+
+# GOOD: Direct link to Federal law
+authorizing_url: "https://www.congress.gov/108/plaws/publ7/PLAW-108publ7.pdf"
+```
+
+**When Legal Text Unavailable:**
+If the actual legal text is not available online (e.g., unpublished executive order, corporate formation documents):
+1. Document this limitation in the `justification` field
+2. Use the closest authoritative source available (e.g., agency page that cites the legal authority with full citation)
+3. Clearly note in justification: "Legal text not publicly available. Using [description] as authoritative reference."
+
+**Example - Legal Text Unavailable:**
+```yaml
+authorizing_authority: "Certificate of Incorporation filed with NY Secretary of State (2004)"
+authorizing_url: "https://www.dfs.ny.gov/reports_and_publications/exam_reports/property_insurance/12221f18"
+justification: "Corporate formation documents not publicly available. NY DFS examination report provides official state regulatory confirmation of entity's legal status and formation authority."
+```
+
 #### For Research Documentation
 **Format**: Complete citation with access information
 **Examples**:
@@ -647,6 +703,47 @@ Validation Notes: [Any concerns or follow-up needed]
 - [ ] Prefer stable/permanent URLs over dynamic or session-based URLs
 - [ ] Document any URL issues in reason field if alternative not available
 - [ ] **Prefer single URL** - Only use multiple URLs (pipe-separated `|`) when truly necessary
+- [ ] **Link to primary sources** - For governance/appointments claims, link to Charter/state law, NOT "about" pages
+
+**⚠️ CRITICAL: evidence_url Must Link to Primary Legal Sources**
+
+When populating fields like `governance_structure` and `appointments_summary`, the `evidence_url` must link to the **primary legal source** (Charter section, state law, etc.) that establishes those governance or appointment mechanisms, NOT to:
+
+**❌ DO NOT use for governance_structure or appointments_summary evidence:**
+1. Entity "About" pages (e.g., `nyc.gov/site/tlc/about/`)
+2. Leadership/board pages (e.g., `nychealthandhospitals.org/leadership/`)
+3. Informational pages (e.g., `nyc.gov/site/doh/health/health-topics/`)
+4. Commissioner biography pages
+5. General agency websites
+
+**✅ DO use for governance_structure or appointments_summary evidence:**
+1. Charter sections (e.g., `codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-5708`)
+2. State law sections (e.g., `nysenate.gov/legislation/laws/HHC/4`)
+3. Administrative Code sections
+4. Local Law text (if not codified)
+5. Executive Order text
+
+**Examples:**
+
+```yaml
+# ❌ WRONG: Using about page for governance_structure evidence
+100436,governance_structure,evidence_url:
+  https://www.nyc.gov/site/tlc/about/tlc-commissioners.page
+
+# ✅ CORRECT: Using Charter section for governance_structure evidence
+100436,governance_structure,evidence_url:
+  https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-5708
+
+# ❌ WRONG: Using entity website for appointments_summary evidence
+100318,appointments_summary,evidence_url:
+  https://www.nychealthandhospitals.org/leadership/board-of-directors/
+
+# ✅ CORRECT: Using state law for appointments_summary evidence
+100318,appointments_summary,evidence_url:
+  https://www.nysenate.gov/legislation/laws/HHC/4
+```
+
+**Principle:** If your justification cites what the Charter or state law says about governance or appointments, your evidence_url must point to that Charter or state law text, not to a secondary source describing it.
 
 **Evidence URL: Single vs. Multiple URLs**
 
@@ -770,10 +867,67 @@ BEFORE including URL in reason/evidence field:
 4. Document URL status in reason field if issues found
 
 Example reason field with URL validation:
-"Evidence: Charter §1524 (https://codelibrary.amlegal.com/... - verified 200 OK) | 
-DOF page (https://www.nyc.gov/... - verified 200 OK) | 
+"Evidence: Charter §1524 (https://codelibrary.amlegal.com/... - verified 200 OK) |
+DOF page (https://www.nyc.gov/... - verified 200 OK) |
 Old URL (https://example.com/old - returns 404, removed)"
 ```
+
+#### Using Internet Archive (Wayback Machine) URLs
+
+**When to Use Archived Sources:**
+
+When original government sources (press releases, agency pages, official documents) are no longer accessible at their original URLs but the information is still relevant and verifiable, use Internet Archive (Wayback Machine) URLs.
+
+**Wayback Machine URL Format:**
+```
+https://web.archive.org/web/[TIMESTAMP]/[ORIGINAL-URL]
+```
+
+**Example:**
+```
+https://web.archive.org/web/20250421061238/https://www.nyc.gov/office-of-the-mayor/news/296-15/...
+```
+
+**When Archived Sources Are Appropriate:**
+- ✅ Historical government documents (press releases, announcements)
+- ✅ Dissolved entities where original sources no longer exist
+- ✅ Reorganized agencies where old pages were removed
+- ✅ Mayor's office press releases from previous administrations
+- ✅ Official documents that have been archived but content is verifiable
+
+**When NOT to Use Archived Sources:**
+- ❌ For current legal authority (Charter, Admin Code, State law) - always use current official source
+- ❌ When live/current version is available - prefer live source
+- ❌ When multiple archived versions exist with conflicting information - document discrepancy
+
+**Documentation Requirements:**
+
+When using Wayback Machine URLs, clearly document in justification field:
+```yaml
+CORRECT Examples:
+"2015 board appointments documented in mayoral press release (accessed via Internet Archive; original URL no longer accessible on nyc.gov)"
+
+"Entity dissolution announced in 2018 press release (archived via Wayback Machine; original nyc.gov page no longer available)"
+
+"Governance structure per 2014 agency website (accessed via Internet Archive as agency has since been reorganized)"
+
+INCORRECT (insufficient documentation):
+"Source: Wayback Machine link"
+"Archived page from 2015"
+```
+
+**Best Practices:**
+1. **Use full Wayback Machine URL** with timestamp in evidence_url field
+2. **Document in justification** that it's archived and why (e.g., "original URL no longer accessible")
+3. **Verify archived content** matches what's being cited
+4. **Prefer recent snapshots** when multiple archive dates available
+5. **Note in justification** if archived version is only available source
+
+**Stability and Acceptance:**
+- Wayback Machine URLs are stable and permanent
+- Widely accepted for historical sources in academic and legal contexts
+- Preferable to broken URLs or missing evidence
+- Considered reliable for government document preservation
 
 #### Abbreviation Inconsistencies
 ```yaml

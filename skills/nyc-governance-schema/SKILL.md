@@ -36,6 +36,43 @@ The NYC Governance Schema skill ensures consistent data validation, field defini
 **Computed:**
 - `listed_in_nyc_gov_agency_directory` (computed field, not manually populated)
 
+### ⚠️ CRITICAL: RecordID Format Standards
+
+**New Format (Current):**
+- **Format**: 6-digit number starting with "1" (e.g., `100436`, `100318`, `110026`)
+- **Rules**:
+  - Always 6 digits
+  - NEVER starts with "0"
+  - All numeric (no prefixes like `NYC_GOID_`)
+
+**Conversion from Old Format:**
+```python
+# Reference: tests/test_recordid_generation.py
+# For old IDs < 100000 (e.g., NYC_GOID_000436):
+old_id = 436  # numeric part of NYC_GOID_000436
+new_id = 100436  # add 100000 → result: 100436
+
+# For old IDs ≥ 100000 (e.g., NYC_GOID_100026):
+old_id = 100026  # numeric part of NYC_GOID_100026
+new_id = 110026  # add 10000 → result: 110026
+```
+
+**Examples:**
+- `NYC_GOID_000436` → `100436` ✓
+- `NYC_GOID_000318` → `100318` ✓
+- `NYC_GOID_100026` → `110026` ✓
+- `NYC_GOID_000119` → `100119` ✓
+
+**❌ Common Errors:**
+- Using 3-digit IDs: `436` (WRONG - must be 6 digits)
+- Starting with "0": `000436` (WRONG - must start with "1")
+- Keeping old prefix: `NYC_GOID_100436` (WRONG - no prefix in new format)
+- Just stripping prefix: `000436` from `NYC_GOID_000436` (WRONG - must apply formula)
+
+**For NEW entities in edits files:**
+- Use `NEW` as placeholder record_id
+- Pipeline will auto-generate next available ID in sequence
+
 ### Fields NOT in Published Schema (DO NOT FILL IN)
 
 **❌ DO NOT populate these fields in edits files:**
@@ -296,32 +333,131 @@ INCORRECT (describes specific event, not mechanism):
 
 ## Entity Classification Standards
 
-### Entity Type Categories
+### organization_type Field - Controlled Vocabulary
+
+**CRITICAL**: The `organization_type` field uses a **controlled vocabulary**. Only the following exact values are valid:
+
+1. **"Elected Office"** - Elected positions and their supporting offices
+2. **"Mayoral Agency"** - Agencies under direct mayoral control
+3. **"Non-Mayoral Agency"** - Agencies not under direct mayoral control (e.g., independent authorities, elected official offices)
+4. **"Division"** - Divisions within larger agencies
+5. **"Mayoral Office"** - Offices within the Mayor's executive structure
+6. **"Advisory or Regulatory Organization"** - Advisory boards, commissions, regulatory bodies
+7. **"Public Benefit or Development Organization"** - Public benefit corporations, economic development entities
+8. **"Nonprofit Organization"** - 501(c)(3) and other nonprofit entities affiliated with city governance
+9. **"State Government Agency"** - State agencies with NYC representation or impact
+
+**Selection Guidelines:**
+- Use exact spelling and capitalization as listed above
+- Choose the most specific category that fits the entity
+- For entities that could fit multiple categories, prioritize by governance structure over function
+- Document rationale in justification field when categorization is non-obvious
+
+### Entity Type Categories (Historical Reference)
+
+**Note**: The following categories are descriptive guidance. Always use the controlled vocabulary above for the `organization_type` field.
 
 #### Boards
 - **Definition**: Multi-member governing or advisory bodies
 - **Examples**: Board of Education, Landmarks Preservation Commission Board
 - **Characteristics**: Multiple appointed members, regular meetings, formal votes
+- **Typical organization_type**: "Advisory or Regulatory Organization"
 
 #### Commissions
 - **Definition**: Regulatory or oversight bodies with specific mandates
 - **Examples**: Human Rights Commission, Conflicts of Interest Board
 - **Characteristics**: Regulatory authority, quasi-judicial functions
+- **Typical organization_type**: "Advisory or Regulatory Organization"
 
 #### Authorities
 - **Definition**: Semi-independent entities with specific operational mandates
 - **Examples**: Economic Development Corporation, Housing Authority
 - **Characteristics**: Operational independence, often revenue-generating
+- **Typical organization_type**: "Public Benefit or Development Organization" or "Non-Mayoral Agency"
 
 #### Departments
 - **Definition**: Core city agencies under direct mayoral control
 - **Examples**: Department of Education, Department of Health and Mental Hygiene
 - **Characteristics**: Direct reporting to Mayor, operational city functions
+- **Typical organization_type**: "Mayoral Agency"
 
 #### Offices
 - **Definition**: Administrative units within Mayor's office or departments
 - **Examples**: Mayor's Office of Criminal Justice, Office of Emergency Management
 - **Characteristics**: Staff-level support, specialized functions
+- **Typical organization_type**: "Mayoral Office" or "Division"
+
+### Statutory Subcommittees and Sub-Bodies
+
+#### When to Create Separate Entities vs. Document in governance_structure
+
+**General Rule**: Subcommittees or sub-bodies that exist only to support a parent organization should be documented in the parent's `governance_structure` field, NOT as separate top-level NYCGO entities.
+
+**Create Separate Top-Level Entity When:**
+- Entity has its own legal powers and authorities independent of parent
+- Entity has its own statutory mandate distinct from parent organization
+- Entity is widely treated as standalone body with its own public role
+- Entity can take official actions or promulgate regulations independently
+- Examples: Civil Service Commission (separate from its Screening Committee), Tax Appeals Tribunal (within OATA but has independent judicial authority)
+
+**Document in governance_structure Field When:**
+- Subcommittee/sub-body exists only to advise or support parent organization
+- Subcommittee's existence and membership flow entirely from parent body
+- Subcommittee's remit is solely to advise parent, even if mandated by statute
+- Subcommittee has no independent powers or authorities
+- Examples: Community Services Board subcommittees (Mental Health, Developmental Disabilities, Substance Use Disorder)
+
+#### Statutory Subcommittees Example: Community Services Board
+
+The Community Services Board is required by NYS Mental Hygiene Law §41.11 and NYC Charter §568 to have three subcommittees:
+1. Mental Health Subcommittee
+2. Developmental Disabilities Subcommittee
+3. Substance Use Disorder Subcommittee
+
+**Why These Are NOT Separate Entities:**
+- They exist only "as subcommittees of the Community Services Board"
+- They advise the CSB and Director of Community Services, not independent authorities
+- They have no statutory powers to contract, promulgate rules, or take official actions
+- Chair selection is internal to DOHMH staff, not independent appointments
+
+**How to Document:**
+```yaml
+Entity: Community Services Board (record_id 119)
+governance_structure: "Advisory board to NYC Commissioner of Health and Mental Hygiene per NYC Charter §568 and NYS Mental Hygiene Law §§41.05(b), 41.11(b). Board consists of 15 members appointed by Mayor. Statutorily required to have three subcommittees per MHL §41.11 and Charter §568: Mental Health Subcommittee, Developmental Disabilities Subcommittee, and Substance Use Disorder Subcommittee. Each subcommittee (maximum 9-11 members) appointed by Mayor; at least three subcommittee members must also be CSB members..."
+```
+
+#### Decision Tree for Subcommittees
+
+```
+Is the sub-body created by statute/charter?
+├─ YES → Does it have independent powers/authorities?
+│   ├─ YES → Create separate top-level entity
+│   │   Example: Tax Appeals Tribunal (within OATA but has judicial authority)
+│   └─ NO → Is it widely treated as standalone with own public role?
+│       ├─ YES → Consider separate entity (edge case, consult with team)
+│       └─ NO → Document in parent's governance_structure field
+│           Example: Community Services Board subcommittees
+└─ NO (internal committee) → Document in parent's governance_structure field
+    Example: Agency internal advisory committees
+```
+
+#### Implementation Standards for Statutory Subcommittees
+
+**In governance_structure Field, Include:**
+1. **Statutory Requirement**: Cite the law requiring subcommittees
+2. **Subcommittee Names**: List all required subcommittees
+3. **Composition Rules**: Size limits, overlap requirements with parent board
+4. **Appointment Authority**: Who appoints subcommittee members
+5. **Function**: What subcommittees advise on, their relationship to parent
+
+**Example Format:**
+```
+"Statutorily required to have [number] subcommittees per [law citation]:
+[Subcommittee 1 Name], [Subcommittee 2 Name], [Subcommittee 3 Name].
+Each subcommittee ([composition details]) appointed by [authority];
+[overlap requirements]. Subcommittees meet separately and advise
+[parent body] on their respective subject areas."
+```
 
 ### Relationship Mapping Standards
 

@@ -273,11 +273,13 @@ def handle_direct_set(
     prefix: str,
     feedback: str,
 ) -> None:
-    record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
+    raw_record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
     # Handle "NEW" records separately - they are processed in apply_qa_edits
     # before this function
-    if pd.isna(record_id) or str(record_id).strip().upper() == "NEW":
+    if pd.isna(raw_record_id) or str(raw_record_id).strip().upper() == "NEW":
         return
+    # Normalize record_id to match dataframe format
+    record_id = _normalize_record_id(raw_record_id, df_mod["RecordID"])
     if record_id not in df_mod["RecordID"].values:
         return
     
@@ -336,8 +338,12 @@ def handle_policy_query(
     prefix: str,
     feedback: str,
 ) -> None:
-    record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
-    if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
+    raw_record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
+    if pd.isna(raw_record_id):
+        return
+    # Normalize record_id to match dataframe format
+    record_id = _normalize_record_id(raw_record_id, df_mod["RecordID"])
+    if record_id not in df_mod["RecordID"].values:
         return
     
     # Get record_name from edits file if provided, otherwise lookup from dataset
@@ -369,10 +375,52 @@ def handle_policy_query(
         )
 
 
+def _normalize_record_id(record_id: str, df_columns: pd.Index) -> str:
+    """
+    Normalize a record_id to match the format used in the dataframe.
+
+    Handles both NYC_GOID_XXXXXX and numeric (100XXX) formats by checking
+    what exists in the dataframe.
+
+    Args:
+        record_id: The record_id from QA edits (may be numeric or old format)
+        df_columns: The RecordID column values from the dataframe
+
+    Returns:
+        The record_id in the format that exists in the dataframe, or original if no match
+    """
+    record_id = str(record_id).strip()
+
+    # If already in dataframe, return as-is
+    if record_id in df_columns.values:
+        return record_id
+
+    # Try converting from numeric to NYC_GOID format
+    if re.match(r"^\d{5,6}$", record_id):
+        # Numeric format like 100430 - convert to NYC_GOID_000430
+        numeric = int(record_id)
+        if numeric >= 100000:
+            suffix = numeric - 100000
+            old_format = f"NYC_GOID_{suffix:06d}"
+            if old_format in df_columns.values:
+                return old_format
+
+    # Try converting from NYC_GOID to numeric format
+    match = re.match(r"NYC_GOID_(\d+)", record_id)
+    if match:
+        numeric = int(match.group(1))
+        new_format = str(100000 + numeric)
+        if new_format in df_columns.values:
+            return new_format
+
+    # Return original if no conversion found
+    return record_id
+
+
 def _convert_recordid_to_new_format(old_id: str) -> int | None:
     """
     Convert RecordID from old format (NYC_GOID_XXXXXX) to new format (6-digit numeric).
-    
+
     Returns the numeric value in new format, or None if invalid.
     Examples:
     - NYC_GOID_000022 → 100022
@@ -521,7 +569,7 @@ def apply_qa_edits(  # noqa: C901
     - record_id (old: Row(s)): RecordID for existing records, or 'NEW' for new records
     - record_name (optional): Entity name for human review and validation (recommended for existing records)
     - field_name (old: Column): Name of the field to modify
-    - action (old: feedback): Action instruction, e.g., "Set to ""value"""
+    - action (old: feedback): Action instruction, e.g., 'Set to "value"'
     - justification (old: reason): Narrative explanation for the change
     - evidence_url (new): URL(s) providing evidence for the change (pipe-separated if multiple)
     
@@ -541,11 +589,12 @@ def apply_qa_edits(  # noqa: C901
     - If 'name' field comes after other fields, those fields will be temporarily tracked
       and migrated to the name-based key when the name field is encountered
     
-    Example NEW record structure:
-        NEW,name,"Set to ""Entity Name""","Justification text","https://evidence.url"
-        NEW,operational_status,"Set to ""Active""","Justification","https://evidence.url"
-        NEW,name,"Set to ""Another Entity""","Justification","https://evidence.url"  # Starts new NEW record
-        NEW,operational_status,"Set to ""Inactive""","Justification",""
+    Example NEW record structure::
+
+        NEW,name,'Set to "Entity Name"',Justification text,https://evidence.url
+        NEW,operational_status,'Set to "Active"',Justification,https://evidence.url
+        NEW,name,'Set to "Another Entity"',Justification,https://evidence.url
+        NEW,operational_status,'Set to "Inactive"',Justification,
     """
     df_mod = df.copy()
     src_name, base_dir = qa_path.name, qa_path.parent
