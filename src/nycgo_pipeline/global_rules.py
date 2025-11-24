@@ -178,82 +178,212 @@ def validate_phase_ii_fields(  # noqa: C901
     Validate Phase II fields (v2.0.0 schema).
 
     Validates:
+    - RecordID format: Must be 6-digit numeric (e.g., 100318)
+    - org_chart_oversight_record_id: Must reference valid RecordID if populated
+    - parent_organization_record_id: Must reference valid RecordID if populated
+    - Relationship validation: Entity cannot be its own parent/oversight
     - authorizing_url: Must be valid HTTP/HTTPS URL format
-    - org_chart_oversight: Must match valid RecordID if populated
+    - authorizing_authority_type: Controlled vocabulary check
     - authorizing_authority: Warn if empty (100% population target)
     """
     df_processed = df.copy()
 
-    # Validate authorizing_url format
-    if "authorizing_url" in df_processed.columns:
-        url_pattern = re.compile(r"^https?://[^\s]+$")
+    # Validate RecordID format (6-digit numeric)
+    if "RecordID" in df_processed.columns:
+        recordid_pattern = re.compile(r"^\d{6}$")
         for _i, row in df_processed.iterrows():  # noqa: B007
-            url_value = row.get("authorizing_url", "").strip()
-            if url_value and not url_pattern.match(url_value):
-                # Check if it's pipe-separated multiple URLs
-                urls = [u.strip() for u in url_value.split("|") if u.strip()]
-                invalid_urls = [u for u in urls if not url_pattern.match(u)]
-                if invalid_urls:
-                    log_change(
-                        row["RecordID"],
-                        row.get("Name", ""),
-                        "authorizing_url",
-                        url_value,
-                        None,  # No automatic fix, just warning
-                        "System_Validation",
-                        f"Invalid URL format: {invalid_urls}",
-                        "VALIDATION_WARNING",
-                        user,
-                        "VALIDATE_URL",
-                        prefix,
-                    )
-
-    # Validate org_chart_oversight references valid RecordID
-    if "org_chart_oversight" in df_processed.columns:
-        valid_record_ids = set(df_processed["RecordID"].tolist())
-        for _i, row in df_processed.iterrows():  # noqa: B007
-            oversight_value = row.get("org_chart_oversight", "").strip()
-            if oversight_value and oversight_value not in valid_record_ids:
+            record_id = str(row.get("RecordID", "")).strip()
+            if record_id and not recordid_pattern.match(record_id):
                 log_change(
-                    row["RecordID"],
+                    record_id,
                     row.get("Name", ""),
-                    "org_chart_oversight",
-                    oversight_value,
+                    "RecordID",
+                    record_id,
                     None,
                     "System_Validation",
-                    f"RecordID '{oversight_value}' not found in dataset",
+                    f"RecordID must be 6-digit numeric format (e.g., 100318), got: {record_id}",
                     "VALIDATION_WARNING",
                     user,
-                    "VALIDATE_RECORDID_REF",
+                    "VALIDATE_RECORDID_FORMAT",
                     prefix,
                 )
 
+    # Get valid RecordIDs for reference validation
+    valid_record_ids = set(df_processed["RecordID"].astype(str).str.strip().tolist())
+
+    # Validate org_chart_oversight_record_id references valid RecordID
+    oversight_cols = [
+        "OrgChartOversightRecordID",
+        "org_chart_oversight_record_id",
+    ]
+    for col in oversight_cols:
+        if col in df_processed.columns:
+            for _i, row in df_processed.iterrows():  # noqa: B007
+                oversight_value = str(row.get(col, "")).strip()
+                record_id = str(row.get("RecordID", "")).strip()
+                
+                if oversight_value:
+                    # Check if it references a valid RecordID
+                    if oversight_value not in valid_record_ids:
+                        log_change(
+                            record_id,
+                            row.get("Name", ""),
+                            col,
+                            oversight_value,
+                            None,
+                            "System_Validation",
+                            f"RecordID '{oversight_value}' not found in dataset",
+                            "VALIDATION_WARNING",
+                            user,
+                            "VALIDATE_RECORDID_REF",
+                            prefix,
+                        )
+                    # Check if entity is referencing itself
+                    elif oversight_value == record_id:
+                        log_change(
+                            record_id,
+                            row.get("Name", ""),
+                            col,
+                            oversight_value,
+                            None,
+                            "System_Validation",
+                            "Entity cannot be its own org chart oversight",
+                            "VALIDATION_WARNING",
+                            user,
+                            "VALIDATE_SELF_REFERENCE",
+                            prefix,
+                        )
+
+    # Validate parent_organization_record_id references valid RecordID
+    parent_cols = [
+        "ParentOrganizationRecordID",
+        "parent_organization_record_id",
+    ]
+    for col in parent_cols:
+        if col in df_processed.columns:
+            for _i, row in df_processed.iterrows():  # noqa: B007
+                parent_value = str(row.get(col, "")).strip()
+                record_id = str(row.get("RecordID", "")).strip()
+                
+                if parent_value:
+                    # Check if it references a valid RecordID
+                    if parent_value not in valid_record_ids:
+                        log_change(
+                            record_id,
+                            row.get("Name", ""),
+                            col,
+                            parent_value,
+                            None,
+                            "System_Validation",
+                            f"RecordID '{parent_value}' not found in dataset",
+                            "VALIDATION_WARNING",
+                            user,
+                            "VALIDATE_RECORDID_REF",
+                            prefix,
+                        )
+                    # Check if entity is referencing itself
+                    elif parent_value == record_id:
+                        log_change(
+                            record_id,
+                            row.get("Name", ""),
+                            col,
+                            parent_value,
+                            None,
+                            "System_Validation",
+                            "Entity cannot be its own parent organization",
+                            "VALIDATION_WARNING",
+                            user,
+                            "VALIDATE_SELF_REFERENCE",
+                            prefix,
+                        )
+
+    # Validate authorizing_url format
+    url_cols = ["AuthorizingURL", "authorizing_url"]
+    for col in url_cols:
+        if col in df_processed.columns:
+            url_pattern = re.compile(r"^https?://[^\s]+$")
+            for _i, row in df_processed.iterrows():  # noqa: B007
+                url_value = str(row.get(col, "")).strip()
+                if url_value and not url_pattern.match(url_value):
+                    # Check if it's pipe-separated multiple URLs
+                    urls = [u.strip() for u in url_value.split("|") if u.strip()]
+                    invalid_urls = [u for u in urls if not url_pattern.match(u)]
+                    if invalid_urls:
+                        log_change(
+                            row["RecordID"],
+                            row.get("Name", ""),
+                            col,
+                            url_value,
+                            None,  # No automatic fix, just warning
+                            "System_Validation",
+                            f"Invalid URL format: {invalid_urls}",
+                            "VALIDATION_WARNING",
+                            user,
+                            "VALIDATE_URL",
+                            prefix,
+                        )
+
+    # Validate authorizing_authority_type controlled vocabulary
+    auth_type_cols = [
+        "AuthorizingAuthorityType",
+        "authorizing_authority_type",
+    ]
+    valid_auth_types = {
+        "NYC Charter",
+        "NYC Administrative Code",
+        "City Council Local Law",
+        "Mayoral Executive Order",
+        "New York State Law",
+        "Federal Law",
+        "Other",
+    }
+    for col in auth_type_cols:
+        if col in df_processed.columns:
+            for _i, row in df_processed.iterrows():  # noqa: B007
+                auth_type = str(row.get(col, "")).strip()
+                if auth_type and auth_type not in valid_auth_types:
+                    log_change(
+                        row["RecordID"],
+                        row.get("Name", ""),
+                        col,
+                        auth_type,
+                        None,
+                        "System_Validation",
+                        f"Invalid authorizing_authority_type. Valid values: {', '.join(sorted(valid_auth_types))}",
+                        "VALIDATION_WARNING",
+                        user,
+                        "VALIDATE_CONTROLLED_VOCAB",
+                        prefix,
+                    )
+
     # Check authorizing_authority population (100% target)
-    if "authorizing_authority" in df_processed.columns:
-        empty_count = 0
-        for _i, row in df_processed.iterrows():  # noqa: B007
-            auth_value = row.get("authorizing_authority", "").strip()
-            if not auth_value:
-                empty_count += 1
-        if empty_count > 0:
-            # Log a single warning about missing authorizing_authority values
-            msg = (
-                f"{empty_count} entities missing authorizing_authority "
-                f"(target: 100% population)"
-            )
-            log_change(
-                "DATASET",
-                "DATASET",
-                "authorizing_authority",
-                None,
-                None,
-                "System_Validation",
-                msg,
-                "VALIDATION_WARNING",
-                user,
-                "CHECK_COMPLETENESS",
-                prefix,
-            )
+    auth_cols = ["AuthorizingAuthority", "authorizing_authority"]
+    for col in auth_cols:
+        if col in df_processed.columns:
+            empty_count = 0
+            for _i, row in df_processed.iterrows():  # noqa: B007
+                auth_value = str(row.get(col, "")).strip()
+                if not auth_value:
+                    empty_count += 1
+            if empty_count > 0:
+                # Log a single warning about missing authorizing_authority values
+                msg = (
+                    f"{empty_count} entities missing {col} "
+                    f"(target: 100% population)"
+                )
+                log_change(
+                    "DATASET",
+                    "DATASET",
+                    col,
+                    None,
+                    None,
+                    "System_Validation",
+                    msg,
+                    "VALIDATION_WARNING",
+                    user,
+                    "CHECK_COMPLETENESS",
+                    prefix,
+                )
 
     return df_processed
 

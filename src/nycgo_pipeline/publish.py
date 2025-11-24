@@ -139,7 +139,7 @@ def append_run_changelog(
             "old_value": raw_rows.get("old_value", ""),
             "new_value": raw_rows.get("new_value", ""),
             "reason": raw_rows.get("reason", ""),
-            "evidence_url": "",
+            "evidence_url": raw_rows.get("evidence_url", ""),  # Extract from internal changelog
             "source_ref": raw_rows.get("feedback_source", ""),
             "operator": operator_series,
             "notes": raw_rows.apply(prep_notes, axis=1),

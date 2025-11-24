@@ -80,7 +80,6 @@ def load_recordid_crosswalk(crosswalk_path: Path) -> dict[str, str]:
             zip(
                 df_crosswalk["new_record_id"].astype(str).str.strip(),
                 df_crosswalk["old_record_id"].astype(str).str.strip(),
-                strict=False,
             )
         )
 
@@ -263,6 +262,49 @@ def main() -> int:
     except Exception as e:
         print(f"Error loading input dataset: {e}")
         return 1
+
+    # Convert PascalCase columns to snake_case for Phase I compatibility
+    # Create mapping from PascalCase to snake_case
+    column_mapping = {}
+    for col in df.columns:
+        # Convert PascalCase to snake_case
+        if col == "RecordID":
+            column_mapping[col] = "record_id"
+        elif col == "Name":
+            column_mapping[col] = "name"
+        elif col == "NameAlphabetized":
+            column_mapping[col] = "name_alphabetized"
+        elif col == "OperationalStatus":
+            column_mapping[col] = "operational_status"
+        elif col == "OrganizationType":
+            column_mapping[col] = "organization_type"
+        elif col == "URL":
+            column_mapping[col] = "url"
+        elif col == "AlternateOrFormerNames":
+            column_mapping[col] = "alternate_or_former_names"
+        elif col == "Acronym":
+            column_mapping[col] = "acronym"
+        elif col == "AlternateOrFormerAcronyms":
+            column_mapping[col] = "alternate_or_former_acronyms"
+        elif col == "PrincipalOfficerFullName":
+            column_mapping[col] = "principal_officer_full_name"
+        elif col == "PrincipalOfficerFirstName":
+            column_mapping[col] = "principal_officer_first_name"
+        elif col == "PrincipalOfficerLastName":
+            column_mapping[col] = "principal_officer_last_name"
+        elif col == "PrincipalOfficerTitle":
+            column_mapping[col] = "principal_officer_title"
+        elif col == "PrincipalOfficerContactURL":
+            column_mapping[col] = "principal_officer_contact_url"
+        elif col == "InOrgChart":
+            column_mapping[col] = "in_org_chart"
+        elif col == "ReportsTo":
+            column_mapping[col] = "reports_to"
+    
+    # Rename columns
+    if column_mapping:
+        df = df.rename(columns=column_mapping)
+        print(f"Converted {len(column_mapping)} columns to snake_case")
 
     # Load crosswalk if provided
     crosswalk_map = {}

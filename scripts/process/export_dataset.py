@@ -612,18 +612,33 @@ def main():
         "PrincipalOfficerLastName",
         "PrincipalOfficerTitle",
         "PrincipalOfficerContactURL",
-        "ReportsTo",
         "InOrgChart",
     ]
     # Phase II fields (v2.0.0) - optional, only include if present
+    # Note: These fields may be in PascalCase or snake_case depending on dataset version
     optional_phase_ii_fields = [
-        "org_chart_oversight",
+        "GovernanceStructure",
+        "OrgChartOversightRecordID",
+        "OrgChartOversightName",
+        "ParentOrganizationRecordID",
+        "ParentOrganizationName",
+        "AuthorizingAuthority",
+        "AuthorizingAuthorityType",
+        "AuthorizingURL",
+        "AppointmentsSummary",
+        # Also check snake_case versions (for Phase II datasets)
+        "governance_structure",
+        "org_chart_oversight_record_id",
+        "org_chart_oversight_name",
+        "parent_organization_record_id",
+        "parent_organization_name",
         "authorizing_authority",
+        "authorizing_authority_type",
         "authorizing_url",
         "appointments_summary",
     ]
 
-    # Check for required columns
+    # Check for required columns (allow ReportsTo to be missing for Phase II)
     missing_cols = [
         col for col in required_output_columns if col not in df_public.columns
     ]
@@ -637,7 +652,9 @@ def main():
         if field in df_public.columns:
             output_columns.append(field)
         else:
-            print(f"Note: Phase II field '{field}' not found in dataset (Phase I mode)")
+            # Only print note for PascalCase fields (not snake_case duplicates)
+            if not field.startswith("_") and field[0].isupper():
+                pass  # Skip duplicate messages
 
     df_selected = df_public[output_columns]
 
@@ -796,13 +813,28 @@ def main_with_dataframe(
         "PrincipalOfficerLastName",
         "PrincipalOfficerTitle",
         "PrincipalOfficerContactURL",
-        "ReportsTo",
         "InOrgChart",
     ]
     # Phase II fields (v2.0.0) - optional, only include if present
+    # Note: These fields may be in PascalCase or snake_case depending on dataset version
     optional_phase_ii_fields = [
-        "org_chart_oversight",
+        "GovernanceStructure",
+        "OrgChartOversightRecordID",
+        "OrgChartOversightName",
+        "ParentOrganizationRecordID",
+        "ParentOrganizationName",
+        "AuthorizingAuthority",
+        "AuthorizingAuthorityType",
+        "AuthorizingURL",
+        "AppointmentsSummary",
+        # Also check snake_case versions (for Phase II datasets)
+        "governance_structure",
+        "org_chart_oversight_record_id",
+        "org_chart_oversight_name",
+        "parent_organization_record_id",
+        "parent_organization_name",
         "authorizing_authority",
+        "authorizing_authority_type",
         "authorizing_url",
         "appointments_summary",
     ]

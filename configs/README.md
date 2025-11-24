@@ -256,7 +256,7 @@ ls -la skills/
 ls -la ../civic-ai-tools/skills/
 
 # Check skill file format
-head -10 skills/nyc-governance-schema/skill.md
+head -10 skills/nyc-governance-schema/SKILL.md
 ```
 
 ### Configuration Validation

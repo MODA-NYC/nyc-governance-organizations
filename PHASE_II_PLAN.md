@@ -42,6 +42,8 @@ This document outlines Phase II of the NYC Governance Organizations project, bui
 
 ## Phase II.1 · Schema Expansion
 
+**Reference**: For detailed field definitions, examples, and edge cases, see [`SCHEMA_PROPOSAL_SUMMARY.md`](SCHEMA_PROPOSAL_SUMMARY.md)
+
 ### Current Issue: reports_to Field Ambiguity
 The existing `reports_to` field conflates two distinct concepts:
 - (a) Mayor's office oversight line on the citywide org chart (political/administrative)
@@ -55,26 +57,86 @@ The existing `reports_to` field conflates two distinct concepts:
 
 #### 2. Add Governance & Oversight Fields
 - **`governance_structure`** (free text) - Describes WHAT type of governance exists
-- **`org_chart_oversight_record_id`** (RecordID) - Links to overseeing entity via RecordID. Replaces `reports_to` for org chart/political oversight relationships
+  - **Purpose**: Captures the governance mechanism (e.g., "NYC Health + Hospitals is governed by a Board of Directors", "Division reports directly to the leadership of Office of Technology and Innovation")
+  - **Examples**: "Entity is governed by a Board of Directors", "Division reports directly to Department leadership"
+  
+- **`org_chart_oversight_record_id`** (RecordID format) - Links to overseeing entity via RecordID (e.g., `100123`)
+  - **Purpose**: Replaces `reports_to` for org chart/political oversight relationships (what appears in Mayor's org chart)
+  - **Usage**: Used for org chart/political oversight relationships only
+  - **Note**: Distinct from `parent_organization_record_id` (org chart placement vs. governance relationship)
+  
 - **`org_chart_oversight_name`** (text) - Name of overseeing entity (derived from RecordID)
-- **`parent_organization_record_id`** (RecordID) - Links to parent entity via RecordID. Used for specialized boards → parent, divisions → parent department
+  - **Purpose**: Automatically populated from `org_chart_oversight_record_id` lookup
+  - **Note**: Derived field for usability - provides both RecordID and name
+  
+- **`parent_organization_record_id`** (RecordID format) - Links to parent entity via RecordID (e.g., `100318`)
+  - **Purpose**: Used for specialized boards → parent, divisions → parent department, subdivisions → parent
+  - **Usage**: Governance relationships (specialized boards, divisions, subdivisions)
+  - **Note**: Separate from `org_chart_oversight_record_id` (governance relationship vs. org chart placement)
+  
 - **`parent_organization_name`** (text) - Name of parent entity (derived from RecordID)
+  - **Purpose**: Automatically populated from `parent_organization_record_id` lookup
+  - **Note**: Derived field for usability - provides both RecordID and name
 
 #### 3. Add Legal Authority Fields
-- **`authorizing_authority`** (free text) - Legal authority that establishes the organization (e.g., "NYC Charter § 2203")
-- **`authorizing_authority_type`** (controlled vocabulary) - Categorizes authority type for queryability (e.g., "NYC Charter", "Mayoral Executive Order", "New York State Law")
+- **`authorizing_authority`** (free text) - Legal authority that establishes the organization
+  - **Purpose**: Documents the legal basis for the entity's existence
+  - **Examples**: "NYC Charter § 2203", "New York State Public Authorities Law § 1260", "Mayoral Executive Order 18 of 2025"
+  - **Format**: Statute, charter provision, executive order, or local law reference
+  
+- **`authorizing_authority_type`** (controlled vocabulary) - Categorizes authority type for queryability
+  - **Purpose**: Enables filtering and querying by authority source
+  - **Values**: "NYC Charter", "Mayoral Executive Order", "NYC Local Law", "New York State Law", etc.
+  
 - **`authorizing_url`** (URL) - Link to the legal document or statute
+  - **Purpose**: Provides direct access to authoritative source documents
+  - **Examples**: "https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-2203"
+  - **Requirement**: Must be official government sources (NYC.gov, State Legislature, etc.)
 
 #### 4. Add Appointments Field
 - **`appointments_summary`** (free text) - Describes HOW appointments/selection works
-- **Purpose**: Capture appointment mechanisms for Mayor's Office of Appointments tracking
-- **Examples**: "Board consists of 17 members: 11 appointed by Mayor, 3 by Borough Presidents. Chief Executive selected by Board."
+  - **Purpose**: Capture appointment mechanisms for Mayor's Office of Appointments tracking
+  - **Examples**: 
+    - "Board consists of 17 members: 11 appointed by Mayor, 3 by Borough Presidents, 3 by Comptroller. Chief Executive selected by Board."
+    - "Board of Directors consists of members appointed by Governor, Mayor, and other officials. Chair and CEO appointed by Governor."
+    - "Deputy Commissioner appointed by Commissioner of Office of Technology and Innovation."
 
 #### 5. RecordID Format Change
 - **Current format**: `NYC_GOID_000318` (uppercase, underscores, leading zeros)
 - **New format**: `100318` (6-digit numeric, no prefix)
-- **Rationale**: Avoids zip code conflicts, easier joins/queries, simpler format
+- **Rationale**: Avoids zip code conflicts (6 digits vs 5-digit zip codes), easier joins/queries, simpler format
 - **Migration**: Crosswalk file will be provided mapping old IDs to new IDs
+- **Examples**:
+  - `NYC_GOID_000022` → `100022`
+  - `NYC_GOID_000318` → `100318`
+  - `NYC_GOID_100026` → `110026`
+- **Timing**: RecordID format change happens during Phase II.4 implementation (see section 4.1)
+
+#### 6. Board Modeling Approach
+
+**Decision**: How to model boards and governance structures in the dataset.
+
+**Primary Governing Boards** (Boards of Directors/Trustees):
+- **Approach**: Captured in `governance_structure` and `appointments_summary` fields
+- **NOT** separate entity records
+- **Rationale**: These boards exist solely to govern their parent organization and do not have independent legal authority
+- **Examples**: 
+  - MTA Board of Directors → described in MTA entity's `governance_structure` and `appointments_summary`
+  - Brooklyn Public Library Board of Trustees → described in Brooklyn Public Library entity's fields
+
+**Specialized Boards** (with independent legal authority):
+- **Approach**: Get their own entity records
+- **Linking**: Linked to parent via `parent_organization_record_id` (RecordID, e.g., `100318`)
+- **Documentation**: Relationship optionally mentioned in parent's `governance_structure`
+- **Examples**: 
+  - Health and Hospitals Corporation Personnel Review Board → separate entity record with `parent_organization_record_id` pointing to NYC Health + Hospitals
+- **Note**: `parent_organization_record_id` is separate from `org_chart_oversight_record_id` (governance relationship vs. org chart placement)
+
+**Key Benefits**:
+- Clear separation between governance structure (WHAT) and appointment process (HOW)
+- No schema bloat - primary boards don't create separate records
+- Queryable relationships - can filter for specialized boards, divisions, and subdivisions via `parent_organization_record_id`
+- Flexible - can iteratively enhance parent entities to mention specialized boards
 
 ---
 
@@ -82,6 +144,14 @@ The existing `reports_to` field conflates two distinct concepts:
 
 ### Objective
 Ensure the dataset comprehensively covers all entities where the Mayor has appointment authority, as tracked by the Mayor's Office of Appointments.
+
+### Board Modeling Context
+When reviewing crosswalk mappings and identifying entities to add, apply the **Board Modeling Approach** (see Phase II.1, section 6):
+- **"Board of Directors/Trustees" entries** in MOA should match to parent organization, not create separate entities
+  - These boards are captured in the parent entity's `governance_structure` and `appointments_summary` fields
+- **Specialized boards** with independent legal authority should be separate entities
+  - These get their own entity records, linked to parent via `parent_organization_record_id`
+- **Crosswalk review** should distinguish between primary governing boards (narrative fields) and specialized boards (separate entities)
 
 ### Tasks
 
@@ -146,6 +216,9 @@ Expand the crosswalk dataset to include additional data sources and improve enti
 2. **Modify export functions** to include new fields
 3. **Update validation rules** for new field constraints
 4. **Create migration strategy** for existing data
+5. **Create RecordID format migration crosswalk file** mapping old IDs (`NYC_GOID_XXXXXX`) to new IDs (6-digit numeric)
+6. **Update codebase to generate new RecordID format** for future entities
+7. **Update all internal references and crosswalk files** to use new RecordID format
 
 ### 4.2 Web Scraping & Data Collection
 1. **Develop scraper for NYC.gov appointments page**
@@ -156,7 +229,10 @@ Expand the crosswalk dataset to include additional data sources and improve enti
 ### 4.3 Data Population & Integration
 1. **Research and populate authorizing_authority** for all existing entities
 2. **Research and populate authorizing_url** where available
-3. **Redefine reports_to values** according to new legal-only definition
+3. **Migrate existing `reports_to` field values** to new fields:
+   - Map org chart/political oversight relationships → `org_chart_oversight_record_id` (requires translating entity names to RecordIDs)
+   - Map parent-child governance relationships → `parent_organization_record_id` (requires translating entity names to RecordIDs)
+   - Document migration decisions and any ambiguous cases
 4. **Populate org_chart_oversight** from Mayor's office org chart
 5. **Research and populate appointments_summary** for all entities
 6. **Integrate budget codes** into crosswalk data
@@ -203,7 +279,7 @@ Expand the crosswalk dataset to include additional data sources and improve enti
 ## Success Criteria
 
 ### Deliverables
-- [ ] Expanded schema with 4-5 new fields implemented
+- [ ] Expanded schema with 9 new fields implemented (retiring 1 field: `reports_to`)
 - [ ] All existing entities updated with new field values
 - [ ] Complete coverage of Mayor's Office of Appointments universe
 - [ ] Scraped dataset from NYC.gov appointments page
@@ -214,7 +290,7 @@ Expand the crosswalk dataset to include additional data sources and improve enti
 ### Quality Metrics
 - **100% population** of authorizing_authority field
 - **90%+ population** of authorizing_url field (where public documents exist)
-- **Clear distinction** between reports_to and org_chart_oversight
+- **Complete migration** of `reports_to` values to appropriate new fields (`org_chart_oversight_record_id` or `parent_organization_record_id`)
 - **Comprehensive appointment summaries** for all entities with mayoral appointments
 - **Zero missing entities** from Mayor's Office of Appointments scope
 - **Complete crosswalk** between scraped appointments data and main dataset
@@ -244,3 +320,5 @@ Expand the crosswalk dataset to include additional data sources and improve enti
 - **MCP servers and skills** will significantly accelerate implementation phases
 - Consider whether schema changes warrant v1.1.0 (minor) or v2.0.0 (major) version
 - Infrastructure investment will benefit future civic data projects beyond Phase II
+- **Board modeling approach**: Primary boards are captured in narrative fields, specialized boards are separate entities. See Phase II.1, section 6 for details.
+- **RecordID format migration**: Old format (`NYC_GOID_XXXXXX`) must be migrated to new format (6-digit numeric) during Phase II.4 implementation. Crosswalk file required for backward compatibility.

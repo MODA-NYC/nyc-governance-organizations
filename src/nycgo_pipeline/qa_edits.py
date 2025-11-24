@@ -24,6 +24,7 @@ CHANGELOG_COLUMNS = [
     "feedback_source",
     "notes",
     "reason",
+    "evidence_url",
     "changed_by",
     "RuleAction",
 ]
@@ -93,6 +94,35 @@ def _sanitize_wrapped_text(text: str | None) -> str | None:
     return s
 
 
+def _get_qa_column(qa_row: pd.Series, old_name: str, new_name: str, default: str = "") -> str:
+    """
+    Get column value with backward compatibility for renamed columns.
+    
+    Checks for new column name first, then falls back to old name.
+    This allows gradual migration from old to new column names.
+    
+    Args:
+        qa_row: Row from QA edits CSV
+        old_name: Legacy column name (e.g., "Row(s)")
+        new_name: New column name (e.g., "record_id")
+        default: Default value if neither column exists
+    
+    Returns:
+        Column value as string
+    """
+    # Try new name first
+    if new_name in qa_row.index:
+        val = qa_row.get(new_name)
+        if pd.notna(val) and str(val).strip():
+            return str(val).strip()
+    # Fall back to old name
+    if old_name in qa_row.index:
+        val = qa_row.get(old_name)
+        if pd.notna(val) and str(val).strip():
+            return str(val).strip()
+    return default
+
+
 def log_change(
     record_id: str,
     record_name: str,
@@ -105,7 +135,25 @@ def log_change(
     changed_by: str,
     rule_action: QAAction,
     version_prefix: str,
+    evidence_url: str = "",
 ) -> None:
+    """
+    Log a change to the changelog.
+    
+    Args:
+        record_id: RecordID of the changed record
+        record_name: Name of the changed record
+        column_changed: Name of the field that changed
+        old_value: Previous value
+        new_value: New value
+        feedback_source: Source file/name for this change
+        notes: Additional notes (e.g., original feedback text)
+        reason: Narrative justification for the change
+        changed_by: User/operator who made the change
+        rule_action: Type of action (DIRECT_SET, POLICY_QUERY, etc.)
+        version_prefix: Prefix for ChangeID
+        evidence_url: URL(s) providing evidence (pipe-separated if multiple)
+    """
     global changelog_entries, changelog_id_counter
     changelog_id_counter += 1
     entry = {
@@ -119,6 +167,7 @@ def log_change(
         "feedback_source": feedback_source,
         "notes": notes,
         "reason": reason,
+        "evidence_url": evidence_url,
         "changed_by": changed_by,
         "RuleAction": rule_action.value,
     }
@@ -141,6 +190,7 @@ def handle_delete_record(
     notes: str,
     reason: str,
     prefix: str,
+    evidence_url: str = "",
 ) -> pd.DataFrame:
     if record_id in df["RecordID"].values:
         record_name = df[df["RecordID"] == record_id].iloc[0].get("Name", "N/A")
@@ -156,6 +206,7 @@ def handle_delete_record(
             user,
             QAAction.DELETE_RECORD,
             prefix,
+            evidence_url=evidence_url,
         )
         return df[df["RecordID"] != record_id].copy()
     log_change(
@@ -170,6 +221,7 @@ def handle_delete_record(
         user,
         QAAction.DELETE_RECORD,
         prefix,
+        evidence_url=evidence_url,
     )
     return df
 
@@ -183,6 +235,7 @@ def handle_append_from_csv(
     notes: str,
     reason: str,
     prefix: str,
+    evidence_url: str = "",
 ) -> pd.DataFrame:
     path_obj = (
         base_dir / path_str
@@ -204,6 +257,7 @@ def handle_append_from_csv(
                 user,
                 QAAction.APPEND_FROM_CSV,
                 prefix,
+                evidence_url=evidence_url,
             )
         return pd.concat([df, new_records], ignore_index=True)
     except FileNotFoundError:
@@ -219,14 +273,25 @@ def handle_direct_set(
     prefix: str,
     feedback: str,
 ) -> None:
-    record_id = qa_row.get("Row(s)")
+    record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
     # Handle "NEW" records separately - they are processed in apply_qa_edits
     # before this function
     if pd.isna(record_id) or str(record_id).strip().upper() == "NEW":
         return
     if record_id not in df_mod["RecordID"].values:
         return
-    provided_col = qa_row.get("Column") or (
+    
+    # Get record_name from edits file if provided, otherwise lookup from dataset
+    provided_record_name = _get_qa_column(qa_row, "", "record_name")
+    if provided_record_name:
+        # Validate that provided name matches dataset (if record exists)
+        dataset_record_name = df_mod[df_mod["RecordID"] == record_id].iloc[0].get("Name", "")
+        if dataset_record_name and provided_record_name != dataset_record_name:
+            # Log warning but continue (allows for name corrections)
+            print(f"Warning: record_name mismatch for RecordID {record_id}: "
+                  f"provided '{provided_record_name}' vs dataset '{dataset_record_name}'")
+    
+    provided_col = _get_qa_column(qa_row, "Column", "field_name") or (
         match.group("column") if "column" in match.groupdict() else None
     )
     pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
@@ -238,9 +303,14 @@ def handle_direct_set(
         clean_val = ""
     target_indices = df_mod[df_mod["RecordID"] == record_id].index
     for index in target_indices:
-        record_name = df_mod.loc[index, "Name"]
+        # Use provided record_name if available, otherwise lookup from dataset
+        record_name = provided_record_name if provided_record_name else df_mod.loc[index, "Name"]
         old_val = df_mod.loc[index, pascal_col]
-        reason = qa_row.get("reason", "")
+        justification = _get_qa_column(qa_row, "reason", "justification")
+        evidence_url = _get_qa_column(qa_row, "", "evidence_url")
+        # Store evidence_url separately; keep reason as just the justification
+        # (evidence_url will be mapped to published changelog separately)
+        reason = justification
         log_change(
             record_id,
             record_name,
@@ -253,6 +323,7 @@ def handle_direct_set(
             user,
             QAAction.DIRECT_SET,
             prefix,
+            evidence_url=evidence_url,
         )
         df_mod.loc[index, pascal_col] = clean_val
 
@@ -265,14 +336,23 @@ def handle_policy_query(
     prefix: str,
     feedback: str,
 ) -> None:
-    record_id = qa_row.get("Row(s)")
+    record_id = _get_qa_column(qa_row, "Row(s)", "record_id")
     if pd.isna(record_id) or record_id not in df_mod["RecordID"].values:
         return
-    pascal_col = _get_pascal_case_column(df_mod.columns, qa_row.get("Column"))
+    
+    # Get record_name from edits file if provided, otherwise lookup from dataset
+    provided_record_name = _get_qa_column(qa_row, "", "record_name")
+    
+    provided_col = _get_qa_column(qa_row, "Column", "field_name")
+    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
     target_indices = df_mod[df_mod["RecordID"] == record_id].index
     for index in target_indices:
-        record_name = df_mod.loc[index, "Name"]
-        reason = qa_row.get("reason", "")
+        # Use provided record_name if available, otherwise lookup from dataset
+        record_name = provided_record_name if provided_record_name else df_mod.loc[index, "Name"]
+        justification = _get_qa_column(qa_row, "reason", "justification")
+        evidence_url = _get_qa_column(qa_row, "", "evidence_url")
+        # Store evidence_url separately; keep reason as just the justification
+        reason = justification
         log_change(
             record_id,
             record_name,
@@ -285,29 +365,102 @@ def handle_policy_query(
             user,
             QAAction.POLICY_QUERY,
             prefix,
+            evidence_url=evidence_url,
         )
 
 
+def _convert_recordid_to_new_format(old_id: str) -> int | None:
+    """
+    Convert RecordID from old format (NYC_GOID_XXXXXX) to new format (6-digit numeric).
+    
+    Returns the numeric value in new format, or None if invalid.
+    Examples:
+    - NYC_GOID_000022 → 100022
+    - NYC_GOID_000318 → 100318
+    - NYC_GOID_100026 → 110026
+    """
+    if pd.isna(old_id) or old_id == "":
+        return None
+    
+    old_id_str = str(old_id).strip()
+    
+    # Check if already in new format (6-digit numeric)
+    if re.match(r"^\d{6}$", old_id_str):
+        return int(old_id_str)
+    
+    # Check if in old format (NYC_GOID_XXXXXX)
+    match = re.match(r"NYC_GOID_(\d+)", old_id_str)
+    if not match:
+        return None
+    
+    numeric_str = match.group(1)
+    numeric_int = int(numeric_str)
+    
+    # Convert to new format
+    # If 6 digits starting with "1", take last 4 digits and add "11" prefix
+    if len(numeric_str) == 6 and numeric_str.startswith("1"):
+        last_four = int(numeric_str[2:])  # Skip first 2 digits
+        new_id = int(f"11{last_four:04d}")
+    else:
+        # Add "1" prefix and pad to 6 digits
+        new_id = int(f"1{numeric_int:05d}")
+    
+    return new_id
+
+
 def _generate_next_record_id(df: pd.DataFrame) -> str:
-    """Generate the next available RecordID in format NYC_GOID_XXXXXX."""
+    """
+    Generate the next available RecordID in new 6-digit numeric format.
+    
+    Ensures uniqueness by:
+    1. Converting all existing IDs to new format
+    2. Finding the maximum ID
+    3. Generating next sequential ID (max + 1)
+    4. Verifying the generated ID doesn't already exist (handles edge cases)
+    
+    Returns:
+        A 6-digit numeric string (e.g., "100318")
+    
+    Note: This approach ensures uniqueness within the current dataset.
+    For concurrent operations, ensure records are added sequentially or
+    use a transaction/locking mechanism.
+    """
     existing_ids = df["RecordID"].astype(str)
-    # Extract numeric parts from existing IDs
-    max_num = 0
+    
+    # Convert all existing IDs to new format and find max
+    max_new_id = 100000  # Start from minimum valid ID
+    existing_new_format_ids = set()
+    
     for record_id in existing_ids:
-        if pd.isna(record_id) or not str(record_id).startswith("NYC_GOID_"):
+        if pd.isna(record_id):
             continue
         try:
-            # Extract number from NYC_GOID_XXXXXX format
-            # (handles both 000001 and 100001)
-            num_part = str(record_id).replace("NYC_GOID_", "").strip()
-            num = int(num_part)  # Direct conversion handles leading zeros
-            max_num = max(max_num, num)
+            new_format_id = _convert_recordid_to_new_format(str(record_id))
+            if new_format_id is not None:
+                existing_new_format_ids.add(new_format_id)
+                max_new_id = max(max_new_id, new_format_id)
         except (ValueError, AttributeError):
             continue
 
-    # Generate next ID (use 6-digit format with leading zeros)
-    next_num = max_num + 1
-    return f"NYC_GOID_{next_num:06d}"
+    # Generate next ID in new 6-digit format
+    next_num = max_new_id + 1
+    
+    # Safety check: ensure generated ID doesn't already exist
+    # (handles edge cases like gaps in sequence or concurrent operations)
+    while next_num in existing_new_format_ids:
+        next_num += 1
+    
+    # Ensure it's 6 digits (should already be, but pad just in case)
+    generated_id = f"{next_num:06d}"
+    
+    # Final validation: ensure we haven't exceeded 6-digit range
+    if len(generated_id) > 6 or int(generated_id) > 999999:
+        raise ValueError(
+            f"RecordID sequence exhausted. Generated ID {generated_id} exceeds "
+            "6-digit limit. Consider migrating to a new ID format."
+        )
+    
+    return generated_id
 
 
 def _create_new_record(
@@ -361,27 +514,63 @@ def apply_qa_edits(  # noqa: C901
     user: str,
     prefix: str,
 ) -> pd.DataFrame:
+    """
+    Apply QA edits from CSV file to golden dataset.
+    
+    CSV Column Names (supports both old and new names for backward compatibility):
+    - record_id (old: Row(s)): RecordID for existing records, or 'NEW' for new records
+    - record_name (optional): Entity name for human review and validation (recommended for existing records)
+    - field_name (old: Column): Name of the field to modify
+    - action (old: feedback): Action instruction, e.g., "Set to ""value"""
+    - justification (old: reason): Narrative explanation for the change
+    - evidence_url (new): URL(s) providing evidence for the change (pipe-separated if multiple)
+    
+    Note: record_name is optional but recommended for existing records to improve human review
+    and changelog traceability. If not provided, the pipeline will lookup the name from the dataset.
+    For NEW records, record_name is not needed (name field serves this purpose).
+    
+    Supports two types of edits:
+    1. Edits to existing records: Use RecordID in 'record_id' column (e.g., '100430', '100018')
+    2. New record creation: Use 'NEW' in 'record_id' column
+    
+    NEW Record Handling:
+    - Multiple NEW records per file are supported
+    - Each NEW record should include a 'name' field to distinguish it from other NEW records
+    - The 'name' field value is used as the key to group fields for each NEW record
+    - Best practice: Include 'name' field as the first field for each NEW record
+    - If 'name' field comes after other fields, those fields will be temporarily tracked
+      and migrated to the name-based key when the name field is encountered
+    
+    Example NEW record structure:
+        NEW,name,"Set to ""Entity Name""","Justification text","https://evidence.url"
+        NEW,operational_status,"Set to ""Active""","Justification","https://evidence.url"
+        NEW,name,"Set to ""Another Entity""","Justification","https://evidence.url"  # Starts new NEW record
+        NEW,operational_status,"Set to ""Inactive""","Justification",""
+    """
     df_mod = df.copy()
     src_name, base_dir = qa_path.name, qa_path.parent
     qa_df = pd.read_csv(qa_path, dtype=str).fillna("")
 
     # First pass: collect all "NEW" record edits
-    new_records: dict[str, dict[str, str]] = {}  # Maps a unique key to field dict
+    # Uses entity name as key to support multiple NEW records per file
+    new_records: dict[str, dict[str, str]] = {}  # Maps entity name to field dict
+    new_record_counter = 0  # Counter for NEW records encountered (for temp keys before name is seen)
+    current_new_record_key = None  # Current NEW record key (name if seen, otherwise sequence-based temp key)
 
     # Process all rows to collect NEW record data
     for _, qa_row in qa_df.iterrows():
-        raw_feedback = str(qa_row.get("feedback", ""))
+        raw_feedback = str(_get_qa_column(qa_row, "feedback", "action", ""))
         feedback = _sanitize_wrapped_text(raw_feedback)
         if not raw_feedback.strip() and not feedback:
             continue
 
-        record_id = str(qa_row.get("Row(s)", "")).strip().upper()
+        record_id = str(_get_qa_column(qa_row, "Row(s)", "record_id", "")).strip().upper()
 
         # Collect NEW record fields
         if record_id == "NEW":
             action, match = detect_rule(raw_feedback)
             if action == QAAction.DIRECT_SET and match:
-                provided_col = qa_row.get("Column") or (
+                provided_col = _get_qa_column(qa_row, "Column", "field_name") or (
                     match.group("column") if "column" in match.groupdict() else None
                 )
                 if provided_col:
@@ -391,31 +580,64 @@ def apply_qa_edits(  # noqa: C901
                         clean_val = _sanitize_wrapped_text(val_str)
                         if clean_val is None:
                             clean_val = ""
-                        # Use a single key for all NEW records in this file
-                        # (assumes one new record per file)
-                        # In future, could use a sequence number or other identifier
-                        key = "NEW_RECORD_0"
-                        if key not in new_records:
-                            new_records[key] = {}
-                        new_records[key][pascal_col] = clean_val
-
+                        
+                        # Determine key for this NEW record
+                        # If this is a 'name' field, use it as the key
+                        if pascal_col == "Name":
+                            key = clean_val
+                            # If we were tracking a temporary key, migrate fields to name-based key
+                            if current_new_record_key and current_new_record_key.startswith("NEW_RECORD_"):
+                                # Migrate any fields collected under temporary key
+                                if current_new_record_key in new_records:
+                                    if key not in new_records:
+                                        new_records[key] = {}
+                                    new_records[key].update(new_records[current_new_record_key])
+                                    del new_records[current_new_record_key]
+                            # Initialize record if it doesn't exist
+                            if key not in new_records:
+                                new_records[key] = {}
+                            new_records[key][pascal_col] = clean_val
+                            # Update current key to use name going forward
+                            current_new_record_key = key
+                        else:
+                            # Not a name field - determine which NEW record this belongs to
+                            if current_new_record_key is None:
+                                # Start tracking a new NEW record sequence
+                                new_record_counter += 1
+                                current_new_record_key = f"NEW_RECORD_{new_record_counter}"
+                            
+                            # Use current key (either name-based or temporary sequence-based)
+                            key = current_new_record_key
+                            
+                            if key not in new_records:
+                                new_records[key] = {}
+                            new_records[key][pascal_col] = clean_val
+        else:
+            # Not a NEW record - reset current key tracker
+            current_new_record_key = None
+    
     # Create NEW records before processing edits to existing records
+    # Note: Any temporary keys (NEW_RECORD_N) should have been migrated to name-based keys
+    # when the name field was encountered. Remaining temp keys indicate missing name field.
     for _key, fields in new_records.items():
         df_mod = _create_new_record(df_mod, fields, src_name, user, prefix)
 
     # Second pass: process edits to existing records
     for _, qa_row in qa_df.iterrows():
-        raw_feedback = str(qa_row.get("feedback", ""))
+        raw_feedback = str(_get_qa_column(qa_row, "feedback", "action", ""))
         feedback = _sanitize_wrapped_text(raw_feedback)
         if not raw_feedback.strip() and not feedback:
             continue
 
-        record_id = str(qa_row.get("Row(s)", "")).strip().upper()
+        record_id = str(_get_qa_column(qa_row, "Row(s)", "record_id", "")).strip().upper()
         # Skip NEW records - already processed
         if record_id == "NEW":
             continue
 
-        reason = qa_row.get("reason", "")
+        justification = _get_qa_column(qa_row, "reason", "justification")
+        evidence_url = _get_qa_column(qa_row, "", "evidence_url")
+        # Store evidence_url separately; keep reason as just the justification
+        reason = justification
         action, match = detect_rule(raw_feedback)
 
         if action == QAAction.DELETE_RECORD and match:
@@ -438,6 +660,7 @@ def apply_qa_edits(  # noqa: C901
                 feedback,
                 reason,
                 prefix,
+                evidence_url=evidence_url,
             )
         elif action == QAAction.DIRECT_SET and match:
             handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback)

@@ -51,6 +51,15 @@ The legal authority (statute, charter provision, executive order, or local law) 
 **Purpose:**
 Documents the legal foundation for each entity's existence and authority. Critical for understanding jurisdictional boundaries, statutory mandates, and legal basis for operations.
 
+**Multiple Authorities:**
+When an entity has multiple authorizing authorities, separate them with semicolons (`;`). Example: `"NYC Charter § 738; NYS L.1969, c.1016 (\"Health and Hospitals Corporation Act\")"`
+
+**Local Law Citation Guidance:**
+- **Generally**: Prefer codified citations (Charter/Admin Code) over Local Law numbers
+- **Include Local Law**: Only when no codified citation exists, or entity is defined by Local Law itself (temporary task forces)
+- **Avoid**: Including Local Law citations when Charter/Admin Code citation already exists
+- **Rationale**: Most users need the codified hook; Local Law inclusion creates consistency challenges; can add `authorizing_local_law` field later if needed
+
 **Format:**
 - NYC Charter § [section number]
 - NYC Administrative Code § [section]
@@ -91,6 +100,21 @@ Direct URL link to the official legal document, statute, or charter provision th
 **Purpose:**
 Provides immediate access to source documents for verification and research. Enhances transparency and auditability of the dataset.
 
+**CRITICAL RULE: Exactly ONE URL per row**
+
+The `authorizing_url` field contains exactly one canonical URL representing the primary legal authority. This keeps the field simple and maintainable.
+
+**URL Selection Priority:**
+1. Charter or Administrative Code section (if available) - preferred as most stable
+2. State law URL (if authority is state law only, no Charter/Admin Code)
+3. Local Law URL (only if no codified citation exists)
+4. Executive Order URL (only if no codified citation exists)
+
+**Multiple Authorities Handling:**
+- If `authorizing_authority` contains multiple citations (semicolon-separated), use only the canonical URL (prefer Charter/Admin Code)
+- Do NOT use pipe-separated URLs (`|`) - keep to single URL
+- If multiple URLs are needed later, consider a separate `nycgo_authorities` table rather than overloading this field
+
 **Format:**
 - Must be valid HTTP/HTTPS URL
 - Prefer official NYC.gov, State of NY, or government sources
@@ -122,6 +146,65 @@ Provides immediate access to source documents for verification and research. Enh
 
 ---
 
+### 3.5. `authorizing_authority_type` (NEW)
+**Type:** String (Controlled Vocabulary)
+**Required:** No (recommended when `authorizing_authority` is populated)
+**Default:** Empty string
+
+**Definition:**
+Categorizes the type of legal authority that establishes the organization, enabling filtering and querying by authority source.
+
+**Purpose:**
+Provides a standardized way to categorize and filter entities by their legal authority type. Complements the `authorizing_authority` field with a structured classification.
+
+**Controlled Vocabulary (EXACT VALUES ONLY):**
+The `authorizing_authority_type` field uses a controlled vocabulary. **Only the following values are allowed:**
+
+1. **"NYC Charter"** - Entity established by NYC Charter provision
+2. **"NYC Administrative Code"** - Entity established by NYC Administrative Code section
+3. **"City Council Local Law"** - Entity established by City Council Local Law (use only when no codified citation exists)
+4. **"Mayoral Executive Order"** - Entity established by Mayoral Executive Order (use only when no codified citation exists)
+5. **"New York State Law"** - Entity established by New York State statute
+6. **"Federal Law"** - Entity established by federal statute
+7. **"Other"** - Other legal authority not covered above (use sparingly)
+
+**CRITICAL RULES:**
+- **Single value only** - Do NOT use semicolon-separated values (e.g., "NYC Local Law; NYC Charter" is INVALID)
+- **Prefer codified citations** - If entity is codified into Charter/Admin Code, use that type even if originally established by Local Law
+- **Must match `authorizing_authority` field** - The type should correspond to the primary authority cited in `authorizing_authority`
+
+**Selection Priority:**
+1. If entity is codified in Charter → use "NYC Charter"
+2. If entity is codified in Admin Code → use "NYC Administrative Code"
+3. If entity is only in Local Law (not codified) → use "City Council Local Law"
+4. If entity is only in Executive Order (not codified) → use "Mayoral Executive Order"
+5. If entity is established by State law → use "New York State Law"
+6. If entity is established by Federal law → use "Federal Law"
+
+**Examples:**
+- `authorizing_authority`: "NYC Charter § 1524-a" → `authorizing_authority_type`: "NYC Charter"
+- `authorizing_authority`: "NYC Admin. Code § 21-101" → `authorizing_authority_type`: "NYC Administrative Code"
+- `authorizing_authority`: "Local Law 38 of 2012" (not codified) → `authorizing_authority_type`: "City Council Local Law"
+- `authorizing_authority`: "Executive Order 16 (2014)" (not codified) → `authorizing_authority_type`: "Mayoral Executive Order"
+- `authorizing_authority`: "NYC Charter § 738; NYS L.1969, c.1016" → `authorizing_authority_type`: "NYC Charter" (prefer Charter)
+
+**❌ INVALID Examples:**
+- "NYC Local Law; NYC Charter" (multiple values - use single value, prefer Charter)
+- "Local Law" (not in controlled vocabulary - use "City Council Local Law")
+- "NYC Local Law" (not in controlled vocabulary - use "City Council Local Law")
+- "Executive Order" (not in controlled vocabulary - use "Mayoral Executive Order")
+
+**Validation Rules:**
+- Must be one of the controlled vocabulary values listed above
+- Must align with `authorizing_authority` field
+- Should prefer codified citations (Charter/Admin Code) over Local Law/Executive Order when codified
+
+**Research Sources:**
+- Same as `authorizing_authority` field
+- Cross-reference with `authorizing_authority` to ensure consistency
+
+---
+
 ### 4. `appointments_summary` (NEW)
 **Type:** String (Free text)
 **Required:** No
@@ -133,14 +216,21 @@ Brief description of how the organization's leadership and key positions are app
 **Purpose:**
 Documents appointment mechanisms to understand political accountability, tenure security, and governance structure. Critical for analyzing mayoral control vs. independence.
 
+**Important:** This field describes the **appointment mechanism/rules** as defined in the Charter or enabling legislation, NOT specific appointment events. It should capture the ongoing rules for how appointments work, not who was appointed on a particular date.
+
 **Format:**
 Free-text summary, typically 1-3 sentences. Use semicolons to separate multiple appointment types.
 
-**Examples:**
+**Examples (CORRECT - describing mechanisms):**
 - "Commissioner appointed by Mayor; Deputy Commissioners appointed by Commissioner"
 - "15-member board: 5 appointed by Mayor, 5 by Public Advocate, 5 by Borough Presidents; 6-year staggered terms"
 - "Director appointed by Mayor with City Council approval; 5-year term; may be removed for cause"
-- "President appointed by Board of Directors; Board members appointed by Mayor"
+- "Members appointed by Mayor, including at minimum representatives from environmental, environmental justice, urban planning, architecture, engineering, coastal protection, construction, critical infrastructure, labor, business, energy, and academic sectors. Also includes Speaker of City Council or designee and Chairperson of Council Committee on Environmental Protection or designee."
+
+**Examples (INCORRECT - describing specific events):**
+- ❌ "Mayor Adams appointed 26 members in Dec 2022" (This is a specific appointment event)
+- ❌ "26 members appointed by Mayor" (This describes a current composition, not the mechanism)
+- ✅ "Members appointed by Mayor, including at minimum representatives from [sectors]" (This describes the mechanism/rules)
 
 **Key Information to Include:**
 - Appointing authority (Mayor, Governor, Board, etc.)
@@ -298,7 +388,7 @@ Users of v1.0.0 should:
 ## References
 
 - **Phase II Plan**: `/docs/PHASE_II_PLAN.md`
-- **Skills**: `/skills/nyc-governance-schema/skill.md`
+- **Skills**: `/skills/nyc-governance-schema/SKILL.md`
 - **NYC Charter**: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter
 - **Mayor's Office of Appointments**: https://www.nyc.gov/content/appointments/pages/boards-commissions
 
