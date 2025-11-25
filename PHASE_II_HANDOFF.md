@@ -1,7 +1,7 @@
 # Phase II.1 → Phase II.2 Handoff Document
 
-**Date**: November 22, 2025  
-**Status**: Phase II.1 Complete, Ready for Phase II.2
+**Date**: November 25, 2025
+**Status**: Phase II.2 MOA Coverage Complete, Ready for Field Population
 
 ---
 
@@ -56,18 +56,41 @@
 ## Current State
 
 ### Dataset Status
-**File**: `data/working/NYCGO_golden_dataset_v2.0.0-dev.csv`
+**File**: `data/working/NYCGO_golden_dataset_v1.2.0.csv`
 
 | Metric | Value |
 |--------|-------|
-| **Total Records** | 433 |
-| **Total Fields** | 45 (was 38, +9 new, -1 retired) |
+| **Total Records** | 443 (was 434, +9 NEW entities) |
+| **Total Fields** | 46 (+7 Phase II fields) |
 | **RecordID Format** | 6-digit numeric (e.g., `100318`) |
+| **Name - MOA Field** | 108 records populated (100% MOA coverage) |
 | **Relationship Fields** | Populated (131 relationships) |
 | **ReportsTo Field** | Removed ✓ |
-| **Phase II Fields** | Present but empty (ready for research) |
+| **Phase II Fields** | Present, partially populated |
 
-**Note**: Missing 1 entity (NYC_GOID_100030 - Office of Digital Assets and Blockchain Technology) that exists in v1.1.1 final but not yet in v2.0.0-dev.
+### Phase II Field Population (as of Nov 25, 2025)
+| Field | Records Populated |
+|-------|-------------------|
+| AuthorizingAuthority | 8 |
+| AuthorizingAuthorityType | 9 |
+| AuthorizingURL | 4 |
+| AppointmentsSummary | 2 |
+| GovernanceStructure | 10 |
+| ParentOrganizationRecordID | 3 |
+| ParentOrganizationName | 3 |
+
+### NEW Entities Added (9 total)
+| RecordID | Name | Status |
+|----------|------|--------|
+| 110031 | Technology Development Corporation | Dissolved |
+| 110032 | Community Investment Advisory Board | Inactive |
+| 110033 | Civil Service Commission - Screening Committee | Verification Pending |
+| 110034 | MTA Capital Program Review Board | Verification Pending |
+| 110035 | World Trade Center Captive Insurance Company | Verification Pending |
+| 110036 | Quadrennial Advisory Commission... | Verification Pending |
+| 110037 | Veterans' Advisory Board | Verification Pending |
+| 110038 | New York City Global Partners | Verification Pending |
+| 110039 | SWMP CAG - Gansevoort (Manhattan) | Inactive |
 
 ### Key Files
 
@@ -89,34 +112,41 @@
 
 ---
 
-## Phase II.2 Starting Points
+## Phase II.2 Progress Update (Nov 25, 2025)
 
-### Overview
-Phase II.2 focuses on **data population and research** for the new Phase II fields. The schema is complete, migrations are done, and now we need to populate the data.
+### MOA Coverage Milestone: ✅ COMPLETE
+All 109 Mayor's Office of Appointments entities are now mapped:
+- 99 existing NYCGO entities matched via `Name - MOA` field
+- 9 NEW entities created to fill coverage gaps
+- 1 combined mapping (TLC + TLC Advisory Board → single record)
 
-### Key Objectives (from PHASE_II_PLAN.md)
+### Remaining Objectives
 
 1. **Research and populate `authorizing_authority` fields**
-   - Target: 100% of 433 entities
+   - Target: 100% of 443 entities
+   - Current: 8 records populated
    - Sources: NYC Charter, Administrative Code, Executive Orders, State/Federal laws
    - Document legal basis for each entity
 
 2. **Populate `appointments_summary`**
+   - Current: 2 records populated
    - Extract from Mayor's Office of Appointments data
    - Document how leadership is appointed/selected
    - Focus on boards, commissions, and key positions
 
 3. **Populate `governance_structure`**
+   - Current: 10 records populated
    - Describe governance models (boards, single executive, etc.)
    - Distinguish between Primary Governing Boards (narrative) and Specialized Boards (separate entities)
 
 4. **Complete relationship fields**
+   - Current: 3 records with parent organization links
    - Review and populate remaining `org_chart_oversight_record_id` relationships
    - Review and populate remaining `parent_organization_record_id` relationships
-   - Resolve 6 records flagged for manual review
 
-5. **Add missing entity**
-   - Add NYC_GOID_100030 (Office of Digital Assets and Blockchain Technology) to v2.0.0-dev dataset
+5. **Resolve "Verification Pending" entities**
+   - 6 NEW entities need status verification during advisory board QA round
+   - RecordIDs: 110033, 110034, 110035, 110036, 110037, 110038
 
 ### Data Sources
 
@@ -156,14 +186,16 @@ Phase II.2 focuses on **data population and research** for the new Phase II fiel
 ### Validation Checklist
 
 Before considering Phase II.2 complete:
-- [ ] `authorizing_authority` populated for all 433 entities (100% target)
-- [ ] `authorizing_authority_type` matches controlled vocabulary
-- [ ] `authorizing_url` links to valid legal documents
-- [ ] `appointments_summary` populated for entities with boards/commissions
-- [ ] `governance_structure` populated for entities with governance models
+- [x] MOA crosswalk mapping complete (108/109 entities)
+- [x] 9 NEW entities created for MOA coverage gaps
+- [ ] `authorizing_authority` populated for all 443 entities (100% target) - currently 8
+- [ ] `authorizing_authority_type` matches controlled vocabulary - currently 9
+- [ ] `authorizing_url` links to valid legal documents - currently 4
+- [ ] `appointments_summary` populated for entities with boards/commissions - currently 2
+- [ ] `governance_structure` populated for entities with governance models - currently 10
 - [ ] All relationship fields validated (no self-references, valid RecordIDs)
-- [ ] Missing entity (NYC_GOID_100030) added to dataset
-- [ ] All 434 entities present in final dataset
+- [ ] 6 "Verification Pending" entities resolved after advisory board QA
+- [x] All 443 entities present in dataset
 
 ---
 
@@ -233,17 +265,18 @@ Then move to:
 
 ## Success Criteria for Phase II.2
 
-- [ ] All 9 Phase II fields populated (or documented as N/A where appropriate)
-- [ ] `authorizing_authority` at 100% (all 433+ entities)
+- [x] MOA crosswalk complete (108/109 entities mapped via Name - MOA)
+- [x] 9 NEW entities added (443 total entities)
+- [ ] All 7 Phase II fields populated (or documented as N/A where appropriate)
+- [ ] `authorizing_authority` at 100% (all 443 entities)
 - [ ] All relationship fields validated and complete
-- [ ] Missing entity added (434 total entities)
+- [ ] 6 "Verification Pending" entities resolved
 - [ ] Research documented and sources tracked
 - [ ] Validation rules passing
 - [ ] Dataset ready for Phase II.3 (publication preparation)
 
 ---
 
-**Ready to proceed**: ✅ Yes  
-**Blockers**: None  
-**Dependencies**: None (Phase II.1 complete)
-
+**Current Status**: 🟡 In Progress - MOA coverage complete, field population ongoing
+**Blockers**: None
+**Next Steps**: Advisory board QA for verification, then continue field population
