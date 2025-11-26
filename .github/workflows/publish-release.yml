@@ -21,6 +21,11 @@ on:
           - patch
           - minor
           - major
+      test_mode:
+        description: 'Test mode: creates draft release, no commits to repo'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -32,6 +37,21 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine mode
+        id: mode
+        run: |
+          # Test mode if: explicitly set, OR triggered from non-main branch
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ] || [ "${{ github.ref_name }}" != "main" ]; then
+            echo "is_test=true" >> $GITHUB_OUTPUT
+            echo "Running in TEST MODE"
+            echo "- Draft release will be created (can be deleted)"
+            echo "- No commits to repository"
+            echo "- Version will have -test suffix"
+          else
+            echo "is_test=false" >> $GITHUB_OUTPUT
+            echo "Running in PRODUCTION MODE"
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -70,8 +90,11 @@ jobs:
       - name: Calculate next version
         id: version
         run: |
-          # Get latest release tag
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+          # Get latest release tag (exclude test tags)
+          LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | grep -v '\-test' | head -1)
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="v1.0.0"
+          fi
           echo "Latest tag: $LATEST_TAG"
 
           # Parse version components
@@ -106,21 +129,37 @@ jobs:
           esac
 
           NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+
+          # Add -test suffix for test mode
+          if [ "${{ steps.mode.outputs.is_test }}" = "true" ]; then
+            TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
+            NEW_VERSION="${NEW_VERSION}-test.${TIMESTAMP}"
+          fi
+
           echo "New version: $NEW_VERSION"
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Run publish script
         id: publish
         run: |
+          # In test mode, don't append to the real changelog
+          if [ "${{ steps.mode.outputs.is_test }}" = "true" ]; then
+            APPEND_FLAG=""
+            echo "TEST MODE: Skipping changelog append"
+          else
+            APPEND_FLAG="--append-changelog"
+          fi
+
           PYTHONPATH="$PYTHONPATH:src" python scripts/pipeline/publish_run.py \
             --run-dir "${{ steps.run-id.outputs.run_dir }}" \
             --version "${{ steps.version.outputs.version }}" \
-            --append-changelog \
+            $APPEND_FLAG \
             --operator "github-actions"
 
           echo "Publish complete"
 
       - name: Commit published files
+        if: steps.mode.outputs.is_test != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -147,28 +186,50 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
+          name: ${{ steps.mode.outputs.is_test == 'true' && format('[TEST] Release {0}', steps.version.outputs.version) || format('Release {0}', steps.version.outputs.version) }}
           body_path: data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md
           files: |
             data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv
             data/published/latest/NYCGovernanceOrganizations_latest.csv
             data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip
             data/published/latest/run_changelog.csv
-          draft: false
-          prerelease: false
+          draft: ${{ steps.mode.outputs.is_test == 'true' }}
+          prerelease: ${{ steps.mode.outputs.is_test == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
         run: |
-          echo "## Release Published" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          IS_TEST="${{ steps.mode.outputs.is_test }}"
+
+          if [ "$IS_TEST" = "true" ]; then
+            echo "## Test Release Created" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**This is a TEST release** - it was created as a draft and can be safely deleted." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## Release Published" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Run ID:** ${{ steps.run-id.outputs.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** ${{ steps.mode.outputs.is_test == 'true' && 'TEST' || 'PRODUCTION' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+
           echo "### What happened:" >> $GITHUB_STEP_SUMMARY
-          echo "- Published artifacts to \`data/published/latest/\`" >> $GITHUB_STEP_SUMMARY
-          echo "- Appended changes to \`data/changelog.csv\`" >> $GITHUB_STEP_SUMMARY
-          echo "- Created GitHub Release with assets" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+          echo "- Generated release artifacts in \`data/published/latest/\`" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$IS_TEST" = "true" ]; then
+            echo "- Created **draft** GitHub Release (not published)" >> $GITHUB_STEP_SUMMARY
+            echo "- Did NOT commit changes to repository" >> $GITHUB_STEP_SUMMARY
+            echo "- Did NOT append to \`data/changelog.csv\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Cleanup:" >> $GITHUB_STEP_SUMMARY
+            echo "To delete this test release, go to [Releases](https://github.com/${{ github.repository }}/releases) and delete the draft." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Appended changes to \`data/changelog.csv\`" >> $GITHUB_STEP_SUMMARY
+            echo "- Created GitHub Release with assets" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+          fi
