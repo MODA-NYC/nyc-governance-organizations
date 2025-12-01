@@ -38,6 +38,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -200,6 +201,16 @@ jobs:
           Published by GitHub Actions workflow.
           EOF
           fi
+
+      - name: Verify release files exist
+        run: |
+          echo "Checking for release files..."
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Run ID: ${{ steps.run-id.outputs.run_id }}"
+          ls -la data/published/latest/ || echo "data/published/latest/ does not exist"
+          ls -la data/published/latest/*${{ steps.version.outputs.version }}* 2>/dev/null || echo "No files found for version ${{ steps.version.outputs.version }}"
+          ls -la data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip 2>/dev/null || echo "Zip file not found"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
