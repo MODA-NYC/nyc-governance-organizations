@@ -27,9 +27,6 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -38,7 +35,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -186,32 +182,6 @@ jobs:
             echo "No changes to commit"
           fi
 
-      - name: Prepare release notes
-        run: |
-          RELEASE_NOTES_PATH="data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md"
-          if [ ! -f "$RELEASE_NOTES_PATH" ]; then
-            echo "Warning: Release notes file not found: $RELEASE_NOTES_PATH"
-            echo "Creating default release notes file"
-            mkdir -p data/published/latest
-            cat > "$RELEASE_NOTES_PATH" <<EOF
-          # Release ${{ steps.version.outputs.version }}
-
-          **Run ID:** \`${{ steps.run-id.outputs.run_id }}\`
-
-          Published by GitHub Actions workflow.
-          EOF
-          fi
-
-      - name: Verify release files exist
-        run: |
-          echo "Checking for release files..."
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Version: ${{ steps.version.outputs.version }}"
-          echo "Run ID: ${{ steps.run-id.outputs.run_id }}"
-          ls -la data/published/latest/ || echo "data/published/latest/ does not exist"
-          ls -la data/published/latest/*${{ steps.version.outputs.version }}* 2>/dev/null || echo "No files found for version ${{ steps.version.outputs.version }}"
-          ls -la data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip 2>/dev/null || echo "Zip file not found"
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -227,6 +197,14 @@ jobs:
           prerelease: ${{ steps.mode.outputs.is_test == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check release creation result
+        if: steps.create-release.outcome != 'success'
+        run: |
+          echo "ERROR: Release creation failed!"
+          echo "Outcome: ${{ steps.create-release.outcome }}"
+          echo "Please check the logs above for details"
+          exit 1
 
       - name: Summary
         run: |
