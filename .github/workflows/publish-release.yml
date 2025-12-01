@@ -27,6 +27,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -180,6 +183,22 @@ jobs:
             git push
           else
             echo "No changes to commit"
+          fi
+
+      - name: Prepare release notes
+        run: |
+          RELEASE_NOTES_PATH="data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md"
+          if [ ! -f "$RELEASE_NOTES_PATH" ]; then
+            echo "Warning: Release notes file not found: $RELEASE_NOTES_PATH"
+            echo "Creating default release notes file"
+            mkdir -p data/published/latest
+            cat > "$RELEASE_NOTES_PATH" <<EOF
+          # Release ${{ steps.version.outputs.version }}
+
+          **Run ID:** \`${{ steps.run-id.outputs.run_id }}\`
+
+          Published by GitHub Actions workflow.
+          EOF
           fi
 
       - name: Create GitHub Release
