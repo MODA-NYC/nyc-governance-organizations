@@ -201,7 +201,10 @@ def validate_phase_ii_fields(  # noqa: C901
                     record_id,
                     None,
                     "System_Validation",
-                    f"RecordID must be 6-digit numeric format (e.g., 100318), got: {record_id}",
+                    (
+                        f"RecordID must be 6-digit numeric format "
+                        f"(e.g., 100318), got: {record_id}"
+                    ),
                     "VALIDATION_WARNING",
                     user,
                     "VALIDATE_RECORDID_FORMAT",
@@ -221,7 +224,7 @@ def validate_phase_ii_fields(  # noqa: C901
             for _i, row in df_processed.iterrows():  # noqa: B007
                 oversight_value = str(row.get(col, "")).strip()
                 record_id = str(row.get("RecordID", "")).strip()
-                
+
                 if oversight_value:
                     # Check if it references a valid RecordID
                     if oversight_value not in valid_record_ids:
@@ -264,7 +267,7 @@ def validate_phase_ii_fields(  # noqa: C901
             for _i, row in df_processed.iterrows():  # noqa: B007
                 parent_value = str(row.get(col, "")).strip()
                 record_id = str(row.get("RecordID", "")).strip()
-                
+
                 if parent_value:
                     # Check if it references a valid RecordID
                     if parent_value not in valid_record_ids:
@@ -349,7 +352,10 @@ def validate_phase_ii_fields(  # noqa: C901
                         auth_type,
                         None,
                         "System_Validation",
-                        f"Invalid authorizing_authority_type. Valid values: {', '.join(sorted(valid_auth_types))}",
+                        (
+                            f"Invalid authorizing_authority_type. "
+                            f"Valid values: {', '.join(sorted(valid_auth_types))}"
+                        ),
                         "VALIDATION_WARNING",
                         user,
                         "VALIDATE_CONTROLLED_VOCAB",
@@ -388,6 +394,59 @@ def validate_phase_ii_fields(  # noqa: C901
     return df_processed
 
 
+def sync_nycgov_directory_status(
+    df: pd.DataFrame, user: str, prefix: str
+) -> pd.DataFrame:
+    """Sync NYC.gov Agency Directory field based on OperationalStatus.
+
+    Records with OperationalStatus != 'Active' should have NYC.gov Agency Directory
+    set to False. This ensures the golden dataset stays in sync with the business
+    rules applied during export.
+
+    Args:
+        df: DataFrame to process
+        user: User making the change (for changelog)
+        prefix: Version prefix for changelog IDs
+
+    Returns:
+        Processed DataFrame with synced directory field
+    """
+    df_processed = df.copy()
+    col = "NYC.gov Agency Directory"
+
+    if col not in df_processed.columns:
+        return df_processed
+
+    if "OperationalStatus" not in df_processed.columns:
+        return df_processed
+
+    for i, row in df_processed.iterrows():
+        op_status = str(row.get("OperationalStatus", "")).strip().lower()
+        current_val = str(row.get(col, "")).strip()
+
+        # If not Active and currently marked as True, set to False
+        if op_status != "active" and current_val.lower() == "true":
+            log_change(
+                row["RecordID"],
+                row.get("Name", ""),
+                col,
+                current_val,
+                "False",
+                "System_GlobalRule",
+                (
+                    f"OperationalStatus is '{row.get('OperationalStatus', '')}', "
+                    "not Active"
+                ),
+                "SYNC_DIRECTORY_STATUS",
+                user,
+                "SYNC_NYCGOV_DIRECTORY",
+                prefix,
+            )
+            df_processed.loc[i, col] = "False"
+
+    return df_processed
+
+
 def apply_rules(
     input_csv: Path,
     *,
@@ -398,5 +457,8 @@ def apply_rules(
     df_processed = apply_global_character_fixing(df, changed_by, version_prefix)
     df_processed = apply_global_deduplication(df_processed, changed_by, version_prefix)
     df_processed = format_budget_codes(df_processed, changed_by, version_prefix)
+    df_processed = sync_nycgov_directory_status(
+        df_processed, changed_by, version_prefix
+    )
     df_processed = validate_phase_ii_fields(df_processed, changed_by, version_prefix)
     return df_processed
