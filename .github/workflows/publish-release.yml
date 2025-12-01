@@ -27,6 +27,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -183,6 +186,8 @@ jobs:
           fi
 
       - name: Create GitHub Release
+        id: create-release
+        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
