@@ -198,6 +198,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check release creation result
+        if: steps.create-release.outcome != 'success'
+        run: |
+          echo "ERROR: Release creation failed!"
+          echo "Outcome: ${{ steps.create-release.outcome }}"
+          echo "Please check the logs above for details"
+          exit 1
+
       - name: Summary
         run: |
           IS_TEST="${{ steps.mode.outputs.is_test }}"
