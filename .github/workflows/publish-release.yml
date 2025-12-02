@@ -182,7 +182,42 @@ jobs:
             echo "No changes to commit"
           fi
 
+      - name: Prepare release notes
+        run: |
+          RELEASE_NOTES_PATH="data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md"
+          if [ ! -f "$RELEASE_NOTES_PATH" ]; then
+            echo "Warning: Release notes file not found: $RELEASE_NOTES_PATH"
+            echo "Creating default release notes file"
+            mkdir -p data/published/latest
+            cat > "$RELEASE_NOTES_PATH" <<EOF
+          # Release ${{ steps.version.outputs.version }}
+
+          **Run ID:** \`${{ steps.run-id.outputs.run_id }}\`
+
+          Published by GitHub Actions workflow.
+          EOF
+          fi
+
+      - name: Verify release files exist
+        if: steps.mode.outputs.is_test == 'true'
+        run: |
+          echo "Verifying release files..."
+          MISSING_FILES=()
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("CSV file")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && MISSING_FILES+=("Latest CSV")
+          [ ! -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && MISSING_FILES+=("Zip file")
+          [ ! -f "data/published/latest/run_changelog.csv" ] && MISSING_FILES+=("Changelog")
+          [ ! -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && MISSING_FILES+=("Release notes")
+
+          if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+            echo "⚠️  Warning: Missing files: ${MISSING_FILES[*]}"
+          else
+            echo "✅ All release files verified"
+          fi
+
       - name: Create GitHub Release
+        id: create-release
+        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
@@ -199,11 +234,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check release creation result
-        if: steps.create-release.outcome != 'success'
+        if: always() && steps.create-release.outcome != 'success'
         run: |
-          echo "ERROR: Release creation failed!"
+          echo "❌ ERROR: Release creation failed!"
           echo "Outcome: ${{ steps.create-release.outcome }}"
-          echo "Please check the logs above for details"
+          echo "Conclusion: ${{ steps.create-release.conclusion }}"
+          echo "Please check the 'Create GitHub Release' step logs above for details"
           exit 1
 
       - name: Summary
