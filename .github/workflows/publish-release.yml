@@ -27,9 +27,6 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -185,6 +182,40 @@ jobs:
             echo "No changes to commit"
           fi
 
+      - name: Prepare release notes
+        run: |
+          RELEASE_NOTES_PATH="data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md"
+          if [ ! -f "$RELEASE_NOTES_PATH" ]; then
+            echo "Warning: Release notes file not found: $RELEASE_NOTES_PATH"
+            echo "Creating default release notes file"
+            mkdir -p data/published/latest
+            cat > "$RELEASE_NOTES_PATH" <<EOF
+          # Release ${{ steps.version.outputs.version }}
+
+          **Run ID:** \`${{ steps.run-id.outputs.run_id }}\`
+
+          Published by GitHub Actions workflow.
+          EOF
+          fi
+
+      - name: Verify release files exist
+        run: |
+          echo "=== DEBUG: Checking release files ==="
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Run ID: ${{ steps.run-id.outputs.run_id }}"
+          echo "Test mode: ${{ steps.mode.outputs.is_test }}"
+          echo ""
+          echo "Checking data/published/latest/ directory:"
+          ls -la data/published/latest/ || echo "ERROR: data/published/latest/ does not exist"
+          echo ""
+          echo "Checking for specific files:"
+          [ -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && echo "✓ CSV file exists" || echo "✗ CSV file missing: NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv"
+          [ -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && echo "✓ Latest CSV exists" || echo "✗ Latest CSV missing"
+          [ -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && echo "✓ Zip file exists" || echo "✗ Zip file missing: nycgo-run-${{ steps.run-id.outputs.run_id }}.zip"
+          [ -f "data/published/latest/run_changelog.csv" ] && echo "✓ Changelog exists" || echo "✗ Changelog missing"
+          [ -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && echo "✓ Release notes exist" || echo "✗ Release notes missing"
+
       - name: Create GitHub Release
         id: create-release
         continue-on-error: true
@@ -204,12 +235,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check release creation result
-        if: steps.create-release.outcome != 'success'
+        if: always()
         run: |
-          echo "ERROR: Release creation failed!"
-          echo "Outcome: ${{ steps.create-release.outcome }}"
-          echo "Please check the logs above for details"
-          exit 1
+          echo "Release step outcome: ${{ steps.create-release.outcome }}"
+          echo "Release step conclusion: ${{ steps.create-release.conclusion }}"
+          if [ "${{ steps.create-release.outcome }}" != "success" ]; then
+            echo "ERROR: Release creation failed!"
+            echo "Outcome: ${{ steps.create-release.outcome }}"
+            echo "Conclusion: ${{ steps.create-release.conclusion }}"
+            echo "Please check the 'Create GitHub Release' step logs above for details"
+            exit 1
+          else
+            echo "✅ Release created successfully"
+          fi
 
       - name: Summary
         run: |
