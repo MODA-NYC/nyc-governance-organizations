@@ -199,22 +199,21 @@ jobs:
           fi
 
       - name: Verify release files exist
+        if: steps.mode.outputs.is_test == 'true'
         run: |
-          echo "=== DEBUG: Checking release files ==="
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Version: ${{ steps.version.outputs.version }}"
-          echo "Run ID: ${{ steps.run-id.outputs.run_id }}"
-          echo "Test mode: ${{ steps.mode.outputs.is_test }}"
-          echo ""
-          echo "Checking data/published/latest/ directory:"
-          ls -la data/published/latest/ || echo "ERROR: data/published/latest/ does not exist"
-          echo ""
-          echo "Checking for specific files:"
-          [ -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && echo "✓ CSV file exists" || echo "✗ CSV file missing: NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv"
-          [ -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && echo "✓ Latest CSV exists" || echo "✗ Latest CSV missing"
-          [ -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && echo "✓ Zip file exists" || echo "✗ Zip file missing: nycgo-run-${{ steps.run-id.outputs.run_id }}.zip"
-          [ -f "data/published/latest/run_changelog.csv" ] && echo "✓ Changelog exists" || echo "✗ Changelog missing"
-          [ -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && echo "✓ Release notes exist" || echo "✗ Release notes missing"
+          echo "Verifying release files..."
+          MISSING_FILES=()
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("CSV file")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && MISSING_FILES+=("Latest CSV")
+          [ ! -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && MISSING_FILES+=("Zip file")
+          [ ! -f "data/published/latest/run_changelog.csv" ] && MISSING_FILES+=("Changelog")
+          [ ! -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && MISSING_FILES+=("Release notes")
+
+          if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+            echo "⚠️  Warning: Missing files: ${MISSING_FILES[*]}"
+          else
+            echo "✅ All release files verified"
+          fi
 
       - name: Create GitHub Release
         id: create-release
@@ -235,19 +234,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check release creation result
-        if: always()
+        if: always() && steps.create-release.outcome != 'success'
         run: |
-          echo "Release step outcome: ${{ steps.create-release.outcome }}"
-          echo "Release step conclusion: ${{ steps.create-release.conclusion }}"
-          if [ "${{ steps.create-release.outcome }}" != "success" ]; then
-            echo "ERROR: Release creation failed!"
-            echo "Outcome: ${{ steps.create-release.outcome }}"
-            echo "Conclusion: ${{ steps.create-release.conclusion }}"
-            echo "Please check the 'Create GitHub Release' step logs above for details"
-            exit 1
-          else
-            echo "✅ Release created successfully"
-          fi
+          echo "❌ ERROR: Release creation failed!"
+          echo "Outcome: ${{ steps.create-release.outcome }}"
+          echo "Conclusion: ${{ steps.create-release.conclusion }}"
+          echo "Please check the 'Create GitHub Release' step logs above for details"
+          exit 1
 
       - name: Summary
         run: |
