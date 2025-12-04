@@ -1,0 +1,144 @@
+{
+  "security_policies": {
+    "data_handling": {
+      "principles": [
+        "Use data for legitimate civic transparency purposes only",
+        "Respect individual privacy and confidentiality",
+        "Follow NYC Open Data terms of service",
+        "Implement appropriate data retention policies",
+        "Protect sensitive information in logs and outputs"
+      ],
+      "data_retention": {
+        "raw_data": "90 days unless required for validation",
+        "processed_data": "Retained for project lifecycle",
+        "logs": "30 days for operational logs, 1 year for audit logs",
+        "cache": "24 hours for API responses, 7 days for static content"
+      },
+      "sensitive_data": {
+        "personal_information": "Redact from logs and public outputs",
+        "contact_details": "Remove from published datasets",
+        "internal_processes": "Keep confidential unless publicly available",
+        "draft_documents": "Do not include in public releases"
+      }
+    },
+    "web_scraping": {
+      "ethical_guidelines": [
+        "Respect robots.txt and website terms of service",
+        "Implement appropriate rate limiting and delays",
+        "Use professional identification in user agents",
+        "Monitor for website changes and update accordingly",
+        "Avoid excessive load on government servers"
+      ],
+      "rate_limits": {
+        "nyc_gov": "2 second delay between requests",
+        "data_cityofnewyork_us": "1 second delay with app token",
+        "datacommons_org": "As specified by API terms",
+        "concurrent_requests": "Maximum 2 concurrent connections"
+      },
+      "monitoring": {
+        "response_codes": "Log and alert on 4xx/5xx responses",
+        "request_volumes": "Monitor daily request counts",
+        "error_rates": "Track and investigate error patterns",
+        "performance": "Monitor response times and adjust delays"
+      }
+    },
+    "api_security": {
+      "token_management": [
+        "Store API tokens in environment variables only",
+        "Never commit tokens to version control",
+        "Rotate tokens regularly according to provider recommendations",
+        "Monitor token usage and rate limits",
+        "Revoke tokens immediately if compromised"
+      ],
+      "access_control": [
+        "Limit API access to project-specific needs only",
+        "Use least-privilege principle for data access",
+        "Implement audit logging for all API calls",
+        "Validate all external data before processing",
+        "Sanitize inputs to prevent injection attacks"
+      ]
+    },
+    "research_integrity": {
+      "documentation": [
+        "Maintain complete audit trail for all data sources",
+        "Document methodology and decision rationale",
+        "Cite all sources with specific dates and URLs",
+        "Version control all configuration and code changes",
+        "Preserve original source data for verification"
+      ],
+      "quality_assurance": [
+        "Cross-validate findings with multiple sources",
+        "Implement systematic error checking procedures",
+        "Maintain clear separation between data and analysis",
+        "Document limitations and uncertainty in findings",
+        "Enable reproducible research through clear methodology"
+      ],
+      "transparency": [
+        "Make methodology publicly available",
+        "Provide clear attribution for all sources",
+        "Document any conflicts of interest",
+        "Enable public verification of findings",
+        "Respond promptly to questions about methodology"
+      ]
+    }
+  },
+  "environment_configuration": {
+    "required_variables": [
+      "SOCRATA_APP_TOKEN",
+      "RESEARCHER_CONTACT",
+      "PROJECT_NAME"
+    ],
+    "optional_variables": [
+      "DATA_COMMONS_API_KEY",
+      "LOG_LEVEL",
+      "CACHE_ENABLED"
+    ],
+    "security_variables": [
+      "ENABLE_AUDIT_LOGGING=true",
+      "DATA_RETENTION_DAYS=90",
+      "CACHE_SENSITIVE_DATA=false"
+    ]
+  },
+  "compliance": {
+    "nyc_open_data": {
+      "terms_url": "https://opendata.cityofnewyork.us/overview/",
+      "attribution_required": true,
+      "commercial_use": "Permitted with attribution",
+      "data_quality": "Best effort, verify independently"
+    },
+    "civic_ai_tools": {
+      "community_guidelines": "../civic-ai-tools/configs/security-policies.json",
+      "reporting": "Follow community reporting procedures for issues",
+      "contributions": "Share improvements back to community when appropriate"
+    },
+    "academic_standards": {
+      "citation": "Follow academic citation standards for all sources",
+      "peer_review": "Enable external validation of methodology",
+      "data_sharing": "Make non-sensitive data available for verification",
+      "replication": "Document procedures to enable replication"
+    }
+  },
+  "incident_response": {
+    "data_breach": [
+      "Immediately secure and isolate affected systems",
+      "Document scope and nature of potential breach",
+      "Notify relevant authorities as required",
+      "Review and update security procedures",
+      "Conduct post-incident analysis and improvements"
+    ],
+    "api_abuse": [
+      "Immediately cease API activity if abuse suspected",
+      "Review logs to understand scope of issue",
+      "Contact API provider if rate limits exceeded",
+      "Adjust procedures to prevent recurrence",
+      "Document incident and response for future reference"
+    ],
+    "data_quality": [
+      "Validate suspicious data against multiple sources",
+      "Document and investigate data quality issues",
+      "Correct errors and update affected analyses",
+      "Notify users of corrections when appropriate",
+      "Improve validation procedures to prevent recurrence"
+    ]
+  }
+}

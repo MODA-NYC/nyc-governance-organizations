@@ -1,0 +1,55 @@
+{
+  "mcpServers": {
+    "opengov-nyc": {
+      "command": "node",
+      "args": ["../opengov-mcp-server/dist/index.js"],
+      "env": {
+        "PORT": "10000",
+        "DEFAULT_DOMAIN": "data.cityofnewyork.us",
+        "SOCRATA_APP_TOKEN": "${SOCRATA_APP_TOKEN}",
+        "LOG_LEVEL": "info",
+        "ENABLE_AUDIT_LOGGING": "true"
+      }
+    },
+    "data-commons": {
+      "command": "python3",
+      "args": ["-m", "datacommons_mcp"],
+      "env": {
+        "DC_API_ROOT": "https://datacommons.org",
+        "DATA_COMMONS_API_KEY": "${DATA_COMMONS_API_KEY}",
+        "LOG_LEVEL": "info",
+        "CACHE_ENABLED": "true",
+        "CACHE_DURATION": "3600"
+      }
+    },
+    "playwright-civic": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {
+        "PLAYWRIGHT_HEADLESS": "true",
+        "PLAYWRIGHT_TIMEOUT": "30000",
+        "PLAYWRIGHT_DELAY": "2000",
+        "USER_AGENT": "NYC-Governance-Research/1.0 (Phase II Data Collection; ${RESEARCHER_CONTACT})",
+        "CACHE_ENABLED": "true"
+      }
+    }
+  },
+  "skills": [
+    "../civic-ai-tools/skills/opengov-mcp-companion",
+    "./skills/nyc-governance-schema",
+    "./skills/moa-research-protocol",
+    "./skills/nyc-legal-citation",
+    "../civic-ai-tools/skills/government-web-scraping",
+    "../civic-ai-tools/skills/legal-document-formatting"
+  ],
+  "production": {
+    "note": "Production configuration optimized for performance and reliability",
+    "features": [
+      "Headless browser mode for efficient scraping",
+      "Audit logging enabled for transparency",
+      "Caching enabled for improved performance",
+      "Respectful rate limiting and delays",
+      "Professional user agent identification"
+    ]
+  }
+}

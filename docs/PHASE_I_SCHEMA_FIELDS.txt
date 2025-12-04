@@ -1,0 +1,79 @@
+# Phase I Schema Fields (v1.0.0)
+
+## Golden Dataset Fields (39 total)
+
+RecordID
+Name
+NameAlphabetized
+OperationalStatus
+OrganizationType
+Description
+URL
+AlternateOrFormerNames
+Acronym
+AlternateOrFormerAcronyms
+BudgetCode
+OpenDatasetsURL
+FoundingYear
+PrincipalOfficerName
+PrincipalOfficerTitle
+PrincipalOfficerContactURL
+Notes
+InstanceOf
+Name - NYC.gov Agency List
+Name - NYC.gov Mayor's Office
+Name - NYC Open Data Portal
+Name - ODA
+Name - CPO
+Name - WeGov
+Name - Greenbook
+Name - Checkbook
+Name - HOO
+Name - Ops
+Name - MOA
+NYC.gov Agency Directory
+Jan 2025 Org Chart
+PrincipalOfficerFullName
+PrincipalOfficerGivenName
+PrincipalOfficerMiddleNameOrInitial
+PrincipalOfficerFamilyName
+PrincipalOfficerSuffix
+InOrgChart
+ReportsTo
+ReportingNotes
+
+## Public Export Fields (16 fields, snake_case)
+
+record_id
+name
+name_alphabetized
+operational_status
+organization_type
+url
+alternate_or_former_names
+acronym
+alternate_or_former_acronyms
+principal_officer_full_name
+principal_officer_first_name
+principal_officer_last_name
+principal_officer_title
+principal_officer_contact_url
+reports_to
+in_org_chart
+
+## Additional Computed Field
+
+listed_in_nyc_gov_agency_directory
+
+## Phase II Fields (DO NOT USE in Phase I edits)
+
+org_chart_oversight
+authorizing_authority
+authorizing_url
+appointments_summary
+governance_structure
+org_chart_oversight_record_id
+org_chart_oversight_name
+parent_organization_record_id
+parent_organization_name
+authorizing_authority_type

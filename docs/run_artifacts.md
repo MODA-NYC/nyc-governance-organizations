@@ -40,7 +40,12 @@ All outputs remain in pre-release state until the publish CLI promotes them. Req
 - `run_changelog.csv` – per-run change log describing transformations performed
 - `run_summary.json` – summary metadata (record counts, key field rollups, quality checks)
 
-File naming should include `_pre-release` to signal unpublished status. When the run is published, the publish CLI will create `_final` copies in `data/published/`.
+File naming should include `_pre-release` to signal unpublished status. When the run is published, the CLI will promote these to versioned artifacts in `data/published/` (e.g., `NYCGO_golden_dataset_v1.0.0_final.csv`) and refresh the tracked copies in `data/published/latest/`.
+
+> **Publish side-effects**
+> - `NYCGO_golden_dataset_{version}.csv` and `NYCGovernanceOrganizations_{version}.csv` are rewritten in `data/published/latest/` (no `_final` suffix).
+> - `run_summary.json` from the run folder is copied into `data/published/latest/` for quick reference.
+> - If `crosswalk.csv` exists in the run outputs it is also copied into `data/published/latest/` so the latest crosswalk travels with the public dataset.
 
 ### `review/`
 

@@ -16,14 +16,45 @@ NYC Agencies and Governance Organizations is a standardized reference list of NY
 
 Each record is included in at least one of two authoritative sources: the Citywide Org Chart or an internal list of NYC governance organizations maintained by the Mayor’s Office of Operations. Each record includes the organization’s preferred and alternate names, acronyms, type classification, operational status, principal officer information, reporting relationship, official website, and directory-inclusion flags. All organizations in this dataset are formally established through a legal or administrative instrument, such as an NYC Charter provision, Mayoral Executive Order, or local or state enabling statute.
 
-To make this data publicly available, we built a repeatable publication pipeline with rule-based cleaning, Unicode/encoding fixes, name parsing, de-duplication, and a comprehensive audit trail of every change. The workflow supports structured QA, supplemental edits, and scripted exports for publication—so the dataset can keep pace as executive orders or Charter updates create, merge, or retire units. NYC Agencies and Governance Organizations helps New Yorkers and City staff understand who’s who in government and how units relate. It can be paired with budgets, contracts, performance metrics, or program datasets to analyze services and accountability across the enterprise. The dataset and accompanying crosswalks in this GitHub repository are designed to combine other datasets that use legacy names or system-specific codes, improving interoperability citywide. Documentation and processing scripts are available in this repository, and the Agency Directory provides an accessible front door for the public.
+To make this data publicly available, we built a repeatable publication pipeline with rule-based cleaning, Unicode/encoding fixes, name parsing, de-duplication, and a comprehensive audit trail of every change. The workflow supports structured QA, supplemental edits, and scripted exports for publication—so the dataset can keep pace as executive orders or Charter updates create, merge, or retire units. NYC Agencies and Governance Organizations helps New Yorkers and City staff understand who's who in government and how units relate. It can be paired with budgets, contracts, performance metrics, or program datasets to analyze services and accountability across the enterprise. The dataset and accompanying crosswalks in this GitHub repository are designed to combine other datasets that use legacy names or system-specific codes, improving interoperability citywide. Documentation and processing scripts are available in this repository, and the Agency Directory provides an accessible front door for the public.
 
-## Public schema (current release)
-Initial public release exposes 17 fields; legal lineage (citations, founding/sunset) is planned for a later release.
+## Phase I vs Phase II
+
+This repository maintains two versions of the dataset schema:
+
+### Phase I (v1.1.1) - Final Release
+- **Released**: November 21, 2024
+- **Golden Dataset Fields**: 38 fields
+- **Public Export Fields**: 16 fields (+ 1 computed field: `listed_in_nyc_gov_agency_directory`)
+- **Entity Count**: 434
+- **RecordID Format**: `NYC_GOID_XXXXXX` (e.g., `NYC_GOID_000318`)
+- **Relationship Field**: `reports_to` (text field capturing both org chart and parent-child relationships)
+- **Documentation**: See [`docs/PHASE_I_PIPELINE.md`](docs/PHASE_I_PIPELINE.md) for complete Phase I workflow and schema details
+
+### Phase II (v2.0.0-dev) - Current Development
+- **Status**: In development
+- **Golden Dataset Fields**: 46 fields (38 original - 1 retired + 9 new)
+- **Public Export Fields**: 25 fields
+- **Entity Count**: 433 (will be 434 when complete)
+- **RecordID Format**: 6-digit numeric (e.g., `100318`)
+- **Relationship Fields**: 
+  - `org_chart_oversight_record_id` and `org_chart_oversight_name` (for org chart/political oversight)
+  - `parent_organization_record_id` and `parent_organization_name` (for parent-child governance relationships)
+- **New Fields**: `governance_structure`, `authorizing_authority`, `authorizing_authority_type`, `authorizing_url`, `appointments_summary`
+- **Retired Fields**: `reports_to` (replaced by new relationship fields)
+- **Documentation**: See [`PHASE_II_PLAN.md`](PHASE_II_PLAN.md) for Phase II implementation details
+
+**Note**: For urgent Phase I-compatible updates during Phase II development, use [`scripts/pipeline/export_phase_i.py`](scripts/pipeline/export_phase_i.py) to generate Phase I-compatible exports from Phase II datasets.
+
+## Public schema
+
+### Phase II Public Schema (v2.0.0-dev)
+
+The current development version exposes 25 fields. For Phase I schema (16 fields), see [`docs/PHASE_I_SCHEMA.md`](docs/PHASE_I_SCHEMA.md).
 
 | Field | Description |
 |-------|-------------|
-| record_id | Stable internal ID (immutable) |
+| record_id | Stable internal ID (immutable, 6-digit numeric format) |
 | operational_status | Current status of the organization |
 | organization_type | Category (e.g., Mayoral Agency, Advisory/Regulatory, etc.) |
 | name | Official/preferred name |
@@ -37,9 +68,17 @@ Initial public release exposes 17 fields; legal lineage (citations, founding/sun
 | principal_officer_first_name | Given name (derived/maintained) |
 | principal_officer_last_name | Family name (derived/maintained) |
 | principal_officer_contact_url | Profile/contact page for principal officer |
-| reports_to | Reporting/administrative/oversight relationship |
 | in_org_chart | Flag used for citywide org chart |
 | listed_in_nyc_gov_agency_directory | Flag used for nyc.gov Agency Directory |
+| governance_structure | Narrative description of governance structure (e.g., board composition) |
+| org_chart_oversight_record_id | RecordID of entity providing org chart/political oversight |
+| org_chart_oversight_name | Name of entity providing org chart/political oversight |
+| parent_organization_record_id | RecordID of parent organization (for specialized boards, divisions) |
+| parent_organization_name | Name of parent organization |
+| authorizing_authority | Legal authority establishing the organization (e.g., "NYC Charter § 2203") |
+| authorizing_authority_type | Type of legal authority (NYC Charter, Mayoral Executive Order, etc.) |
+| authorizing_url | URL to legal document or statute |
+| appointments_summary | Description of how appointments/selection works |
 
 ## Run artifacts baseline
 
@@ -118,6 +157,8 @@ source .venv/bin/activate
 ~~~
 
 ### Pipeline Workflow
+
+**Note**: Current pipeline generates Phase II format (v2.0.0-dev). For Phase I format workflow, see [`docs/PHASE_I_PIPELINE.md`](docs/PHASE_I_PIPELINE.md). For urgent Phase I-compatible updates during Phase II development, use [`scripts/pipeline/export_phase_i.py`](scripts/pipeline/export_phase_i.py).
 
 #### 1 · Prepare Schema *(optional)*
 ~~~bash
