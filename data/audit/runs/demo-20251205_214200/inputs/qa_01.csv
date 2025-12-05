@@ -1,0 +1,4 @@
+record_id,record_name,field_name,action,justification,evidence_url
+NYC_GOID_000002,"Administration for Children's Services",notes,"Set to ""Test edit from review interface - Sprint 1 validation""","Testing the batch review interface",""
+NYC_GOID_000010,"Age Friendly Commission",notes,"Set to ""Test edit 2 - validating pipeline flow""","Testing batch edit pipeline",""
+NYC_GOID_000343,"New York City Office of the Actuary",principal_officer_full_name,"Set to ""Test""","test",""
