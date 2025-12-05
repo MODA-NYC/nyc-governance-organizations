@@ -229,8 +229,10 @@ jobs:
         run: |
           echo "Verifying release files..."
           MISSING_FILES=()
-          [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("CSV file")
-          [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && MISSING_FILES+=("Latest CSV")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("NYCGovernanceOrganizations versioned CSV")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && MISSING_FILES+=("NYCGovernanceOrganizations latest CSV")
+          [ ! -f "data/published/latest/NYCGO_golden_dataset_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("NYCGO_golden_dataset versioned CSV")
+          [ ! -f "data/published/latest/NYCGO_golden_dataset_latest.csv" ] && MISSING_FILES+=("NYCGO_golden_dataset latest CSV")
           [ ! -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && MISSING_FILES+=("Zip file")
           [ ! -f "data/published/latest/run_changelog.csv" ] && MISSING_FILES+=("Changelog")
           [ ! -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && MISSING_FILES+=("Release notes")
@@ -252,6 +254,8 @@ jobs:
           files: |
             data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv
             data/published/latest/NYCGovernanceOrganizations_latest.csv
+            data/published/latest/NYCGO_golden_dataset_${{ steps.version.outputs.version }}.csv
+            data/published/latest/NYCGO_golden_dataset_latest.csv
             data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip
             data/published/latest/run_changelog.csv
           draft: ${{ steps.mode.outputs.is_test == 'true' }}
