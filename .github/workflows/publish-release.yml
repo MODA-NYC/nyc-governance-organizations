@@ -158,6 +158,31 @@ jobs:
 
           echo "Publish complete"
 
+      - name: Create latest golden dataset copy
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          # Remove any -test suffix for file naming
+          VERSION_CLEAN=$(echo "$VERSION" | sed 's/-test.*//')
+
+          GOLDEN_VERSIONED="data/published/latest/NYCGO_golden_dataset_${VERSION_CLEAN}.csv"
+          GOLDEN_LATEST="data/published/latest/NYCGO_golden_dataset_latest.csv"
+
+          if [ -f "$GOLDEN_VERSIONED" ]; then
+            cp "$GOLDEN_VERSIONED" "$GOLDEN_LATEST"
+            echo "Created $GOLDEN_LATEST from $GOLDEN_VERSIONED"
+          else
+            echo "Warning: $GOLDEN_VERSIONED not found, checking for any versioned golden..."
+            # Fallback: find most recent versioned golden dataset
+            LATEST_GOLDEN=$(ls -t data/published/latest/NYCGO_golden_dataset_v*.csv 2>/dev/null | head -1)
+            if [ -n "$LATEST_GOLDEN" ]; then
+              cp "$LATEST_GOLDEN" "$GOLDEN_LATEST"
+              echo "Created $GOLDEN_LATEST from $LATEST_GOLDEN (fallback)"
+            else
+              echo "Error: No golden dataset found to create latest copy"
+              exit 1
+            fi
+          fi
+
       - name: Commit published files
         if: steps.mode.outputs.is_test != 'true'
         run: |
@@ -166,6 +191,7 @@ jobs:
 
           # Add all published artifacts
           git add data/published/
+          git add data/published/latest/NYCGO_golden_dataset_latest.csv
           git add data/changelog.csv
           git add dist/
           git add "*.csv" || true
