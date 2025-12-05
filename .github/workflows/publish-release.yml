@@ -161,10 +161,9 @@ jobs:
       - name: Create latest golden dataset copy
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          # Remove any -test suffix for file naming
-          VERSION_CLEAN=$(echo "$VERSION" | sed 's/-test.*//')
 
-          GOLDEN_VERSIONED="data/published/latest/NYCGO_golden_dataset_${VERSION_CLEAN}.csv"
+          # Use full version (including -test suffix) since publish_run.py names files with full version
+          GOLDEN_VERSIONED="data/published/latest/NYCGO_golden_dataset_${VERSION}.csv"
           GOLDEN_LATEST="data/published/latest/NYCGO_golden_dataset_latest.csv"
 
           if [ -f "$GOLDEN_VERSIONED" ]; then
