@@ -2,6 +2,14 @@
 
 This workspace contains two related repositories for managing NYC Governance Organizations data.
 
+> **Multi-repo setup**: If you're working with both `nyc-governance-organizations` and `nycgo-admin-ui`, create a parent folder containing both repos and copy this CLAUDE.md there. This gives Claude Code context across both repositories.
+> ```
+> mkdir nycgo && cd nycgo
+> git clone <nyc-governance-organizations-url>
+> git clone <nycgo-admin-ui-url>
+> cp nyc-governance-organizations/CLAUDE.md .
+> ```
+
 ## Sprint Planning
 
 Sprint documentation lives in `docs/sprints/`:
