@@ -561,6 +561,7 @@ def main():
     # Published export exceptions: records that should always be included
     # regardless of in_org_chart status
     published_export_exceptions = [
+        "NYC_GOID_000354",  # Office of Collective Bargaining
         "NYC_GOID_000476",  # MTA (Metropolitan Transportation Authority)
         "NYC_GOID_100030",  # Office of Digital Assets and Blockchain
     ]
@@ -758,6 +759,7 @@ def main_with_dataframe(
     # Published export exceptions: records that should always be included
     # regardless of in_org_chart status
     published_export_exceptions = [
+        "NYC_GOID_000354",  # Office of Collective Bargaining
         "NYC_GOID_000476",  # MTA (Metropolitan Transportation Authority)
         "NYC_GOID_100030",  # Office of Digital Assets and Blockchain
     ]
