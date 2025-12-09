@@ -329,6 +329,18 @@ def generate_release_notes(  # noqa: C901
             ]
         )
 
+    # Add link to full changelog
+    notes_lines.extend(
+        [
+            "",
+            (
+                "📋 [View full changelog]"
+                "(https://github.com/MODA-NYC/nyc-governance-organizations"
+                "/blob/main/data/changelog.csv)"
+            ),
+        ]
+    )
+
     notes_lines.extend(
         [
             "",

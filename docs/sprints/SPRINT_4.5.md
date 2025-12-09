@@ -1,6 +1,6 @@
 # Sprint 4.5: Release Notes & Smart Versioning
 
-**Status: ⚠️ PARTIAL** (Phase 1 and 1.5 complete, Phase 2 and 3 pending)
+**Status: ⚠️ PARTIAL** (Phase 1, 1.5, 1.6 complete; Phase 2 and 3 pending)
 
 ## Overview
 
@@ -111,6 +111,45 @@ elif qa_changes > 5:
 - [x] Changes >5: Show "See run_changelog.csv" message
 - [x] Table includes: Record ID, Field, Old Value, New Value, Reason
 - [x] Long values truncated to prevent table overflow
+
+---
+
+## Phase 1.6: Add Full Changelog Link (✅ COMPLETED)
+
+### 1.6.1 Requirements
+
+After the Changes Detail section (or summary), add a link to the full running changelog:
+
+```markdown
+## Changes
+
+- **Total changes:** 2
+- **QA edits:** 2
+- **Global rules:** 0
+- **Directory field changes:** 0
+
+### Changes Detail
+| Record | Field | Old Value | New Value | Reason |
+...
+
+📋 [View full changelog](https://github.com/MODA-NYC/nyc-governance-organizations/blob/main/data/changelog.csv)
+```
+
+### 1.6.2 Implementation
+
+Update `generate_release_notes()` in `publish.py` to add a link after the changes section:
+
+```python
+# After the changes table or summary
+notes_lines.extend([
+    "",
+    "📋 [View full changelog](https://github.com/MODA-NYC/nyc-governance-organizations/blob/main/data/changelog.csv)",
+])
+```
+
+### Acceptance Criteria
+- [x] Release notes include link to full changelog
+- [x] Link appears after the Changes section
 
 ---
 
@@ -288,7 +327,9 @@ Major version bumps require manual trigger.
 
 ## Definition of Done
 
-- [ ] Release notes include all 6 asset files
+- [x] Release notes include all 6 asset files
+- [x] Release notes show detailed changes table (≤5 edits) or summary (>5)
+- [x] Release notes include link to full changelog
 - [ ] Release notes show GitHub username of editor
 - [ ] Version bump automatically determined based on change type
 - [ ] Major bumps remain manual (for schema changes)
