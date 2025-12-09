@@ -34,11 +34,30 @@ Each pipeline run reads from `NYCGO_golden_dataset_latest.csv`. If run A is proc
 
 ## Solution
 
+### Part A: UI-Level Protection (Admin UI users)
+
 Check GitHub Actions API on page load and periodically. If a workflow is running:
 1. Gray out the entire Edit UI page
 2. Show message: "Edit currently in progress. Check back in a couple minutes."
 3. Provide link to the Actions page to check status
 4. Auto-check every 30-60 seconds; re-enable page when workflow completes
+
+### Part B: Workflow-Level Protection (all commits)
+
+Add GitHub Actions concurrency control to `process-edit.yml` to ensure only one edit processes at a time, regardless of how it was submitted:
+
+```yaml
+concurrency:
+  group: nycgo-edit-processing
+  cancel-in-progress: false  # Queue edits, don't cancel them
+```
+
+This ensures that even if:
+- Multiple users submit edits simultaneously
+- Someone commits directly to the repo
+- The UI check fails
+
+...edits will still be processed one at a time in order.
 
 ## Implementation
 
@@ -146,8 +165,15 @@ Options:
 
 ## Definition of Done
 
-- [ ] Submit button checks workflow status before allowing submission
-- [ ] Clear error message shown when workflow is running
+### Part A (UI)
+- [ ] Page grayed out when workflow is running
+- [ ] Clear message: "Edit currently in progress..."
+- [ ] Link to Actions page provided
+- [ ] Auto-refresh every 30-60 seconds
 - [ ] Works for both admin-ui and pipeline repo workflows
-- [ ] No rate limit issues
-- [ ] Tested end-to-end
+- [ ] No API rate limit issues
+
+### Part B (Workflow)
+- [ ] Concurrency control added to process-edit.yml
+- [ ] Edits queue instead of running in parallel
+- [ ] Tested with concurrent edit submissions
