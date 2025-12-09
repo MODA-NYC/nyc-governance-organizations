@@ -1,6 +1,6 @@
 # Sprint 4.5: Release Notes & Smart Versioning
 
-**Status: 📋 PLANNED**
+**Status: ⚠️ PARTIAL** (Phase 1 and 1.5 complete, Phase 2 and 3 pending)
 
 ## Overview
 
@@ -30,7 +30,7 @@ Currently defaults to whatever is specified (usually patch). Should automaticall
 
 ---
 
-## Phase 1: Fix Release Notes Template
+## Phase 1: Fix Release Notes Template (✅ COMPLETED)
 
 ### 1.1 Update publish.py
 
@@ -50,12 +50,12 @@ f"- `NYCGovernanceOrganizations_latest.csv` - Latest published dataset (copy)",
 ```
 
 ### Acceptance Criteria
-- [ ] Release notes list all 6 asset files
-- [ ] Golden datasets listed before published datasets
+- [x] Release notes list all 6 asset files
+- [x] Golden datasets listed before published datasets
 
 ---
 
-## Phase 1.5: Add Detailed Changes Table to Release Notes
+## Phase 1.5: Add Detailed Changes Table to Release Notes (✅ COMPLETED)
 
 ### 1.5.1 Requirements
 
@@ -107,14 +107,14 @@ elif qa_changes > 5:
 ```
 
 ### Acceptance Criteria
-- [ ] Changes ≤5: Show detailed table with old/new values
-- [ ] Changes >5: Show "See run_changelog.csv" message
-- [ ] Table includes: Record ID, Field, Old Value, New Value, Reason
-- [ ] Long values truncated to prevent table overflow
+- [x] Changes ≤5: Show detailed table with old/new values
+- [x] Changes >5: Show "See run_changelog.csv" message
+- [x] Table includes: Record ID, Field, Old Value, New Value, Reason
+- [x] Long values truncated to prevent table overflow
 
 ---
 
-## Phase 2: Pass GitHub Actor to Release Notes
+## Phase 2: Pass GitHub Actor to Release Notes (📋 PENDING)
 
 ### 2.1 Update process-edit.yml
 
@@ -156,7 +156,7 @@ Change "Published by" to show both:
 
 ---
 
-## Phase 3: Smart Semantic Versioning
+## Phase 3: Smart Semantic Versioning (📋 PENDING)
 
 ### 3.1 Version Bump Rules
 
