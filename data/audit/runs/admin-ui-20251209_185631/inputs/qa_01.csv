@@ -1,0 +1,3 @@
+record_id,record_name,field_name,action,justification,evidence_url
+NYC_GOID_000343,"New York City Office of the Actuary",principal_officer_full_name,"Set to ""Marek Tyszkiewicz""","Updated name and remove ""1"" from URL.",""
+NYC_GOID_000343,"New York City Office of the Actuary",principal_officer_contact_url,"Set to ""https://www.nyc.gov/site/actuary/contactus/email-the-office.page""","Updated name and remove ""1"" from URL.",""
