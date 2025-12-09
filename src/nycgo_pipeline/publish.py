@@ -139,7 +139,9 @@ def append_run_changelog(
             "old_value": raw_rows.get("old_value", ""),
             "new_value": raw_rows.get("new_value", ""),
             "reason": raw_rows.get("reason", ""),
-            "evidence_url": raw_rows.get("evidence_url", ""),  # Extract from internal changelog
+            "evidence_url": raw_rows.get(
+                "evidence_url", ""
+            ),  # Extract from internal changelog
             "source_ref": raw_rows.get("feedback_source", ""),
             "operator": operator_series,
             "notes": raw_rows.apply(prep_notes, axis=1),
@@ -268,9 +270,10 @@ def generate_release_notes(  # noqa: C901
         "",
     ]
 
+    qa_changes = counts.get("qa_changes", 0)
     if changelog_entry_count > 0:
         notes_lines.append(f"- **Total changes:** {changelog_entry_count}")
-        notes_lines.append(f"- **QA edits:** {counts.get('qa_changes', 0)}")
+        notes_lines.append(f"- **QA edits:** {qa_changes}")
         notes_lines.append(
             f"- **Global rules:** {counts.get('global_rules_changes', 0)}"
         )
@@ -279,6 +282,52 @@ def generate_release_notes(  # noqa: C901
         )
     else:
         notes_lines.append("- No changes recorded in this run")
+
+    # Add detailed changes table if 5 or fewer QA edits
+    if 0 < qa_changes <= 5 and run_changelog.exists():
+        changelog_df = pd.read_csv(run_changelog, dtype=str).fillna("")
+        # Filter to only QA edits (not global rules)
+        qa_edits = changelog_df[
+            ~changelog_df.get("feedback_source", pd.Series()).str.contains(
+                "System_", na=False
+            )
+        ]
+
+        if len(qa_edits) > 0:
+            notes_lines.extend(
+                [
+                    "",
+                    "### Changes Detail",
+                    "",
+                    "| Record | Field | Old Value | New Value | Reason |",
+                    "|--------|-------|-----------|-----------|--------|",
+                ]
+            )
+
+            for _, row in qa_edits.iterrows():
+                old_val = str(row.get("old_value", "") or "(empty)")
+                new_val = str(row.get("new_value", "") or "(empty)")
+                # Truncate long values
+                if len(old_val) > 30:
+                    old_val = old_val[:30] + "..."
+                if len(new_val) > 30:
+                    new_val = new_val[:30] + "..."
+                reason = str(row.get("reason", ""))[:40]
+                notes_lines.append(
+                    f"| {row.get('record_id', '')} | "
+                    f"{row.get('column_changed', '')} | "
+                    f"{old_val} | {new_val} | {reason} |"
+                )
+    elif qa_changes > 5:
+        notes_lines.extend(
+            [
+                "",
+                (
+                    f"*{qa_changes} changes made. "
+                    "See `run_changelog.csv` for full details.*"
+                ),
+            ]
+        )
 
     notes_lines.extend(
         [
@@ -293,7 +342,12 @@ def generate_release_notes(  # noqa: C901
             "## Attached Assets",
             "",
             f"- `nycgo-run-{run_id}.zip` - Full run artifacts bundle",
-            f"- `NYCGovernanceOrganizations_{version}.csv` - Published dataset",
+            (f"- `NYCGO_golden_dataset_{version}.csv` - " "Golden dataset (internal)"),
+            "- `NYCGO_golden_dataset_latest.csv` - Latest golden dataset (copy)",
+            (
+                f"- `NYCGovernanceOrganizations_{version}.csv` - "
+                "Published dataset (public)"
+            ),
             (
                 "- `NYCGovernanceOrganizations_latest.csv` - "
                 "Latest published dataset (copy)"

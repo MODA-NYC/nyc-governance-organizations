@@ -55,6 +55,65 @@ f"- `NYCGovernanceOrganizations_latest.csv` - Latest published dataset (copy)",
 
 ---
 
+## Phase 1.5: Add Detailed Changes Table to Release Notes
+
+### 1.5.1 Requirements
+
+When there are 5 or fewer QA edits, show a detailed table in the release notes:
+
+| Record | Field | Old Value | New Value | Reason |
+|--------|-------|-----------|-----------|--------|
+| NYC_GOID_000002 | Notes | (test data) | (empty) | Removing test data |
+
+When there are more than 5 changes, show summary only with note:
+```
+See `run_changelog.csv` for full details.
+```
+
+### 1.5.2 Implementation
+
+Update `generate_release_notes()` in `publish.py`:
+
+```python
+# After the Changes summary section
+qa_changes = counts.get('qa_changes', 0)
+if 0 < qa_changes <= 5 and run_changelog.exists():
+    changelog_df = pd.read_csv(run_changelog, dtype=str)
+    # Filter to only QA edits (not global rules)
+    qa_edits = changelog_df[~changelog_df['feedback_source'].str.contains('System_', na=False)]
+
+    notes_lines.extend([
+        "",
+        "### Changes Detail",
+        "",
+        "| Record | Field | Old Value | New Value | Reason |",
+        "|--------|-------|-----------|-----------|--------|",
+    ])
+
+    for _, row in qa_edits.iterrows():
+        old_val = row.get('old_value', '') or '(empty)'
+        new_val = row.get('new_value', '') or '(empty)'
+        # Truncate long values
+        old_val = old_val[:30] + '...' if len(old_val) > 30 else old_val
+        new_val = new_val[:30] + '...' if len(new_val) > 30 else new_val
+        notes_lines.append(
+            f"| {row.get('record_id', '')} | {row.get('column_changed', '')} | {old_val} | {new_val} | {row.get('reason', '')[:40]} |"
+        )
+elif qa_changes > 5:
+    notes_lines.extend([
+        "",
+        f"*{qa_changes} changes made. See `run_changelog.csv` for full details.*",
+    ])
+```
+
+### Acceptance Criteria
+- [ ] Changes ≤5: Show detailed table with old/new values
+- [ ] Changes >5: Show "See run_changelog.csv" message
+- [ ] Table includes: Record ID, Field, Old Value, New Value, Reason
+- [ ] Long values truncated to prevent table overflow
+
+---
+
 ## Phase 2: Pass GitHub Actor to Release Notes
 
 ### 2.1 Update process-edit.yml
