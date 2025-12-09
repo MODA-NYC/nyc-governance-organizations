@@ -19,9 +19,26 @@ If a user submits another edit before step 4 completes, it could cause:
 - Race conditions
 - Duplicate or lost edits
 
+### Real-World Example (2025-12-09)
+
+The Queens Museum edit was lost due to this race condition:
+
+| Time (UTC) | Event | Result |
+|------------|-------|--------|
+| 18:39:43 | Run 183943 processed Queens Museum edit | Edit applied to output |
+| 18:40:07 | v1.2.0 released (different run) | Overwrote `_latest.csv` |
+| 18:56:31 | Run 185631 started | Used v1.2.0 as input (no Queens Museum changes) |
+| 18:56:53 | v1.3.0 released | Queens Museum edit permanently lost |
+
+Each pipeline run reads from `NYCGO_golden_dataset_latest.csv`. If run A is processing and run B starts before A is published, B will use the old dataset without A's changes. When B is published, A's changes are lost.
+
 ## Solution
 
-Check GitHub Actions API before allowing submission. If a workflow is running, show a message and disable the submit button.
+Check GitHub Actions API on page load and periodically. If a workflow is running:
+1. Gray out the entire Edit UI page
+2. Show message: "Edit currently in progress. Check back in a couple minutes."
+3. Provide link to the Actions page to check status
+4. Auto-check every 30-60 seconds; re-enable page when workflow completes
 
 ## Implementation
 
