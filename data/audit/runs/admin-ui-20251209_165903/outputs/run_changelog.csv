@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20251209_165903_1,2025-12-09T16:59:04.864677,NYC_GOID_000354,Office of Collective Bargaining,InOrgChart,,FALSE,admin_ui_edits.csv,"Set to ""FALSE",Updating the InOrgChart value,,NYCGO Admin UI,direct_set
