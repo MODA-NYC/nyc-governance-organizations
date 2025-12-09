@@ -17,6 +17,7 @@ Sprint documentation lives in `docs/sprints/`:
 - `SPRINT_2.md` - Pipeline Testing & Validation ✅ COMPLETED
 - `SPRINT_3.md` - v1.1.2 Release Fix & Production Pipeline Test ✅ COMPLETED
 - `SPRINT_4.md` - Edit Submission Rate Limiting 📋 PLANNED
+- `SPRINT_4.5.md` - Release Notes & Smart Versioning 📋 PLANNED
 - `SPRINT_5.md` - Data Quality & Standardization ⚠️ PARTIAL
 - `SPRINT_6.md` - Schema Alignment & Directory Logic Refactoring 📋 PLANNED
 - `FUTURE.md` - Phase II Data Release 🔮 DEFERRED
