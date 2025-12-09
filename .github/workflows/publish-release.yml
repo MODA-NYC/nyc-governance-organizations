@@ -192,7 +192,7 @@ jobs:
           git add data/published/
           git add data/published/latest/NYCGO_golden_dataset_latest.csv
           git add data/changelog.csv
-          git add dist/
+          git add dist/ || true  # May be gitignored
           git add "*.csv" || true
           git add "*.md" || true
 
