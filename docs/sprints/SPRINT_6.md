@@ -356,6 +356,89 @@ If we keep both, ensure:
 
 ---
 
+## Phase 6: Edit UI Directory Logic Transparency
+
+### 6.1 Problem
+
+Users editing records don't understand why a record is or isn't in the NYC.gov Agency Directory. The logic is hidden in Python code and not visible in the UI.
+
+### 6.2 Solution
+
+Show directory eligibility reasoning in the Edit UI for each record.
+
+### 6.3 UI Display
+
+When viewing/editing a record, show:
+
+```
+NYC.gov Agency Directory: ✅ True
+
+Why this record qualifies:
+├─ OperationalStatus: Active ✓
+├─ OrganizationType: Mayoral Agency
+├─ Has contact info: ✓ (URL exists)
+└─ Not in exclusion list ✓
+
+📖 View directory logic rules
+```
+
+Or for a record that doesn't qualify:
+
+```
+NYC.gov Agency Directory: ❌ False
+
+Why this record doesn't qualify:
+├─ OperationalStatus: Active ✓
+├─ OrganizationType: Advisory or Regulatory Organization
+├─ InOrgChart: ❌ (empty)
+├─ Has nyc.gov URL: ❌ (uses ocb-nyc.org)
+└─ In advisory exemptions: ❌
+
+📖 View directory logic rules
+```
+
+### 6.4 Implementation Options
+
+**Option A: Client-side logic**
+- Replicate the Python logic in JavaScript
+- Pros: Fast, no API needed
+- Cons: Logic duplication, can drift from Python
+
+**Option B: Pre-computed field**
+- Add `directory_eligibility_reason` field to golden dataset
+- Pipeline computes and stores the reasoning
+- UI just displays it
+- Pros: Single source of truth
+- Cons: Adds field to dataset
+
+**Option C: API endpoint**
+- Create a simple endpoint that evaluates a record
+- Pros: Logic stays in Python
+- Cons: Requires backend infrastructure
+
+**Recommendation**: Option B - add a `directory_eligibility_reason` field computed during export.
+
+### 6.5 Link to Logic Documentation
+
+Add a "View directory logic rules" link that points to:
+- `docs/DIRECTORY_LOGIC.md` (to be created)
+- Or directly to the relevant section of `export_dataset.py`
+
+### 6.6 Files to Modify
+
+- `nycgo-admin-ui/js/app.js` - Display eligibility reasoning
+- `nycgo-admin-ui/index.html` - Add reasoning display section
+- `nyc-governance-organizations/scripts/process/export_dataset.py` - Generate reasoning field
+- `nyc-governance-organizations/docs/DIRECTORY_LOGIC.md` - Document the rules
+
+### Acceptance Criteria
+- [ ] Each record shows directory eligibility reasoning in Edit UI
+- [ ] Reasoning matches actual export logic
+- [ ] Link to documentation provided
+- [ ] Users can understand why a record is/isn't in the directory
+
+---
+
 ## Definition of Done
 
 - [ ] Schema documentation complete (`docs/SCHEMA.md`)
@@ -364,6 +447,7 @@ If we keep both, ensure:
 - [ ] Schema changelog created with historical entries
 - [ ] Schema diff automation in place
 - [ ] Org chart field confusion resolved
+- [ ] Edit UI shows directory eligibility reasoning (Phase 6)
 - [ ] All changes tested with pipeline run
 
 ---
