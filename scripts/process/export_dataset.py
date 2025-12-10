@@ -31,6 +31,95 @@ from nycgo_pipeline.directory_rules import (
     NONPROFIT_EXEMPTIONS,
 )
 
+# =============================================================================
+# CANONICAL COLUMN ORDER DEFINITIONS
+# =============================================================================
+# These define the standard column order for both golden and published datasets.
+# Columns are grouped logically for easier reading and analysis.
+
+GOLDEN_COLUMN_ORDER = [
+    # Identity
+    "record_id",
+    "name",
+    "name_alphabetized",
+    "acronym",
+    "alternate_or_former_names",
+    "alternate_or_former_acronyms",
+    # Status & Type
+    "operational_status",
+    "organization_type",
+    "instance_of",
+    # Description & URLs
+    "description",
+    "url",
+    "open_datasets_url",
+    "founding_year",
+    "budget_code",
+    # Principal Officer (grouped)
+    "principal_officer_full_name",
+    "principal_officer_given_name",
+    "principal_officer_middle_name_or_initial",
+    "principal_officer_family_name",
+    "principal_officer_suffix",
+    "principal_officer_name",  # Legacy field
+    "principal_officer_title",
+    "principal_officer_contact_url",
+    # Hierarchy
+    "in_org_chart",
+    "reports_to",
+    "reporting_notes",
+    "jan_2025_org_chart",
+    # Directory Status
+    "listed_in_nyc_gov_agency_directory",
+    # Crosswalk Names (source system mappings)
+    "name_nycgov_agency_list",
+    "name_nycgov_mayors_office",
+    "name_nyc_open_data_portal",
+    "name_oda",
+    "name_cpo",
+    "name_wegov",
+    "name_greenbook",
+    "name_checkbook",
+    "name_hoo",
+    "name_ops",
+    # Notes
+    "notes",
+]
+
+# Published export uses original column order (not reordered)
+PUBLISHED_COLUMN_ORDER = [
+    "record_id",
+    "name",
+    "name_alphabetized",
+    "operational_status",
+    "organization_type",
+    "url",
+    "alternate_or_former_names",
+    "acronym",
+    "alternate_or_former_acronyms",
+    "principal_officer_full_name",
+    "principal_officer_first_name",
+    "principal_officer_last_name",
+    "principal_officer_title",
+    "principal_officer_contact_url",
+    "in_org_chart",
+    "listed_in_nyc_gov_agency_directory",
+]
+
+
+def reorder_columns(df: pd.DataFrame, column_order: list[str]) -> pd.DataFrame:
+    """Reorder DataFrame columns according to specified order.
+
+    - Columns in column_order appear first, in that order
+    - Any extra columns not in column_order appear at the end (alphabetically)
+    - Missing columns from column_order are skipped
+    """
+    # Get columns that exist in both df and column_order, preserving order
+    ordered_cols = [col for col in column_order if col in df.columns]
+    # Get any extra columns not in the order (e.g., new Phase II fields)
+    extra_cols = sorted([col for col in df.columns if col not in column_order])
+    return df[ordered_cols + extra_cols]
+
 
 def to_snake_case(name: str) -> str:
     """Converts a PascalCase or CamelCase string to snake_case."""
@@ -532,7 +621,9 @@ def main():
     print(f"Saving full golden dataset to {args.output_golden}...")
     try:
         args.output_golden.parent.mkdir(parents=True, exist_ok=True)
-        df.to_csv(args.output_golden, index=False, encoding="utf-8-sig")
+        # Apply canonical column ordering for golden dataset
+        df_ordered = reorder_columns(df, GOLDEN_COLUMN_ORDER)
+        df_ordered.to_csv(args.output_golden, index=False, encoding="utf-8-sig")
         print("✅ Golden dataset saved successfully.")
     except Exception as e:
         print(f"Error saving golden dataset: {e}")
@@ -593,55 +684,22 @@ def main():
     )
 
     # --- Select and order columns for final output ---
-    # Note: Golden dataset now uses snake_case column names
-    required_output_columns = [
-        "record_id",
-        "name",
-        "name_alphabetized",
-        "operational_status",
-        "organization_type",
-        "url",
-        "alternate_or_former_names",
-        "acronym",
-        "alternate_or_former_acronyms",
-        "principal_officer_full_name",
-        "principal_officer_first_name",  # Renamed from principal_officer_given_name
-        "principal_officer_last_name",  # Renamed from principal_officer_family_name
-        "principal_officer_title",
-        "principal_officer_contact_url",
-        "in_org_chart",
+    # Use canonical column order from PUBLISHED_COLUMN_ORDER
+    # Check for required columns (excluding directory status which is added later)
+    required_cols = [
+        c for c in PUBLISHED_COLUMN_ORDER if c != "listed_in_nyc_gov_agency_directory"
     ]
-    # Phase II fields (v2.0.0) - optional, only include if present
-    optional_phase_ii_fields = [
-        "governance_structure",
-        "org_chart_oversight_record_id",
-        "org_chart_oversight_name",
-        "parent_organization_record_id",
-        "parent_organization_name",
-        "authorizing_authority",
-        "authorizing_authority_type",
-        "authorizing_url",
-        "appointments_summary",
-    ]
-
-    # Check for required columns (allow ReportsTo to be missing for Phase II)
-    missing_cols = [
-        col for col in required_output_columns if col not in df_public.columns
-    ]
+    missing_cols = [col for col in required_cols if col not in df_public.columns]
     if missing_cols:
         print(f"Error: Expected columns missing for public export: {missing_cols}")
         sys.exit(1)
 
-    # Add Phase II fields if they exist
-    output_columns = required_output_columns.copy()
-    for field in optional_phase_ii_fields:
-        if field in df_public.columns:
-            output_columns.append(field)
-        else:
-            # Only print note for PascalCase fields (not snake_case duplicates)
-            if not field.startswith("_") and field[0].isupper():
-                pass  # Skip duplicate messages
-
+    # Select columns that exist (directory status added after processing)
+    output_columns = [
+        c
+        for c in PUBLISHED_COLUMN_ORDER
+        if c in df_public.columns and c != "listed_in_nyc_gov_agency_directory"
+    ]
     df_selected = df_public[output_columns]
 
     # Note: Golden dataset is now stored with snake_case headers, so no conversion needed
@@ -732,7 +790,9 @@ def main_with_dataframe(
         df_previous_export = pd.read_csv(previous_export, dtype=str)
 
     output_golden.parent.mkdir(parents=True, exist_ok=True)
-    df_input.to_csv(output_golden, index=False, encoding="utf-8-sig")
+    # Apply canonical column ordering for golden dataset
+    df_golden_ordered = reorder_columns(df_input, GOLDEN_COLUMN_ORDER)
+    df_golden_ordered.to_csv(output_golden, index=False, encoding="utf-8-sig")
 
     df_public = df_input.copy()
     # Rename given_name/family_name to first_name/last_name for export
@@ -787,43 +847,12 @@ def main_with_dataframe(
             f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
         )
 
-    # Note: Golden dataset now uses snake_case column names
-    required_output_columns = [
-        "record_id",
-        "name",
-        "name_alphabetized",
-        "operational_status",
-        "organization_type",
-        "url",
-        "alternate_or_former_names",
-        "acronym",
-        "alternate_or_former_acronyms",
-        "principal_officer_full_name",
-        "principal_officer_first_name",
-        "principal_officer_last_name",
-        "principal_officer_title",
-        "principal_officer_contact_url",
-        "in_org_chart",
+    # Select columns using canonical PUBLISHED_COLUMN_ORDER (excluding directory status added later)
+    output_columns = [
+        c
+        for c in PUBLISHED_COLUMN_ORDER
+        if c in df_public.columns and c != "listed_in_nyc_gov_agency_directory"
     ]
-    # Phase II fields (v2.0.0) - optional, only include if present
-    optional_phase_ii_fields = [
-        "governance_structure",
-        "org_chart_oversight_record_id",
-        "org_chart_oversight_name",
-        "parent_organization_record_id",
-        "parent_organization_name",
-        "authorizing_authority",
-        "authorizing_authority_type",
-        "authorizing_url",
-        "appointments_summary",
-    ]
-
-    # Add Phase II fields if they exist
-    output_columns = required_output_columns.copy()
-    for field in optional_phase_ii_fields:
-        if field in df_public.columns:
-            output_columns.append(field)
-
     df_selected = df_public[output_columns]
     # No snake_case conversion needed - data is already in snake_case format
     df_before_snake_case = df_selected.copy()
