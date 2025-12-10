@@ -68,8 +68,10 @@ jobs:
             # Manual trigger - use provided run ID
             RUN_ID="${{ github.event.inputs.run_id }}"
           else
-            # Auto trigger - find most recent run
-            RUN_ID=$(ls -t data/audit/runs/ 2>/dev/null | head -1)
+            # Auto trigger - find most recent run by name (includes YYYYMMDD-HHMM timestamp)
+            # Note: ls -t sorts by modification time, which is unreliable on GitHub checkout
+            # Instead, sort by name in reverse order since run IDs start with date
+            RUN_ID=$(ls -1 data/audit/runs/ 2>/dev/null | sort -r | head -1)
           fi
 
           if [ -z "$RUN_ID" ]; then
@@ -171,8 +173,8 @@ jobs:
             echo "Created $GOLDEN_LATEST from $GOLDEN_VERSIONED"
           else
             echo "Warning: $GOLDEN_VERSIONED not found, checking for any versioned golden..."
-            # Fallback: find most recent versioned golden dataset
-            LATEST_GOLDEN=$(ls -t data/published/latest/NYCGO_golden_dataset_v*.csv 2>/dev/null | head -1)
+            # Fallback: find most recent versioned golden dataset (by name, not mtime)
+            LATEST_GOLDEN=$(ls -1 data/published/latest/NYCGO_golden_dataset_v*.csv 2>/dev/null | sort -r | head -1)
             if [ -n "$LATEST_GOLDEN" ]; then
               cp "$LATEST_GOLDEN" "$GOLDEN_LATEST"
               echo "Created $GOLDEN_LATEST from $LATEST_GOLDEN (fallback)"
