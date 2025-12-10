@@ -60,6 +60,18 @@ PUBLISHED_EXPORT_EXCEPTIONS = [
 MANUAL_OVERRIDE_TRUE: list[str] = []
 MANUAL_OVERRIDE_FALSE: list[str] = []
 
+# State Government Agency exemptions (bypass the no_state_nygov_url gatekeeper)
+# These are NYC-affiliated state agencies that should be included even if they
+# have .ny.gov URLs (though currently none of them do)
+STATE_GOVERNMENT_EXEMPTIONS = [
+    "Bronx County Public Administrator",
+    "City University of New York",
+    "Kings County Public Administrator",
+    "New York County Public Administrator",
+    "Public Administrator of Queens County",
+    "Richmond County Public Administrator",
+]
+
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -152,9 +164,10 @@ TYPE_SPECIFIC_RULES = [
     ),
     Rule(
         name="state_government_agency",
-        description="State Government Agency: always included",
-        check=lambda r: r.get("organization_type") == "State Government Agency",
+        description="State Government Agency: included if in exemption list",
+        check=lambda r: r.get("name") in STATE_GOVERNMENT_EXEMPTIONS,
         category="type_specific",
+        details_on_match=lambda r: f"Exemption: {r.get('name')}",
     ),
     Rule(
         name="division_in_org_chart",

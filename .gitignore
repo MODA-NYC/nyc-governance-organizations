@@ -25,6 +25,8 @@ pip-wheel-metadata/
 data/**
 !data/**/.gitkeep
 !data/changelog.csv
+!data/directory_logic_changelog.csv
+!data/directory_rules_snapshot.json
 !data/published/
 !data/published/snapshots/
 !data/published/manifest.csv

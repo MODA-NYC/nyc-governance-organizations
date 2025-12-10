@@ -35,6 +35,7 @@ from nycgo_pipeline.directory_rules import (
     MANUAL_OVERRIDE_TRUE,
     NONPROFIT_EXEMPTIONS,
     PUBLISHED_EXPORT_EXCEPTIONS,
+    STATE_GOVERNMENT_EXEMPTIONS,
     TYPE_SPECIFIC_RULES,
 )
 
@@ -84,6 +85,7 @@ def rules_to_dict() -> dict:
         ],
         "nonprofit_exemptions": sorted(NONPROFIT_EXEMPTIONS),
         "advisory_exemptions": sorted(ADVISORY_EXEMPTIONS),
+        "state_government_exemptions": sorted(STATE_GOVERNMENT_EXEMPTIONS),
         "published_export_exceptions": [
             {"record_id": r[0], "name": r[1]} for r in PUBLISHED_EXPORT_EXCEPTIONS
         ],
@@ -155,6 +157,7 @@ def detect_changes(old: dict, new: dict) -> list[dict]:  # noqa: C901
     exemption_lists = [
         ("nonprofit_exemptions", "exemption"),
         ("advisory_exemptions", "exemption"),
+        ("state_government_exemptions", "exemption"),
         ("manual_override_true", "override"),
         ("manual_override_false", "override"),
     ]
@@ -369,6 +372,18 @@ def generate_docs() -> str:  # noqa: C901
         ]
     )
     for name in sorted(ADVISORY_EXEMPTIONS):
+        lines.append(f"- {name}")
+
+    lines.extend(
+        [
+            "",
+            "### State Government Exemptions",
+            "",
+            "These NYC-affiliated state agencies are included in the directory:",
+            "",
+        ]
+    )
+    for name in sorted(STATE_GOVERNMENT_EXEMPTIONS):
         lines.append(f"- {name}")
 
     lines.extend(

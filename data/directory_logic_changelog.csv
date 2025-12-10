@@ -1,0 +1,12 @@
+timestamp,changed_by,change_type,rule_name,category,old_value,new_value,commit_sha,notes
+2025-12-10T18:09:32.070738+00:00,nathanstorey,rule_modified,has_contact_info,gatekeeper,"Must have at least one: URL, principal officer name, or officer contact URL","Must have: URL, principal officer name, or officer contact URL",f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,rule_modified,nonprofit_in_org_chart_or_exemption,type_specific,Nonprofit Organization: included if in Org Chart OR in exemption list,Nonprofit Organization: included if in Org Chart OR exemption,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,rule_modified,advisory_in_org_chart_or_url_or_exemption,type_specific,"Advisory or Regulatory Organization: included if in Org Chart, has main nyc.gov URL, OR in exemption list","Advisory/Regulatory Org: Org Chart, main nyc.gov URL, or exempt",f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,rule_modified,state_government_agency,type_specific,State Government Agency: always included,State Government Agency: included if in exemption list,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,rule_modified,public_benefit_in_org_chart,type_specific,Public Benefit or Development Organization: included if in Org Chart,Public Benefit or Development Org: included if in Org Chart,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,Kings County Public Administrator,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,Bronx County Public Administrator,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,New York County Public Administrator,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,Public Administrator of Queens County,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,City University of New York,f4545d5,
+2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,Richmond County Public Administrator,f4545d5,

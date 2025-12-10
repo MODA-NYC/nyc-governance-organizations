@@ -5,6 +5,20 @@
 <!-- To update: edit directory_rules.py, then run: -->
 <!-- python scripts/generate_directory_docs.py --changed-by 'username' -->
 
+## Recent Changes
+
+| Date | Change | Rule | Details |
+|------|--------|------|---------|
+| 2025-12-10 | Exemption Added | state_government_exemptions | Richmond County Public Administrator |
+| 2025-12-10 | Exemption Added | state_government_exemptions | City University of New York |
+| 2025-12-10 | Exemption Added | state_government_exemptions | Public Administrator of Queens County |
+| 2025-12-10 | Exemption Added | state_government_exemptions | New York County Public Administrator |
+| 2025-12-10 | Exemption Added | state_government_exemptions | Bronx County Public Administrator |
+
+*See `data/directory_logic_changelog.csv` for full history.*
+
+---
+
 ## Overview
 
 This document describes the rules that determine whether an organization
@@ -19,7 +33,7 @@ appears in the NYC.gov Agency Directory. These rules are defined in
 
 - **active_status**: OperationalStatus must be 'Active'
 - **no_state_nygov_url**: URL must not be state .ny.gov (city .nyc.gov is OK)
-- **has_contact_info**: Must have at least one: URL, principal officer name, or officer contact URL
+- **has_contact_info**: Must have: URL, principal officer name, or officer contact URL
 
 ---
 
@@ -31,11 +45,11 @@ After passing gatekeeper rules, **at least one** type-specific rule must pass:
 - **mayoral_office**: Mayoral Office: always included
 - **elected_office**: Elected Office: always included
 - **pension_fund**: Pension Fund: always included
-- **state_government_agency**: State Government Agency: always included
+- **state_government_agency**: State Government Agency: included if in exemption list
 - **division_in_org_chart**: Division: included if in Org Chart
-- **public_benefit_in_org_chart**: Public Benefit or Development Organization: included if in Org Chart
-- **nonprofit_in_org_chart_or_exemption**: Nonprofit Organization: included if in Org Chart OR in exemption list
-- **advisory_in_org_chart_or_url_or_exemption**: Advisory or Regulatory Organization: included if in Org Chart, has main nyc.gov URL, OR in exemption list
+- **public_benefit_in_org_chart**: Public Benefit or Development Org: included if in Org Chart
+- **nonprofit_in_org_chart_or_exemption**: Nonprofit Organization: included if in Org Chart OR exemption
+- **advisory_in_org_chart_or_url_or_exemption**: Advisory/Regulatory Org: Org Chart, main nyc.gov URL, or exempt
 
 ---
 
@@ -59,6 +73,17 @@ These advisory organizations are included even if not in Org Chart:
 - Board of Elections
 - Campaign Finance Board
 - Rent Guidelines Board
+
+### State Government Exemptions
+
+These NYC-affiliated state agencies are included in the directory:
+
+- Bronx County Public Administrator
+- City University of New York
+- Kings County Public Administrator
+- New York County Public Administrator
+- Public Administrator of Queens County
+- Richmond County Public Administrator
 
 ### Published Export Exceptions
 

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -49,8 +50,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--changed-by",
         type=str,
-        required=True,
-        help="User or system applying the changes",
+        default=os.environ.get("USER", "unknown"),
+        help="User or system applying the changes (defaults to $USER env var)",
     )
     parser.add_argument(
         "--operator", type=str, default="", help="Operator for changelog attribution"

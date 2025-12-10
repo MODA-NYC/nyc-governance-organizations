@@ -1,0 +1,103 @@
+{
+  "advisory_exemptions": [
+    "Board of Elections",
+    "Campaign Finance Board",
+    "Rent Guidelines Board"
+  ],
+  "gatekeeper_rules": [
+    {
+      "category": "gatekeeper",
+      "description": "OperationalStatus must be 'Active'",
+      "name": "active_status"
+    },
+    {
+      "category": "gatekeeper",
+      "description": "URL must not be state .ny.gov (city .nyc.gov is OK)",
+      "name": "no_state_nygov_url"
+    },
+    {
+      "category": "gatekeeper",
+      "description": "Must have: URL, principal officer name, or officer contact URL",
+      "name": "has_contact_info"
+    }
+  ],
+  "manual_override_false": [],
+  "manual_override_true": [],
+  "nonprofit_exemptions": [
+    "Brooklyn Public Library",
+    "Gracie Mansion Conservancy",
+    "Mayor's Fund to Advance New York City",
+    "New York City Tourism + Conventions",
+    "New York Public Library",
+    "Queens Public Library"
+  ],
+  "published_export_exceptions": [
+    {
+      "name": "Office of Collective Bargaining",
+      "record_id": "NYC_GOID_000354"
+    },
+    {
+      "name": "MTA (Metropolitan Transportation Authority)",
+      "record_id": "NYC_GOID_000476"
+    },
+    {
+      "name": "Office of Digital Assets and Blockchain",
+      "record_id": "NYC_GOID_100030"
+    }
+  ],
+  "state_government_exemptions": [
+    "Bronx County Public Administrator",
+    "City University of New York",
+    "Kings County Public Administrator",
+    "New York County Public Administrator",
+    "Public Administrator of Queens County",
+    "Richmond County Public Administrator"
+  ],
+  "type_specific_rules": [
+    {
+      "category": "type_specific",
+      "description": "Mayoral Agency: always included",
+      "name": "mayoral_agency"
+    },
+    {
+      "category": "type_specific",
+      "description": "Mayoral Office: always included",
+      "name": "mayoral_office"
+    },
+    {
+      "category": "type_specific",
+      "description": "Elected Office: always included",
+      "name": "elected_office"
+    },
+    {
+      "category": "type_specific",
+      "description": "Pension Fund: always included",
+      "name": "pension_fund"
+    },
+    {
+      "category": "type_specific",
+      "description": "State Government Agency: included if in exemption list",
+      "name": "state_government_agency"
+    },
+    {
+      "category": "type_specific",
+      "description": "Division: included if in Org Chart",
+      "name": "division_in_org_chart"
+    },
+    {
+      "category": "type_specific",
+      "description": "Public Benefit or Development Org: included if in Org Chart",
+      "name": "public_benefit_in_org_chart"
+    },
+    {
+      "category": "type_specific",
+      "description": "Nonprofit Organization: included if in Org Chart OR exemption",
+      "name": "nonprofit_in_org_chart_or_exemption"
+    },
+    {
+      "category": "type_specific",
+      "description": "Advisory/Regulatory Org: Org Chart, main nyc.gov URL, or exempt",
+      "name": "advisory_in_org_chart_or_url_or_exemption"
+    }
+  ]
+}

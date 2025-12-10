@@ -266,7 +266,7 @@ def generate_release_notes(  # noqa: C901
         f"({record_count} records) and versioned golden export; "
         f"appended {changelog_rows} changelog row(s) to `data/changelog.csv`.",
         "",
-        "## Changes",
+        "## Release Summary",
         "",
     ]
 
@@ -344,27 +344,35 @@ def generate_release_notes(  # noqa: C901
     notes_lines.extend(
         [
             "",
-            "## Bundle Contents",
-            "",
-            (
-                "Bundle includes the full run artifacts "
-                "(inputs, outputs, run summary, changelog) for traceability."
-            ),
-            "",
             "## Attached Assets",
             "",
-            f"- `nycgo-run-{run_id}.zip` - Full run artifacts bundle",
-            (f"- `NYCGO_golden_dataset_{version}.csv` - " "Golden dataset (internal)"),
-            "- `NYCGO_golden_dataset_latest.csv` - Latest golden dataset (copy)",
+            "*GitHub automatically generates source code archives (zip/tar.gz) "
+            "containing the repository state at this release.*",
+            "",
+            "**Pipeline outputs:**",
+            "",
+            (
+                f"- `nycgo-run-{run_id}.zip` - "
+                "Full pipeline run artifacts (inputs, outputs, run summary, "
+                "changelog) for audit and reproducibility"
+            ),
             (
                 f"- `NYCGovernanceOrganizations_{version}.csv` - "
-                "Published dataset (public)"
+                "Published dataset with public columns only"
             ),
             (
                 "- `NYCGovernanceOrganizations_latest.csv` - "
-                "Latest published dataset (copy)"
+                "Copy of published dataset (for stable URL reference)"
             ),
-            "- `run_changelog.csv` - Run-specific changelog",
+            (
+                f"- `NYCGO_golden_dataset_{version}.csv` - "
+                "Full golden dataset with all fields (internal use)"
+            ),
+            (
+                "- `NYCGO_golden_dataset_latest.csv` - "
+                "Copy of golden dataset (for stable URL reference)"
+            ),
+            "- `run_changelog.csv` - Changes made in this pipeline run",
         ]
     )
 
