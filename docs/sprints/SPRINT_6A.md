@@ -23,11 +23,20 @@ Make the NYC.gov Agency Directory eligibility logic transparent and maintainable
 - **Pipeline integration**: export_dataset.py imports exemption lists from directory_rules
 - **Edit UI enhancement**: Shows directory eligibility status with reasoning
 - **Field name standardization**: Converted all column names from PascalCase to snake_case
+- **Column ordering**: Golden dataset columns aligned with published export order
 
 ### Additional Work (Phase 4.5):
 - Standardized all field names to snake_case matching published export format
 - Updated golden dataset, pipeline code, admin UI, and tests
 - Created standardize_field_names.py migration script
+
+### Final Fixes (Dec 10, 2024):
+- **Workflow fix**: Changed `ls -t` to `ls -1 | sort -r` in publish-release.yml to prevent picking wrong runs based on unreliable modification times
+- **Admin UI BOM fix**: Added UTF-8 BOM stripping to CSV parser to handle Excel-exported files
+- **Admin UI column mapping**: Updated config.js with snake_case column mappings and PascalCase fallbacks
+
+### Released:
+- **v1.6.0**: First release with snake_case column names (434 records, 38 fields, 201 directory-eligible)
 
 ---
 

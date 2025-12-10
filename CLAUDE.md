@@ -20,7 +20,7 @@ Sprint documentation lives in `docs/sprints/`:
 - `SPRINT_4.5.md` - Release Notes & Smart Versioning ✅ COMPLETED
 - `SPRINT_5.md` - Data Quality & Standardization ✅ COMPLETED
 - `SPRINT_6.md` - Schema Alignment & Directory Logic Refactoring 📋 PLANNED (deferred)
-- `SPRINT_6A.md` - Directory Logic Transparency 📋 PLANNED (extracted from Sprint 6 Phase 6)
+- `SPRINT_6A.md` - Directory Logic Transparency ✅ COMPLETED (Dec 2024)
 - `FUTURE.md` - Phase II Data Release 🔮 DEFERRED
 
 ---
@@ -53,8 +53,8 @@ Both are symlinks to the actual repos.
 - `.github/workflows/publish-release.yml` - Automated release workflow
 
 **Current Versions**:
-- v1.1.2 - Latest published (435 records, 38 fields, Phase I schema)
-- v1.2.0 - Development (443 records, 46 fields, Phase II schema)
+- v1.6.0 - Latest published (434 records, 38 fields, snake_case column names)
+- v1.2.0 - Development (443 records, 46 fields, Phase II schema - deferred)
 
 **Pipeline Commands**:
 ```bash
