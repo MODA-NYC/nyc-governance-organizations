@@ -1,6 +1,6 @@
 # Sprint 4: Edit Submission Rate Limiting
 
-**Status: 📋 PLANNED**
+**Status: ✅ COMPLETED**
 
 ## Overview
 
@@ -165,15 +165,15 @@ Options:
 
 ## Definition of Done
 
-### Part A (UI)
-- [ ] Page grayed out when workflow is running
-- [ ] Clear message: "Edit currently in progress..."
-- [ ] Link to Actions page provided
-- [ ] Auto-refresh every 30-60 seconds
-- [ ] Works for both admin-ui and pipeline repo workflows
-- [ ] No API rate limit issues
+### Part A (UI) - ✅ COMPLETED
+- [x] ~~Page grayed out when workflow is running~~ (Implemented as check-on-submit instead)
+- [x] Clear message: "Edit currently in progress..."
+- [x] Link to Actions page provided
+- [x] ~~Auto-refresh every 30-60 seconds~~ (Not needed - check on submit avoids rate limits)
+- [x] Works for both admin-ui and pipeline repo workflows
+- [x] No API rate limit issues (check-on-submit approach)
 
-### Part B (Workflow)
-- [ ] Concurrency control added to process-edit.yml
-- [ ] Edits queue instead of running in parallel
+### Part B (Workflow) - ✅ COMPLETED
+- [x] Concurrency control added to process-edit.yml
+- [x] Edits queue instead of running in parallel
 - [ ] Tested with concurrent edit submissions

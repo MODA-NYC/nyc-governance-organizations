@@ -1,5 +1,9 @@
 # Sprint 6: Schema Alignment & Directory Logic Refactoring
 
+**Status: 📋 PLANNED (deferred)**
+
+> **Note:** Phase 6 (Edit UI Directory Logic Transparency) has been extracted to [SPRINT_6A.md](SPRINT_6A.md) as a standalone mini-sprint.
+
 ## Overview
 
 This sprint addresses structural issues identified during Sprint 5 testing: the mismatch between golden and published dataset schemas, the confusing directory field logic, and the need for schema change tracking.

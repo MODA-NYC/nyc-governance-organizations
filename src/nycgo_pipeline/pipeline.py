@@ -82,6 +82,8 @@ def orchestrate_pipeline(
     df_rules = global_rules.apply_global_character_fixing(df, changed_by, prefix)
     df_rules = global_rules.apply_global_deduplication(df_rules, changed_by, prefix)
     df_rules = global_rules.format_budget_codes(df_rules, changed_by, prefix)
+    df_rules = global_rules.format_boolean_fields(df_rules, changed_by, prefix)
+    df_rules = global_rules.format_founding_year(df_rules, changed_by, prefix)
     df_rules = global_rules.sync_nycgov_directory_status(df_rules, changed_by, prefix)
 
     qa_edits.reset_changelog()
