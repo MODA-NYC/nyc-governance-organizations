@@ -37,25 +37,29 @@ from nycgo_pipeline.directory_rules import (
 # These define the standard column order for both golden and published datasets.
 # Columns are grouped logically for easier reading and analysis.
 
+# Golden column order aligned with published export order
+# Additional golden-only columns inserted in logical places
 GOLDEN_COLUMN_ORDER = [
-    # Identity
+    # Identity (matches published 1-3)
     "record_id",
     "name",
     "name_alphabetized",
-    "acronym",
-    "alternate_or_former_names",
-    "alternate_or_former_acronyms",
-    # Status & Type
+    # Status & Type (matches published 4-5)
     "operational_status",
     "organization_type",
-    "instance_of",
-    # Description & URLs
+    # Description (golden-only, inserted before url)
     "description",
+    # URL (matches published 6)
     "url",
+    # Alternate names (matches published 7-9)
+    "alternate_or_former_names",
+    "acronym",
+    "alternate_or_former_acronyms",
+    # Additional identifiers (golden-only)
+    "budget_code",
     "open_datasets_url",
     "founding_year",
-    "budget_code",
-    # Principal Officer (grouped)
+    # Principal Officer (matches published 10-14, plus golden-only fields)
     "principal_officer_full_name",
     "principal_officer_given_name",
     "principal_officer_middle_name_or_initial",
@@ -64,14 +68,10 @@ GOLDEN_COLUMN_ORDER = [
     "principal_officer_name",  # Legacy field
     "principal_officer_title",
     "principal_officer_contact_url",
-    # Hierarchy
-    "in_org_chart",
-    "reports_to",
-    "reporting_notes",
-    "jan_2025_org_chart",
-    # Directory Status
-    "listed_in_nyc_gov_agency_directory",
-    # Crosswalk Names (source system mappings)
+    # Notes & metadata (golden-only)
+    "notes",
+    "instance_of",
+    # Crosswalk Names (golden-only, source system mappings)
     "name_nycgov_agency_list",
     "name_nycgov_mayors_office",
     "name_nyc_open_data_portal",
@@ -82,8 +82,12 @@ GOLDEN_COLUMN_ORDER = [
     "name_checkbook",
     "name_hoo",
     "name_ops",
-    # Notes
-    "notes",
+    # Hierarchy & Directory (matches published 15-16, plus golden-only)
+    "in_org_chart",
+    "reports_to",
+    "reporting_notes",
+    "jan_2025_org_chart",
+    "listed_in_nyc_gov_agency_directory",
 ]
 
 # Published export uses original column order (not reordered)
