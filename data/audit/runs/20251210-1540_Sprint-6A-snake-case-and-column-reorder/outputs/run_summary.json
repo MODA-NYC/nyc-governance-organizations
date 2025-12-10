@@ -1,0 +1,30 @@
+{
+  "changed_by": "Claude",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 1013,
+    "qa_changes": 0,
+    "records_after_pipeline": 434
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/inputs/golden_snapshot.csv",
+    "qa_01.csv": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/inputs/qa_01.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
+    "qa_sources": [
+      "data/input/NYCGO_test_noop.csv"
+    ]
+  },
+  "operator": "Claude",
+  "outputs": {
+    "golden_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/outputs/golden_pre-release.csv",
+    "published_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/outputs/published_pre-release.csv",
+    "review_artifacts": {
+      "review_manifest": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/review/review_manifest.json"
+    },
+    "run_changelog": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251210-1540_Sprint-6A-snake-case-and-column-reorder/outputs/run_changelog.csv"
+  },
+  "run_id": "20251210-1540_Sprint-6A-snake-case-and-column-reorder",
+  "timing_seconds": 0.23
+}
