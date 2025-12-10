@@ -8,6 +8,11 @@ This script takes a final, processed "golden" dataset and produces two outputs:
     `data/audit/runs/<run_id>/outputs/`.
 2.  A cleaned, filtered, and transformed public-facing version, saved to
     `data/published/`.
+
+Note: Directory eligibility rules are defined in nycgo_pipeline/directory_rules.py
+which is the single source of truth. The vectorized implementation below uses
+the same logic but optimized for pandas operations. Exemption lists are imported
+from the rules module to ensure consistency.
 """
 import argparse
 import csv
@@ -17,6 +22,14 @@ import sys
 from datetime import datetime, timezone
 
 import pandas as pd
+
+# Import exemption lists from the single source of truth
+from nycgo_pipeline.directory_rules import (
+    ADVISORY_EXEMPTIONS,
+    MANUAL_OVERRIDE_FALSE,
+    MANUAL_OVERRIDE_TRUE,
+    NONPROFIT_EXEMPTIONS,
+)
 
 
 def to_snake_case(name: str) -> str:
@@ -162,32 +175,14 @@ def add_nycgov_directory_column(
     elif run_id and df_previous_export is None:
         print("  - No previous export provided; will track all values as new")
 
-    # --- Exemption Lists for Organization Types ---
-    nonprofit_exemptions = [
-        "Brooklyn Public Library",
-        "New York City Tourism + Conventions",
-        "New York Public Library",
-        "Queens Public Library",
-        "Gracie Mansion Conservancy",
-        "Mayor's Fund to Advance New York City",
-    ]
+    # --- Exemption Lists from single source of truth (directory_rules.py) ---
+    # These are imported at module level from nycgo_pipeline.directory_rules
+    nonprofit_exemptions = NONPROFIT_EXEMPTIONS
+    advisory_exemptions = ADVISORY_EXEMPTIONS
 
-    advisory_exemptions = [
-        "Board of Elections",
-        "Campaign Finance Board",
-        "Rent Guidelines Board",
-    ]
-
-    # Keep manual overrides for any edge cases not covered by type rules
-    manual_override_true_record_ids = [
-        # Add RecordIDs here that should always be marked as TRUE
-        # Example: "NYC_GOID_000123",
-    ]
-
-    manual_override_false_record_ids = [
-        # Add RecordIDs here that should always be marked as FALSE
-        # Example: "NYC_GOID_000789",
-    ]
+    # Manual overrides from single source of truth (directory_rules.py)
+    manual_override_true_record_ids = MANUAL_OVERRIDE_TRUE
+    manual_override_false_record_ids = MANUAL_OVERRIDE_FALSE
 
     # Create manual override masks
     manual_override_true_mask = df_processed["record_id"].isin(
@@ -547,10 +542,10 @@ def main():
     print("\nProcessing data for public export...")
     df_public = df.copy()
 
-    # Rename columns for clarity
+    # Rename columns for clarity (legacy support - now using snake_case)
     rename_map = {
-        "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
-        "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
+        "principal_officer_given_name": "principal_officer_first_name",
+        "principal_officer_family_name": "principal_officer_last_name",
     }
     df_public.rename(columns=rename_map, inplace=True)
 
@@ -567,23 +562,23 @@ def main():
     ]
 
     in_org_chart = (
-        df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
+        df_public.get("in_org_chart", pd.Series([False] * len(df_public)))
         .astype(str)
         .str.lower()
         .map({"true": True})
         .fillna(False)
     )
     has_ops_name = df_public.get(
-        "Name - Ops", pd.Series([False] * len(df_public))
+        "name_ops", pd.Series([False] * len(df_public))
     ).notna() & (
-        df_public.get("Name - Ops", pd.Series([""] * len(df_public))).str.strip() != ""
+        df_public.get("name_ops", pd.Series([""] * len(df_public))).str.strip() != ""
     )
     is_export_exception = df_public.get(
-        "RecordID", pd.Series([""] * len(df_public))
+        "record_id", pd.Series([""] * len(df_public))
     ).isin(published_export_exceptions)
-    # New requirement: only export records where OperationalStatus is Active
+    # New requirement: only export records where operational_status is Active
     active_only = (
-        df_public.get("OperationalStatus", pd.Series([""] * len(df_public)))
+        df_public.get("operational_status", pd.Series([""] * len(df_public)))
         .astype(str)
         .str.strip()
         .str.lower()
@@ -598,36 +593,26 @@ def main():
     )
 
     # --- Select and order columns for final output ---
+    # Note: Golden dataset now uses snake_case column names
     required_output_columns = [
-        "RecordID",
-        "Name",
-        "NameAlphabetized",
-        "OperationalStatus",
-        "OrganizationType",
-        "URL",
-        "AlternateOrFormerNames",
-        "Acronym",
-        "AlternateOrFormerAcronyms",
-        "PrincipalOfficerFullName",
-        "PrincipalOfficerFirstName",
-        "PrincipalOfficerLastName",
-        "PrincipalOfficerTitle",
-        "PrincipalOfficerContactURL",
-        "InOrgChart",
+        "record_id",
+        "name",
+        "name_alphabetized",
+        "operational_status",
+        "organization_type",
+        "url",
+        "alternate_or_former_names",
+        "acronym",
+        "alternate_or_former_acronyms",
+        "principal_officer_full_name",
+        "principal_officer_first_name",  # Renamed from principal_officer_given_name
+        "principal_officer_last_name",  # Renamed from principal_officer_family_name
+        "principal_officer_title",
+        "principal_officer_contact_url",
+        "in_org_chart",
     ]
     # Phase II fields (v2.0.0) - optional, only include if present
-    # Note: These fields may be in PascalCase or snake_case depending on dataset version
     optional_phase_ii_fields = [
-        "GovernanceStructure",
-        "OrgChartOversightRecordID",
-        "OrgChartOversightName",
-        "ParentOrganizationRecordID",
-        "ParentOrganizationName",
-        "AuthorizingAuthority",
-        "AuthorizingAuthorityType",
-        "AuthorizingURL",
-        "AppointmentsSummary",
-        # Also check snake_case versions (for Phase II datasets)
         "governance_structure",
         "org_chart_oversight_record_id",
         "org_chart_oversight_name",
@@ -659,12 +644,9 @@ def main():
 
     df_selected = df_public[output_columns]
 
-    # --- Save a copy BEFORE snake_case conversion for change tracking ---
+    # Note: Golden dataset is now stored with snake_case headers, so no conversion needed
+    # Keep df_before_snake_case for backward compatibility with change tracking
     df_before_snake_case = df_selected.copy()
-
-    # --- Convert headers to snake_case ---
-    df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
-    print("Converted public column headers to snake_case.")
 
     # --- Normalize in_org_chart: fill blanks as False and coerce to booleans ---
     if "in_org_chart" in df_selected.columns:
@@ -740,6 +722,10 @@ def main_with_dataframe(
     operator: str | None = None,
     previous_export: pathlib.Path | None = None,
 ):
+    """Alternative entry point that accepts a DataFrame directly.
+
+    Note: Expects DataFrame with snake_case column names (standardized format).
+    """
     df_input = df.copy()
     df_previous_export = None
     if previous_export and previous_export.exists():
@@ -749,9 +735,10 @@ def main_with_dataframe(
     df_input.to_csv(output_golden, index=False, encoding="utf-8-sig")
 
     df_public = df_input.copy()
+    # Rename given_name/family_name to first_name/last_name for export
     rename_map = {
-        "PrincipalOfficerGivenName": "PrincipalOfficerFirstName",
-        "PrincipalOfficerFamilyName": "PrincipalOfficerLastName",
+        "principal_officer_given_name": "principal_officer_first_name",
+        "principal_officer_family_name": "principal_officer_last_name",
     }
     df_public.rename(columns=rename_map, inplace=True)
 
@@ -766,7 +753,7 @@ def main_with_dataframe(
 
     rows_before_filter = len(df_public)
     in_org_chart = (
-        df_public.get("InOrgChart", pd.Series([False] * len(df_public)))
+        df_public.get("in_org_chart", pd.Series([False] * len(df_public)))
         .astype(str)
         .str.strip()
         .str.lower()
@@ -774,17 +761,17 @@ def main_with_dataframe(
         .fillna(False)
     )
     has_ops_name = (
-        df_public.get("Name - Ops", pd.Series(["" for _ in range(len(df_public))]))
+        df_public.get("name_ops", pd.Series(["" for _ in range(len(df_public))]))
         .astype(str)
         .str.strip()
         .ne("")
     )
     is_export_exception = df_public.get(
-        "RecordID", pd.Series([""] * len(df_public))
+        "record_id", pd.Series([""] * len(df_public))
     ).isin(published_export_exceptions)
     active_only = (
         df_public.get(
-            "OperationalStatus", pd.Series(["" for _ in range(len(df_public))])
+            "operational_status", pd.Series(["" for _ in range(len(df_public))])
         )
         .astype(str)
         .str.strip()
@@ -800,36 +787,26 @@ def main_with_dataframe(
             f"Kept {len(df_public)} rows out of {rows_before_filter} after applying combined filter."
         )
 
+    # Note: Golden dataset now uses snake_case column names
     required_output_columns = [
-        "RecordID",
-        "Name",
-        "NameAlphabetized",
-        "OperationalStatus",
-        "OrganizationType",
-        "URL",
-        "AlternateOrFormerNames",
-        "Acronym",
-        "AlternateOrFormerAcronyms",
-        "PrincipalOfficerFullName",
-        "PrincipalOfficerFirstName",
-        "PrincipalOfficerLastName",
-        "PrincipalOfficerTitle",
-        "PrincipalOfficerContactURL",
-        "InOrgChart",
+        "record_id",
+        "name",
+        "name_alphabetized",
+        "operational_status",
+        "organization_type",
+        "url",
+        "alternate_or_former_names",
+        "acronym",
+        "alternate_or_former_acronyms",
+        "principal_officer_full_name",
+        "principal_officer_first_name",
+        "principal_officer_last_name",
+        "principal_officer_title",
+        "principal_officer_contact_url",
+        "in_org_chart",
     ]
     # Phase II fields (v2.0.0) - optional, only include if present
-    # Note: These fields may be in PascalCase or snake_case depending on dataset version
     optional_phase_ii_fields = [
-        "GovernanceStructure",
-        "OrgChartOversightRecordID",
-        "OrgChartOversightName",
-        "ParentOrganizationRecordID",
-        "ParentOrganizationName",
-        "AuthorizingAuthority",
-        "AuthorizingAuthorityType",
-        "AuthorizingURL",
-        "AppointmentsSummary",
-        # Also check snake_case versions (for Phase II datasets)
         "governance_structure",
         "org_chart_oversight_record_id",
         "org_chart_oversight_name",
@@ -848,8 +825,8 @@ def main_with_dataframe(
             output_columns.append(field)
 
     df_selected = df_public[output_columns]
+    # No snake_case conversion needed - data is already in snake_case format
     df_before_snake_case = df_selected.copy()
-    df_selected.columns = [to_snake_case(col) for col in df_selected.columns]
 
     result = add_nycgov_directory_column(
         df_selected,

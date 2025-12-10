@@ -16,10 +16,11 @@ Sprint documentation lives in `docs/sprints/`:
 - `SPRINT_1.md` - Admin UI Infrastructure ✅ COMPLETED
 - `SPRINT_2.md` - Pipeline Testing & Validation ✅ COMPLETED
 - `SPRINT_3.md` - v1.1.2 Release Fix & Production Pipeline Test ✅ COMPLETED
-- `SPRINT_4.md` - Edit Submission Rate Limiting 📋 PLANNED
-- `SPRINT_4.5.md` - Release Notes & Smart Versioning ⚠️ PARTIAL (release notes done, smart versioning pending)
-- `SPRINT_5.md` - Data Quality & Standardization ⚠️ PARTIAL
-- `SPRINT_6.md` - Schema Alignment & Directory Logic Refactoring 📋 PLANNED
+- `SPRINT_4.md` - Edit Submission Rate Limiting ✅ COMPLETED
+- `SPRINT_4.5.md` - Release Notes & Smart Versioning ✅ COMPLETED
+- `SPRINT_5.md` - Data Quality & Standardization ✅ COMPLETED
+- `SPRINT_6.md` - Schema Alignment & Directory Logic Refactoring 📋 PLANNED (deferred)
+- `SPRINT_6A.md` - Directory Logic Transparency 📋 PLANNED (extracted from Sprint 6 Phase 6)
 - `FUTURE.md` - Phase II Data Release 🔮 DEFERRED
 
 ---
@@ -83,7 +84,7 @@ make test
 **Current Configuration** (config.js):
 - Data source: GitHub raw file from `data/published/latest/NYCGO_golden_dataset_latest.csv`
 - Batch review interface: `review-edits.html` for reviewing CSV uploads before commit
-- Workflow mode: Check repo variables (DEMO_MODE / PRODUCTION_MODE)
+- Workflow mode: Check repo variables (TEST_MODE / PRODUCTION_MODE)
 
 ---
 
@@ -128,8 +129,8 @@ The process-edit.yml workflow has three modes (controlled by repo variables):
 
 | Mode | Variable | Target Branch | Release |
 |------|----------|---------------|---------|
-| Test | (default) | admin-ui-test | None |
-| Demo | DEMO_MODE=true | demo | Draft |
+| Default | (neither set) | admin-ui-test | None |
+| Test | TEST_MODE=true | test | Draft |
 | Production | PRODUCTION_MODE=true | main | Real |
 
 ---

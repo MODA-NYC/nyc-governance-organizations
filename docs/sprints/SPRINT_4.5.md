@@ -1,6 +1,6 @@
 # Sprint 4.5: Release Notes & Smart Versioning
 
-**Status: ⚠️ PARTIAL** (Phase 1, 1.5, 1.6 complete; Phase 2 and 3 pending)
+**Status: ✅ COMPLETED**
 
 ## Overview
 
@@ -153,7 +153,7 @@ notes_lines.extend([
 
 ---
 
-## Phase 2: Pass GitHub Actor to Release Notes (📋 PENDING)
+## Phase 2: Pass GitHub Actor to Release Notes (✅ COMPLETED)
 
 ### 2.1 Update process-edit.yml
 
@@ -189,13 +189,13 @@ Change "Published by" to show both:
 ```
 
 ### Acceptance Criteria
-- [ ] GitHub username captured from workflow
-- [ ] Release notes show actual GitHub username
-- [ ] Links to GitHub profile (@username format)
+- [x] GitHub username captured from workflow
+- [x] Release notes show actual GitHub username
+- [x] Links to GitHub profile (@username format)
 
 ---
 
-## Phase 3: Smart Semantic Versioning (📋 PENDING)
+## Phase 3: Smart Semantic Versioning (✅ COMPLETED)
 
 ### 3.1 Version Bump Rules
 
@@ -306,11 +306,11 @@ Major version bumps require manual trigger.
 ```
 
 ### Acceptance Criteria
-- [ ] Pipeline detects new org → minor bump
-- [ ] Pipeline detects OperationalStatus change → minor bump
-- [ ] Other edits → patch bump
-- [ ] Major bumps remain manual
-- [ ] VERSIONING.md documents the policy
+- [x] Pipeline detects new org → minor bump
+- [x] Pipeline detects OperationalStatus change → minor bump
+- [x] Other edits → patch bump
+- [x] Major bumps remain manual
+- [ ] VERSIONING.md documents the policy (optional, deferred)
 
 ---
 
@@ -330,8 +330,8 @@ Major version bumps require manual trigger.
 - [x] Release notes include all 6 asset files
 - [x] Release notes show detailed changes table (≤5 edits) or summary (>5)
 - [x] Release notes include link to full changelog
-- [ ] Release notes show GitHub username of editor
-- [ ] Version bump automatically determined based on change type
-- [ ] Major bumps remain manual (for schema changes)
-- [ ] VERSIONING.md documents the policy
+- [x] Release notes show GitHub username of editor
+- [x] Version bump automatically determined based on change type
+- [x] Major bumps remain manual (for schema changes)
+- [ ] VERSIONING.md documents the policy (optional, deferred)
 - [ ] Tested with: patch edit, new org (minor), status change (minor)

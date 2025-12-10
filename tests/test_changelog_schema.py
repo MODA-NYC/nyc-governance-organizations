@@ -20,6 +20,7 @@ MINIMAL_SCHEMA = [
 ]
 
 ALLOWED_FIELDS = {
+    # snake_case field names (current standard)
     "record_name",
     "record_id",
     "operational_status",
@@ -38,12 +39,21 @@ ALLOWED_FIELDS = {
     "reports_to",
     "in_org_chart",
     "listed_in_nyc_gov_agency_directory",
+    "notes",
+    # Legacy PascalCase field names (from older changelog entries)
     "NameAlphabetized",
+    "Name",
+    "Notes",
+    "AlternateOrFormerNames",
     "PrincipalOfficerFullName",
     "PrincipalOfficerGivenName",
     "PrincipalOfficerFamilyName",
+    "PrincipalOfficerContactURL",
     "InOrgChart",
     "ReportsTo",
+    "NYC.gov Agency Directory",
+    # Special markers
+    "_ROW_ADDED",
 }
 
 

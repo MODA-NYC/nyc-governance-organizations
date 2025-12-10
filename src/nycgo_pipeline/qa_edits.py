@@ -47,12 +47,11 @@ RULES = {
     r".*\?": QAAction.POLICY_QUERY,
 }
 
+# Column synonyms for backward compatibility with edit files
+# Maps common variations to canonical snake_case names
 SYNONYM_COLUMN_MAP = {
-    "principal_officer_first_name": "PrincipalOfficerGivenName",
-    "principal_officer_last_name": "PrincipalOfficerFamilyName",
-    "principal_officer_contact_url": "PrincipalOfficerContactURL",
-    "authorizing_url": "AuthorizingURL",
-    "parent_organization_record_id": "ParentOrganizationRecordID",
+    "principal_officer_first_name": "principal_officer_given_name",
+    "principal_officer_last_name": "principal_officer_family_name",
 }
 
 
@@ -62,23 +61,27 @@ def reset_changelog() -> None:
     changelog_id_counter = 0
 
 
-def _get_pascal_case_column(
-    df_columns: Iterable[str], provided_col_name: str | None
-) -> str | None:
+def _get_column(df_columns: Iterable[str], provided_col_name: str | None) -> str | None:
+    """Find matching column name in dataframe.
+
+    Handles snake_case columns and common synonyms.
+    """
     if not provided_col_name or pd.isna(provided_col_name):
         return None
     provided_lower = str(provided_col_name).strip().lower()
+    # Check synonym mapping
     synonym_target = SYNONYM_COLUMN_MAP.get(provided_lower)
     if synonym_target and synonym_target in df_columns:
         return synonym_target
+    # Direct match (case-insensitive)
     for col in df_columns:
         if col.lower() == provided_lower:
             return col
-    pascal_version = "".join(
-        word.capitalize() for word in str(provided_col_name).strip().split("_")
-    )
-    if pascal_version in df_columns:
-        return pascal_version
+    # Try with underscores replaced by nothing (to match legacy PascalCase)
+    snake_version = provided_lower.replace(" ", "_")
+    for col in df_columns:
+        if col.lower() == snake_version:
+            return col
     return None
 
 
@@ -196,8 +199,8 @@ def handle_delete_record(
     prefix: str,
     evidence_url: str = "",
 ) -> pd.DataFrame:
-    if record_id in df["RecordID"].values:
-        record_name = df[df["RecordID"] == record_id].iloc[0].get("Name", "N/A")
+    if record_id in df["record_id"].values:
+        record_name = df[df["record_id"] == record_id].iloc[0].get("name", "N/A")
         log_change(
             record_id,
             record_name,
@@ -212,7 +215,7 @@ def handle_delete_record(
             prefix,
             evidence_url=evidence_url,
         )
-        return df[df["RecordID"] != record_id].copy()
+        return df[df["record_id"] != record_id].copy()
     log_change(
         record_id,
         "N/A",
@@ -250,11 +253,11 @@ def handle_append_from_csv(
         new_records = pd.read_csv(path_obj, dtype=str, encoding="utf-8-sig").fillna("")
         for _, row in new_records.iterrows():
             log_change(
-                row.get("RecordID", "N/A"),
-                row.get("Name"),
+                row.get("record_id", "N/A"),
+                row.get("name"),
                 "_ROW_ADDED",
                 "N/A",
-                row.get("Name"),
+                row.get("name"),
                 src,
                 notes,
                 reason,
@@ -283,8 +286,8 @@ def handle_direct_set(
     if pd.isna(raw_record_id) or str(raw_record_id).strip().upper() == "NEW":
         return
     # Normalize record_id to match dataframe format
-    record_id = _normalize_record_id(raw_record_id, df_mod["RecordID"])
-    if record_id not in df_mod["RecordID"].values:
+    record_id = _normalize_record_id(raw_record_id, df_mod["record_id"])
+    if record_id not in df_mod["record_id"].values:
         return
 
     # Get record_name from edits file if provided, otherwise lookup from dataset
@@ -292,32 +295,32 @@ def handle_direct_set(
     if provided_record_name:
         # Validate that provided name matches dataset (if record exists)
         dataset_record_name = (
-            df_mod[df_mod["RecordID"] == record_id].iloc[0].get("Name", "")
+            df_mod[df_mod["record_id"] == record_id].iloc[0].get("name", "")
         )
         if dataset_record_name and provided_record_name != dataset_record_name:
             # Log warning but continue (allows for name corrections)
             print(
-                f"Warning: record_name mismatch for RecordID {record_id}: "
+                f"Warning: record_name mismatch for record_id {record_id}: "
                 f"provided '{provided_record_name}' vs dataset '{dataset_record_name}'"
             )
 
     provided_col = _get_qa_column(qa_row, "Column", "field_name") or (
         match.group("column") if "column" in match.groupdict() else None
     )
-    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
-    if not pascal_col:
+    target_col = _get_column(df_mod.columns, provided_col)
+    if not target_col:
         return
     val_str = match.group("value")
     clean_val = _sanitize_wrapped_text(val_str)
     if clean_val is None:
         clean_val = ""
-    target_indices = df_mod[df_mod["RecordID"] == record_id].index
+    target_indices = df_mod[df_mod["record_id"] == record_id].index
     for index in target_indices:
         # Use provided record_name if available, otherwise lookup from dataset
         record_name = (
-            provided_record_name if provided_record_name else df_mod.loc[index, "Name"]
+            provided_record_name if provided_record_name else df_mod.loc[index, "name"]
         )
-        old_val = df_mod.loc[index, pascal_col]
+        old_val = df_mod.loc[index, target_col]
         justification = _get_qa_column(qa_row, "reason", "justification")
         evidence_url = _get_qa_column(qa_row, "", "evidence_url")
         # Store evidence_url separately; keep reason as just the justification
@@ -326,7 +329,7 @@ def handle_direct_set(
         log_change(
             record_id,
             record_name,
-            pascal_col,
+            target_col,
             old_val,
             clean_val,
             src_name,
@@ -337,7 +340,7 @@ def handle_direct_set(
             prefix,
             evidence_url=evidence_url,
         )
-        df_mod.loc[index, pascal_col] = clean_val
+        df_mod.loc[index, target_col] = clean_val
 
 
 def handle_policy_query(
@@ -352,20 +355,20 @@ def handle_policy_query(
     if pd.isna(raw_record_id):
         return
     # Normalize record_id to match dataframe format
-    record_id = _normalize_record_id(raw_record_id, df_mod["RecordID"])
-    if record_id not in df_mod["RecordID"].values:
+    record_id = _normalize_record_id(raw_record_id, df_mod["record_id"])
+    if record_id not in df_mod["record_id"].values:
         return
 
     # Get record_name from edits file if provided, otherwise lookup from dataset
     provided_record_name = _get_qa_column(qa_row, "", "record_name")
 
     provided_col = _get_qa_column(qa_row, "Column", "field_name")
-    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
-    target_indices = df_mod[df_mod["RecordID"] == record_id].index
+    target_col = _get_column(df_mod.columns, provided_col)
+    target_indices = df_mod[df_mod["record_id"] == record_id].index
     for index in target_indices:
         # Use provided record_name if available, otherwise lookup from dataset
         record_name = (
-            provided_record_name if provided_record_name else df_mod.loc[index, "Name"]
+            provided_record_name if provided_record_name else df_mod.loc[index, "name"]
         )
         justification = _get_qa_column(qa_row, "reason", "justification")
         evidence_url = _get_qa_column(qa_row, "", "evidence_url")
@@ -374,7 +377,7 @@ def handle_policy_query(
         log_change(
             record_id,
             record_name,
-            pascal_col or "Policy Question",
+            target_col or "Policy Question",
             "N/A",
             "N/A",
             src_name,
@@ -471,7 +474,7 @@ def _convert_recordid_to_new_format(old_id: str) -> int | None:
 
 def _generate_next_record_id(df: pd.DataFrame) -> str:
     """
-    Generate the next available RecordID in new 6-digit numeric format.
+    Generate the next available record_id in new 6-digit numeric format.
 
     Ensures uniqueness by:
     1. Converting all existing IDs to new format
@@ -486,7 +489,7 @@ def _generate_next_record_id(df: pd.DataFrame) -> str:
     For concurrent operations, ensure records are added sequentially or
     use a transaction/locking mechanism.
     """
-    existing_ids = df["RecordID"].astype(str)
+    existing_ids = df["record_id"].astype(str)
 
     # Convert all existing IDs to new format and find max
     max_new_id = 100000  # Start from minimum valid ID
@@ -532,22 +535,22 @@ def _create_new_record(
     prefix: str,
 ) -> pd.DataFrame:
     """Create a new record from collected field values."""
-    # Generate RecordID
+    # Generate record_id
     new_record_id = _generate_next_record_id(df_mod)
 
     # Create new row with all columns initialized to empty string
     new_row = {col: "" for col in df_mod.columns}
 
-    # Set RecordID
-    new_row["RecordID"] = new_record_id
+    # Set record_id
+    new_row["record_id"] = new_record_id
 
     # Apply all collected field values
-    for pascal_col, value in new_record_fields.items():
-        if pascal_col in df_mod.columns:
-            new_row[pascal_col] = value
+    for target_col, value in new_record_fields.items():
+        if target_col in df_mod.columns:
+            new_row[target_col] = value
 
     # Get record name for changelog
-    record_name = new_record_fields.get("Name", "New Record")
+    record_name = new_record_fields.get("name", "New Record")
 
     # Log the creation
     log_change(
@@ -643,8 +646,8 @@ def apply_qa_edits(  # noqa: C901
                     match.group("column") if "column" in match.groupdict() else None
                 )
                 if provided_col:
-                    pascal_col = _get_pascal_case_column(df_mod.columns, provided_col)
-                    if pascal_col:
+                    target_col = _get_column(df_mod.columns, provided_col)
+                    if target_col:
                         val_str = match.group("value")
                         clean_val = _sanitize_wrapped_text(val_str)
                         if clean_val is None:
@@ -652,7 +655,7 @@ def apply_qa_edits(  # noqa: C901
 
                         # Determine key for this NEW record
                         # If this is a 'name' field, use it as the key
-                        if pascal_col == "Name":
+                        if target_col == "name":
                             key = clean_val
                             # If tracking a temp key, migrate fields to name-based
                             if (
@@ -670,7 +673,7 @@ def apply_qa_edits(  # noqa: C901
                             # Initialize record if it doesn't exist
                             if key not in new_records:
                                 new_records[key] = {}
-                            new_records[key][pascal_col] = clean_val
+                            new_records[key][target_col] = clean_val
                             # Update current key to use name going forward
                             current_new_record_key = key
                         else:
@@ -687,7 +690,7 @@ def apply_qa_edits(  # noqa: C901
 
                             if key not in new_records:
                                 new_records[key] = {}
-                            new_records[key][pascal_col] = clean_val
+                            new_records[key][target_col] = clean_val
         else:
             # Not a NEW record - reset current key tracker
             current_new_record_key = None
