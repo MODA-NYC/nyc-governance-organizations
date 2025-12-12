@@ -49,4 +49,5 @@ htmlcov/
 
 !data/published/latest/
 !data/published/latest/*.csv
+!data/published/latest/*.json
 data/published/archive/

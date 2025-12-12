@@ -1,0 +1,28 @@
+{
+  "changed_by": "nathanstorey",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 0,
+    "qa_changes": 0,
+    "records_after_pipeline": 434
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/inputs/golden_snapshot.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
+    "qa_sources": []
+  },
+  "operator": "nathanstorey",
+  "outputs": {
+    "golden_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/outputs/golden_pre-release.csv",
+    "published_pre_release": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/outputs/published_pre-release.json",
+    "review_artifacts": {
+      "review_manifest": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/review/review_manifest.json"
+    },
+    "run_changelog": "/Users/nathanstorey/Code/nyc-governance-organizations/data/audit/runs/20251212-1851_Schema-update-add-reports-to-column/outputs/run_changelog.csv"
+  },
+  "run_id": "20251212-1851_Schema-update-add-reports-to-column",
+  "timing_seconds": 0.22
+}
