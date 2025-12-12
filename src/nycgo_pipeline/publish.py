@@ -107,6 +107,10 @@ def append_run_changelog(
 
     raw_rows = pd.read_csv(run_changelog, dtype=str).fillna("")
 
+    # Handle empty changelog (no data changes in this run)
+    if len(raw_rows) == 0:
+        return 0
+
     def prep_notes(row: pd.Series) -> str:
         base_notes = row.get("notes", "")
         rule_action = row.get("RuleAction", "")
