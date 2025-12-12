@@ -48,6 +48,7 @@ def copy_final_outputs(
     outputs_dir = run_dir / "outputs"
     golden_source = outputs_dir / "golden_pre-release.csv"
     published_source = outputs_dir / "published_pre-release.csv"
+    published_json_source = outputs_dir / "published_pre-release.json"
     run_summary_source = outputs_dir / "run_summary.json"
     crosswalk_source = outputs_dir / "crosswalk.csv"
 
@@ -71,6 +72,19 @@ def copy_final_outputs(
     # Create latest symlink/copy for GitHub releases
     shutil.copy2(published_source, latest_published_symlink)
 
+    # Copy JSON export if it exists
+    latest_published_json: Path | None = None
+    latest_published_json_symlink: Path | None = None
+    if published_json_source.exists():
+        latest_published_json = (
+            latest_dir / f"NYCGovernanceOrganizations_{version}.json"
+        )
+        latest_published_json_symlink = (
+            latest_dir / "NYCGovernanceOrganizations_latest.json"
+        )
+        shutil.copy2(published_json_source, latest_published_json)
+        shutil.copy2(published_json_source, latest_published_json_symlink)
+
     latest_run_summary: Path | None = None
     if run_summary_source.exists():
         latest_run_summary = latest_dir / "run_summary.json"
@@ -85,6 +99,8 @@ def copy_final_outputs(
         "golden_latest": latest_golden,
         "published_latest": latest_published,
         "published_latest_symlink": latest_published_symlink,
+        "published_json_latest": latest_published_json,
+        "published_json_latest_symlink": latest_published_json_symlink,
         "run_summary_latest": latest_run_summary,
     }
 
