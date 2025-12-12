@@ -369,13 +369,8 @@ def generate_release_notes(  # noqa: C901
             "*GitHub automatically generates source code archives (zip/tar.gz) "
             "containing the repository state at this release.*",
             "",
-            "**Pipeline outputs:**",
+            "**CSV Files:**",
             "",
-            (
-                f"- `nycgo-run-{run_id}.zip` - "
-                "Full pipeline run artifacts (inputs, outputs, run summary, "
-                "changelog) for audit and reproducibility"
-            ),
             (
                 f"- `NYCGovernanceOrganizations_{version}.csv` - "
                 "Published dataset with public columns only"
@@ -391,6 +386,25 @@ def generate_release_notes(  # noqa: C901
             (
                 "- `NYCGO_golden_dataset_latest.csv` - "
                 "Copy of golden dataset (for stable URL reference)"
+            ),
+            "",
+            "**JSON Files (Socrata-compatible):**",
+            "",
+            (
+                f"- `NYCGovernanceOrganizations_{version}.json` - "
+                "Published dataset in JSON format for Socrata/AEM integration"
+            ),
+            (
+                "- `NYCGovernanceOrganizations_latest.json` - "
+                "Copy of JSON dataset (for stable URL reference)"
+            ),
+            "",
+            "**Pipeline Artifacts:**",
+            "",
+            (
+                f"- `nycgo-run-{run_id}.zip` - "
+                "Full pipeline run artifacts (inputs, outputs, run summary, "
+                "changelog) for audit and reproducibility"
             ),
             "- `run_changelog.csv` - Changes made in this pipeline run",
         ]
