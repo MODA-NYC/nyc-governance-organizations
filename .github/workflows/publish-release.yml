@@ -184,6 +184,89 @@ jobs:
             fi
           fi
 
+      - name: Validate release assets
+        id: validate
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          GOLDEN_CSV="data/published/latest/NYCGO_golden_dataset_${VERSION}.csv"
+          VALIDATION_REPORT="data/published/latest/NYCGO_validation_report.json"
+
+          echo "Validating golden dataset: $GOLDEN_CSV"
+
+          # Run validation
+          python scripts/validate_release_asset.py \
+            --input "$GOLDEN_CSV" \
+            --schema schemas/nycgo_golden_dataset.tableschema.json \
+            --out "$VALIDATION_REPORT" \
+            --version "$VERSION"
+
+          VALIDATION_EXIT_CODE=$?
+
+          if [ $VALIDATION_EXIT_CODE -ne 0 ]; then
+            echo "❌ Validation FAILED - blocking release"
+            echo "validation_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Validation PASSED"
+            echo "validation_passed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate published dataset schema
+        id: validate-published
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PUBLIC_CSV="data/published/latest/NYCGovernanceOrganizations_${VERSION}.csv"
+          PUBLISHED_VALIDATION_REPORT="data/published/latest/NYCGO_published_validation_report.json"
+
+          echo "Validating published dataset: $PUBLIC_CSV"
+
+          # Run validation against published schema
+          python scripts/validate_release_asset.py \
+            --input "$PUBLIC_CSV" \
+            --schema schemas/nycgo_published_dataset.tableschema.json \
+            --out "$PUBLISHED_VALIDATION_REPORT" \
+            --version "$VERSION"
+
+          VALIDATION_EXIT_CODE=$?
+
+          if [ $VALIDATION_EXIT_CODE -ne 0 ]; then
+            echo "❌ Published schema validation FAILED - blocking release"
+            echo "validation_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Published schema validation PASSED"
+            echo "validation_passed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: |
+            data/published/latest/NYCGO_validation_report.json
+            data/published/latest/NYCGO_published_validation_report.json
+            schemas/nycgo_golden_dataset.tableschema.json
+            schemas/nycgo_published_dataset.tableschema.json
+
+      - name: Generate Socrata-compatible JSON
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PUBLIC_CSV="data/published/latest/NYCGovernanceOrganizations_${VERSION}.csv"
+          JSON_VERSIONED="data/published/latest/NYCGovernanceOrganizations_${VERSION}.json"
+          JSON_LATEST="data/published/latest/NYCGovernanceOrganizations_latest.json"
+
+          echo "Generating Socrata-compatible JSON from: $PUBLIC_CSV"
+
+          # Generate versioned JSON
+          python scripts/export_socrata_json.py \
+            --input "$PUBLIC_CSV" \
+            --output "$JSON_VERSIONED"
+
+          # Create latest copy
+          cp "$JSON_VERSIONED" "$JSON_LATEST"
+          echo "Created: $JSON_VERSIONED"
+          echo "Created: $JSON_LATEST"
+
       - name: Commit published files
         if: steps.mode.outputs.is_test != 'true'
         run: |
@@ -232,11 +315,15 @@ jobs:
           MISSING_FILES=()
           [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("NYCGovernanceOrganizations versioned CSV")
           [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.csv" ] && MISSING_FILES+=("NYCGovernanceOrganizations latest CSV")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.json" ] && MISSING_FILES+=("NYCGovernanceOrganizations versioned JSON")
+          [ ! -f "data/published/latest/NYCGovernanceOrganizations_latest.json" ] && MISSING_FILES+=("NYCGovernanceOrganizations latest JSON")
           [ ! -f "data/published/latest/NYCGO_golden_dataset_${{ steps.version.outputs.version }}.csv" ] && MISSING_FILES+=("NYCGO_golden_dataset versioned CSV")
           [ ! -f "data/published/latest/NYCGO_golden_dataset_latest.csv" ] && MISSING_FILES+=("NYCGO_golden_dataset latest CSV")
           [ ! -f "data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip" ] && MISSING_FILES+=("Zip file")
           [ ! -f "data/published/latest/run_changelog.csv" ] && MISSING_FILES+=("Changelog")
           [ ! -f "data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md" ] && MISSING_FILES+=("Release notes")
+          [ ! -f "data/published/latest/NYCGO_validation_report.json" ] && MISSING_FILES+=("Validation report")
+          [ ! -f "schemas/nycgo_golden_dataset.tableschema.json" ] && MISSING_FILES+=("Table schema")
 
           if [ ${#MISSING_FILES[@]} -gt 0 ]; then
             echo "⚠️  Warning: Missing files: ${MISSING_FILES[*]}"
@@ -255,10 +342,14 @@ jobs:
           files: |
             data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.csv
             data/published/latest/NYCGovernanceOrganizations_latest.csv
+            data/published/latest/NYCGovernanceOrganizations_${{ steps.version.outputs.version }}.json
+            data/published/latest/NYCGovernanceOrganizations_latest.json
             data/published/latest/NYCGO_golden_dataset_${{ steps.version.outputs.version }}.csv
             data/published/latest/NYCGO_golden_dataset_latest.csv
             data/published/latest/nycgo-run-${{ steps.run-id.outputs.run_id }}.zip
             data/published/latest/run_changelog.csv
+            data/published/latest/NYCGO_validation_report.json
+            schemas/nycgo_golden_dataset.tableschema.json
           draft: ${{ steps.mode.outputs.is_test == 'true' }}
           prerelease: ${{ steps.mode.outputs.is_test == 'true' }}
         env:

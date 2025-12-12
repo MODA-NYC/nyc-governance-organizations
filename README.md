@@ -37,7 +37,7 @@ This repository maintains two versions of the dataset schema:
 - **Public Export Fields**: 25 fields
 - **Entity Count**: 433 (will be 434 when complete)
 - **RecordID Format**: 6-digit numeric (e.g., `100318`)
-- **Relationship Fields**: 
+- **Relationship Fields**:
   - `org_chart_oversight_record_id` and `org_chart_oversight_name` (for org chart/political oversight)
   - `parent_organization_record_id` and `parent_organization_name` (for parent-child governance relationships)
 - **New Fields**: `governance_structure`, `authorizing_authority`, `authorizing_authority_type`, `authorizing_url`, `appointments_summary`
@@ -95,6 +95,128 @@ Run folders follow the convention `YYYYMMDD-HHMM_<descriptor>` with a timezone i
 - Semantic versioning resumes at `v1.0.0` for the next publish event. Code changes before the publish CLI launches use the development version `1.0.0-dev` in `pyproject.toml`.
 - Every run folder must record its dataset linkage in `data/audit/run_manifest.csv` so we can trace published artifacts back to the originating run.
 - Legacy releases up to `2.8.0` are retained for context but new tags will begin at `v1.0.0` once the publish workflow is live.
+
+## Release Validation Contract
+
+Each GitHub Release includes a machine-readable validation report that downstream consumers (e.g., AEM, other data ingestion systems) can use to verify data integrity before updating their cached copies.
+
+### Release Assets
+
+| Asset | Description |
+|-------|-------------|
+| `NYCGO_golden_dataset_v{X.Y.Z}.csv` | Versioned golden dataset (38 fields, all records) |
+| `NYCGO_golden_dataset_latest.csv` | Same file with stable name for automated fetching |
+| `NYCGovernanceOrganizations_v{X.Y.Z}.csv` | Public export (17 fields, directory-eligible records only) |
+| `NYCGovernanceOrganizations_v{X.Y.Z}.json` | Socrata-compatible JSON export for API consumers |
+| `NYCGovernanceOrganizations_latest.csv` | Same CSV file with stable name |
+| `NYCGovernanceOrganizations_latest.json` | Same JSON file with stable name |
+| `NYCGO_validation_report.json` | Golden dataset validation report |
+| `NYCGO_published_validation_report.json` | Published dataset validation report |
+| `nycgo_golden_dataset.tableschema.json` | Golden dataset schema (Frictionless Table Schema) |
+| `nycgo_published_dataset.tableschema.json` | Published dataset schema (Frictionless Table Schema) |
+
+### Schema Governance
+
+Schema changes are tracked in [`schemas/SCHEMA_CHANGELOG.md`](schemas/SCHEMA_CHANGELOG.md).
+
+**Schema Files:**
+- `schemas/nycgo_golden_dataset.tableschema.json` - Golden dataset (38 fields)
+- `schemas/nycgo_published_dataset.tableschema.json` - Published dataset (17 fields)
+
+**Making Schema Changes:**
+1. Update the schema file with new field definitions
+2. Update the version number in the schema file
+3. Document the change in `schemas/SCHEMA_CHANGELOG.md`
+4. If changing published schema, update `PUBLISHED_COLUMN_ORDER` in `scripts/process/export_dataset.py`
+5. Run pipeline to validate outputs match the new schema
+6. Use minor or major version bump (not patch) for schema changes
+
+### Validation Report Structure
+
+The `NYCGO_validation_report.json` file contains:
+
+```json
+{
+  "validation_report_version": "1.0.0",
+  "generated_at": "2025-01-15T12:00:00+00:00",
+  "dataset": {
+    "name": "nycgo_golden_dataset",
+    "schema_version": "1.6.0",
+    "schema_hash": "abc123...",
+    "version": "v1.7.0"
+  },
+  "asset": {
+    "filename": "NYCGO_golden_dataset_v1.7.0.csv",
+    "sha256": "abc123...",
+    "size_bytes": 225512,
+    "row_count": 434,
+    "column_count": 38
+  },
+  "valid": true,
+  "summary": {
+    "total_checks": 17,
+    "passed_checks": 17,
+    "failed_checks": 0,
+    "error_count": 0,
+    "warning_count": 0
+  },
+  "checks": [...],
+  "errors": [],
+  "warnings": []
+}
+```
+
+### Consumer Integration Pattern
+
+1. **Fetch validation report first**:
+   ```bash
+   curl -sL "https://github.com/.../releases/latest/download/NYCGO_validation_report.json"
+   ```
+
+2. **Check validity**:
+   - If `valid == false`: reject the release, keep serving cached data
+   - If `valid == true`: proceed to download the dataset
+
+3. **Verify checksum**:
+   ```bash
+   # Download dataset
+   curl -sL "https://github.com/.../releases/latest/download/NYCGO_golden_dataset_latest.csv" -o dataset.csv
+   # Verify SHA-256 matches the value in validation report
+   sha256sum dataset.csv
+   ```
+
+4. **Update cache** only if checksum matches
+
+### Validation Checks
+
+The pipeline validates the following before publishing:
+
+| Check | Blocking? | Description |
+|-------|-----------|-------------|
+| File parseable | Yes | CSV can be read without errors |
+| Row count > 0 | Yes | Dataset contains records |
+| Required columns | Yes | All 38 expected columns present |
+| Primary key unique | Yes | No duplicate `record_id` values |
+| Required fields | Yes | `record_id` and `name` are never empty |
+| Pattern validation | Yes | `record_id` matches `NYC_GOID_XXXXXX` format |
+| Enum validation | Yes | `operational_status`, `organization_type` contain valid values |
+| URL format | No | URL fields contain valid http/https URLs (warning only) |
+
+If any blocking check fails, the release workflow will abort and no GitHub Release will be created.
+
+### Local Validation
+
+Run validation locally against any CSV:
+
+```bash
+python scripts/validate_release_asset.py \
+  --input data/published/latest/NYCGO_golden_dataset_latest.csv \
+  --schema schemas/nycgo_golden_dataset.tableschema.json \
+  --out validation_report.json \
+  --version v1.7.0
+```
+
+Use `--strict` to treat warnings as errors.
 
 ## Release history
 
@@ -201,10 +323,22 @@ python compare_datasets.py \
 
 | Script | Purpose | Key Args |
 |--------|---------|----------|
-| **pipeline/run_pipeline.py** | End-to-end run orchestration | `--golden` · `--qa` · `--descriptor` · `--previous-export` |
+| **pipeline/run_pipeline.py** | End-to-end run orchestration | `--golden` · `--qa` (optional) · `--descriptor` · `--previous-export` |
 | **pipeline/publish_run.py** | Promote pre-release artifacts to final | `--run-dir` · `--version` · `--append-changelog` |
 | **process/manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
 | **process/export_dataset.py** | (Legacy) export helper leveraged by pipeline package | `--input_csv` · `--output_golden` · `--output_published` |
+
+#### Running Pipeline Without QA Edits
+
+To run the pipeline with no data changes (useful for testing schema changes or re-exporting):
+
+```bash
+python scripts/pipeline/run_pipeline.py \
+  --golden data/published/latest/NYCGO_golden_dataset_latest.csv \
+  --descriptor "Schema-only-run"
+```
+
+When `--qa` is omitted, the pipeline applies global rules only (no QA edits).
 
 ### Development
 

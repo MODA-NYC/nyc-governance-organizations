@@ -1,0 +1,279 @@
+{
+  "$schema": "https://specs.frictionlessdata.io/schemas/table-schema.json",
+  "name": "nycgo_golden_dataset",
+  "title": "NYC Governance Organizations Golden Dataset",
+  "description": "Complete dataset of NYC governance organizations with internal metadata fields",
+  "version": "1.6.0",
+  "primaryKey": "record_id",
+  "missingValues": ["", "null", "NULL"],
+  "fields": [
+    {
+      "name": "record_id",
+      "title": "Record ID",
+      "description": "Stable internal identifier (immutable primary key)",
+      "type": "string",
+      "constraints": {
+        "required": true,
+        "unique": true,
+        "pattern": "^NYC_GOID_\\d{6}$"
+      }
+    },
+    {
+      "name": "name",
+      "title": "Name",
+      "description": "Official/preferred name of the organization",
+      "type": "string",
+      "constraints": {
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "name": "name_alphabetized",
+      "title": "Name Alphabetized",
+      "description": "Name normalized for alphabetical sorting",
+      "type": "string"
+    },
+    {
+      "name": "operational_status",
+      "title": "Operational Status",
+      "description": "Current status of the organization",
+      "type": "string",
+      "constraints": {
+        "enum": ["Active", "Inactive", "Dissolved", "Reorganized", "Verification Pending", "Excluded"]
+      }
+    },
+    {
+      "name": "organization_type",
+      "title": "Organization Type",
+      "description": "Category classification of the organization",
+      "type": "string",
+      "constraints": {
+        "enum": [
+          "Mayoral Agency",
+          "Mayoral Office",
+          "Division",
+          "Elected Office",
+          "Advisory or Regulatory Organization",
+          "Nonprofit Organization",
+          "Public Benefit or Development Organization",
+          "State Government Agency",
+          "Pension Fund"
+        ]
+      }
+    },
+    {
+      "name": "description",
+      "title": "Description",
+      "description": "Detailed description of the organization's purpose and function",
+      "type": "string"
+    },
+    {
+      "name": "url",
+      "title": "URL",
+      "description": "Official website URL",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "name": "alternate_or_former_names",
+      "title": "Alternate or Former Names",
+      "description": "Other names seen in official sources (semicolon-separated)",
+      "type": "string"
+    },
+    {
+      "name": "acronym",
+      "title": "Acronym",
+      "description": "Official acronym (if any)",
+      "type": "string"
+    },
+    {
+      "name": "alternate_or_former_acronyms",
+      "title": "Alternate or Former Acronyms",
+      "description": "Other acronyms seen in official sources",
+      "type": "string"
+    },
+    {
+      "name": "budget_code",
+      "title": "Budget Code",
+      "description": "NYC budget code identifier",
+      "type": "string"
+    },
+    {
+      "name": "open_datasets_url",
+      "title": "Open Datasets URL",
+      "description": "Link to related NYC Open Data datasets",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "name": "founding_year",
+      "title": "Founding Year",
+      "description": "Year the organization was founded/established",
+      "type": "string",
+      "constraints": {
+        "pattern": "^(\\d{4})?$"
+      }
+    },
+    {
+      "name": "principal_officer_full_name",
+      "title": "Principal Officer Full Name",
+      "description": "Full name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_given_name",
+      "title": "Principal Officer Given Name",
+      "description": "Given (first) name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_middle_name_or_initial",
+      "title": "Principal Officer Middle Name or Initial",
+      "description": "Middle name or initial of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_family_name",
+      "title": "Principal Officer Family Name",
+      "description": "Family (last) name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_suffix",
+      "title": "Principal Officer Suffix",
+      "description": "Name suffix (Jr., Sr., III, etc.)",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_name",
+      "title": "Principal Officer Name (Legacy)",
+      "description": "Full name of principal officer (legacy field)",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_title",
+      "title": "Principal Officer Title",
+      "description": "Title of the principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_contact_url",
+      "title": "Principal Officer Contact URL",
+      "description": "Profile/contact page URL for principal officer",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "name": "notes",
+      "title": "Notes",
+      "description": "Additional notes and context",
+      "type": "string"
+    },
+    {
+      "name": "instance_of",
+      "title": "Instance Of",
+      "description": "Type classification",
+      "type": "string"
+    },
+    {
+      "name": "name_nycgov_agency_list",
+      "title": "Name - NYC.gov Agency List",
+      "description": "Name as it appears on NYC.gov Agency List",
+      "type": "string"
+    },
+    {
+      "name": "name_nycgov_mayors_office",
+      "title": "Name - NYC.gov Mayor's Office",
+      "description": "Name as it appears on Mayor's Office website",
+      "type": "string"
+    },
+    {
+      "name": "name_nyc_open_data_portal",
+      "title": "Name - NYC Open Data Portal",
+      "description": "Name as it appears on NYC Open Data Portal",
+      "type": "string"
+    },
+    {
+      "name": "name_oda",
+      "title": "Name - ODA",
+      "description": "Name as it appears in ODA system",
+      "type": "string"
+    },
+    {
+      "name": "name_cpo",
+      "title": "Name - CPO",
+      "description": "Name as it appears in CPO system",
+      "type": "string"
+    },
+    {
+      "name": "name_wegov",
+      "title": "Name - WeGov",
+      "description": "Name as it appears in WeGov system",
+      "type": "string"
+    },
+    {
+      "name": "name_greenbook",
+      "title": "Name - Greenbook",
+      "description": "Name as it appears in Greenbook",
+      "type": "string"
+    },
+    {
+      "name": "name_checkbook",
+      "title": "Name - Checkbook",
+      "description": "Name as it appears in Checkbook system",
+      "type": "string"
+    },
+    {
+      "name": "name_hoo",
+      "title": "Name - HOO",
+      "description": "Name as it appears in HOO system",
+      "type": "string"
+    },
+    {
+      "name": "name_ops",
+      "title": "Name - Ops",
+      "description": "Name as it appears in Ops system",
+      "type": "string"
+    },
+    {
+      "name": "in_org_chart",
+      "title": "In Org Chart",
+      "description": "Flag indicating if entity appears in citywide org chart",
+      "type": "string",
+      "constraints": {
+        "enum": ["TRUE", "FALSE", ""]
+      }
+    },
+    {
+      "name": "reports_to",
+      "title": "Reports To",
+      "description": "Reporting/administrative/oversight relationship",
+      "type": "string"
+    },
+    {
+      "name": "reporting_notes",
+      "title": "Reporting Notes",
+      "description": "Notes about reporting relationships",
+      "type": "string"
+    },
+    {
+      "name": "jan_2025_org_chart",
+      "title": "Jan 2025 Org Chart",
+      "description": "Flag indicating if entity appears in January 2025 org chart",
+      "type": "string",
+      "constraints": {
+        "enum": ["TRUE", "FALSE", ""]
+      }
+    },
+    {
+      "name": "listed_in_nyc_gov_agency_directory",
+      "title": "Listed in NYC.gov Agency Directory",
+      "description": "Computed flag indicating if entity should appear in NYC.gov Agency Directory",
+      "type": "string",
+      "constraints": {
+        "enum": ["TRUE", "FALSE", ""]
+      }
+    }
+  ]
+}

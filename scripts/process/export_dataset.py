@@ -106,6 +106,7 @@ PUBLISHED_COLUMN_ORDER = [
     "principal_officer_last_name",
     "principal_officer_title",
     "principal_officer_contact_url",
+    "reports_to",
     "in_org_chart",
     "listed_in_nyc_gov_agency_directory",
 ]

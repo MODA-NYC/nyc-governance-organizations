@@ -1,0 +1,146 @@
+{
+  "$schema": "https://specs.frictionlessdata.io/schemas/table-schema.json",
+  "name": "nycgo_published_dataset",
+  "title": "NYC Governance Organizations Published Dataset",
+  "description": "Public export of NYC governance organizations for Open Data portal and API consumers",
+  "version": "1.7.0",
+  "primaryKey": "record_id",
+  "missingValues": ["", "null", "NULL"],
+  "fields": [
+    {
+      "name": "record_id",
+      "title": "Record ID",
+      "description": "Stable internal identifier (immutable primary key)",
+      "type": "string",
+      "constraints": {
+        "required": true,
+        "unique": true,
+        "pattern": "^NYC_GOID_\\d{6}$"
+      }
+    },
+    {
+      "name": "name",
+      "title": "Name",
+      "description": "Official/preferred name of the organization",
+      "type": "string",
+      "constraints": {
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "name": "name_alphabetized",
+      "title": "Name Alphabetized",
+      "description": "Name normalized for alphabetical sorting",
+      "type": "string"
+    },
+    {
+      "name": "operational_status",
+      "title": "Operational Status",
+      "description": "Current status of the organization",
+      "type": "string",
+      "constraints": {
+        "enum": ["Active", "Inactive", "Dissolved", "Reorganized", "Verification Pending", "Excluded"]
+      }
+    },
+    {
+      "name": "organization_type",
+      "title": "Organization Type",
+      "description": "Category classification of the organization",
+      "type": "string",
+      "constraints": {
+        "enum": [
+          "Mayoral Agency",
+          "Mayoral Office",
+          "Division",
+          "Elected Office",
+          "Advisory or Regulatory Organization",
+          "Nonprofit Organization",
+          "Public Benefit or Development Organization",
+          "State Government Agency",
+          "Pension Fund"
+        ]
+      }
+    },
+    {
+      "name": "url",
+      "title": "URL",
+      "description": "Official website URL",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "name": "alternate_or_former_names",
+      "title": "Alternate or Former Names",
+      "description": "Other names seen in official sources (semicolon-separated)",
+      "type": "string"
+    },
+    {
+      "name": "acronym",
+      "title": "Acronym",
+      "description": "Official acronym (if any)",
+      "type": "string"
+    },
+    {
+      "name": "alternate_or_former_acronyms",
+      "title": "Alternate or Former Acronyms",
+      "description": "Other acronyms seen in official sources",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_full_name",
+      "title": "Principal Officer Full Name",
+      "description": "Full name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_first_name",
+      "title": "Principal Officer First Name",
+      "description": "First name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_last_name",
+      "title": "Principal Officer Last Name",
+      "description": "Last name of principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_title",
+      "title": "Principal Officer Title",
+      "description": "Title of the principal officer",
+      "type": "string"
+    },
+    {
+      "name": "principal_officer_contact_url",
+      "title": "Principal Officer Contact URL",
+      "description": "Profile/contact page URL for principal officer",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "name": "reports_to",
+      "title": "Reports To",
+      "description": "Reporting/administrative/oversight relationship",
+      "type": "string"
+    },
+    {
+      "name": "in_org_chart",
+      "title": "In Org Chart",
+      "description": "Flag indicating if entity appears in citywide org chart",
+      "type": "string",
+      "constraints": {
+        "enum": ["TRUE", "FALSE", "True", "False", ""]
+      }
+    },
+    {
+      "name": "listed_in_nyc_gov_agency_directory",
+      "title": "Listed in NYC.gov Agency Directory",
+      "description": "Computed flag indicating if entity should appear in NYC.gov Agency Directory",
+      "type": "string",
+      "constraints": {
+        "enum": ["TRUE", "FALSE", "True", "False", ""]
+      }
+    }
+  ]
+}

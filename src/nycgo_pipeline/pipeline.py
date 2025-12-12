@@ -16,6 +16,49 @@ from . import global_rules, qa_edits
 from .review import build_review_artifacts
 
 
+def convert_to_socrata_json(df: pd.DataFrame) -> list[dict]:
+    """
+    Convert a DataFrame to Socrata-compatible JSON format.
+
+    Transformations:
+    - url -> {"url": "..."} (nested object)
+    - principal_officer_contact_url -> principal_officer_contact: {"url": "..."}
+    - listed_in_nyc_gov_agency_directory -> listed_in_nyc_gov_agency (truncated name)
+    - Boolean strings -> actual booleans
+    - Empty fields are omitted
+    """
+    records = []
+
+    for _, row in df.iterrows():
+        record = {}
+
+        for col in df.columns:
+            value = row[col]
+
+            # Skip empty/null values
+            if pd.isna(value) or (isinstance(value, str) and value.strip() == ""):
+                continue
+
+            # URL field transformations (nested objects)
+            if col == "url":
+                record["url"] = {"url": value}
+            elif col == "principal_officer_contact_url":
+                record["principal_officer_contact"] = {"url": value}
+            # Boolean field transformations
+            elif col in ("in_org_chart", "listed_in_nyc_gov_agency_directory"):
+                bool_value = str(value).strip().lower() == "true"
+                if col == "listed_in_nyc_gov_agency_directory":
+                    record["listed_in_nyc_gov_agency"] = bool_value
+                else:
+                    record[col] = bool_value
+            else:
+                record[col] = value
+
+        records.append(record)
+
+    return records
+
+
 @dataclass(slots=True)
 class RunArtifacts:
     run_dir: Path
@@ -105,10 +148,17 @@ def orchestrate_pipeline(
 
     golden_output = run_artifacts.outputs_dir / "golden_pre-release.csv"
     published_output = run_artifacts.outputs_dir / "published_pre-release.csv"
+    published_json_output = run_artifacts.outputs_dir / "published_pre-release.json"
     run_changelog_path = run_artifacts.outputs_dir / "run_changelog.csv"
     combined_changelog = global_rules.changelog_entries + qa_edits.changelog_entries
     changelog_df = pd.DataFrame(combined_changelog, columns=qa_edits.CHANGELOG_COLUMNS)
     changelog_df.to_csv(run_changelog_path, index=False, encoding="utf-8-sig")
+
+    # Generate Socrata-compatible JSON from published CSV
+    df_published = pd.read_csv(published_output, dtype=str, encoding="utf-8-sig")
+    socrata_records = convert_to_socrata_json(df_published)
+    with open(published_json_output, "w", encoding="utf-8") as f:
+        json.dump(socrata_records, f, indent=2, ensure_ascii=False)
 
     review_artifacts = build_review_artifacts(
         run_artifacts.review_dir,
@@ -135,6 +185,7 @@ def orchestrate_pipeline(
         "outputs": {
             "golden_pre_release": str(golden_output),
             "published_pre_release": str(published_output),
+            "published_pre_release_json": str(published_json_output),
             "run_changelog": str(run_changelog_path),
             "review_artifacts": review_artifacts,
         },

@@ -23,8 +23,9 @@ def parse_args() -> argparse.Namespace:
         "--qa",
         type=Path,
         action="append",
-        required=True,
-        help="QA CSV(s) to apply (can be specified multiple times)",
+        default=None,
+        help="QA CSV(s) to apply (can be specified multiple times). "
+        "If omitted, pipeline runs with no QA edits (schema/rules only).",
     )
     parser.add_argument(
         "--output-golden",
@@ -100,9 +101,12 @@ def main() -> int:
         args.output_published or run_dir / "outputs" / "published_pre-release.csv"
     )
 
+    # Handle optional QA paths (empty list if not provided)
+    qa_paths = args.qa or []
+
     summary = orchestrate_pipeline(
         golden_source=args.golden,
-        qa_paths=args.qa,
+        qa_paths=qa_paths,
         run_id=run_id,
         changed_by=args.changed_by,
         operator=operator,
