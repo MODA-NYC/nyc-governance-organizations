@@ -159,3 +159,16 @@ The `no_state_nygov_url` gatekeeper rule and `state_government_agency` type-spec
 - Sprint 6A completion released as v1.6.0 with snake_case columns
 - This sprint focuses on polish items that don't affect data integrity
 - All changes should be backward compatible
+
+---
+
+## QA Backlog
+
+Items to verify when time permits:
+
+- [ ] **Test workflow rate limiting (Sprint 4)**: Verify "Edit currently in progress" message appears when trying to submit a second edit while a workflow is running
+  - Set `TEST_MODE=true` in nycgo-admin-ui repo variables
+  - Submit an edit via Admin UI
+  - While workflow is running, quickly try to submit another edit
+  - Should see: "Edit currently in progress. Check back in a couple minutes."
+  - Note: Uses unauthenticated GitHub API, may need to account for rate limits
