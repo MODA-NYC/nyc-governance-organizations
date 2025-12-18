@@ -1,0 +1,3 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20251218_200718_1,2025-12-18T20:07:19.891222,NYC_GOID_000001,Accessory Sign Regulation Interagency Task Force,alternate_or_former_names,Test Alias,Test Alias,admin_ui_edits.csv,"Set to ""Test Alias",Inserting test alias to test the updated workflow,,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-20251218_200718_2,2025-12-18T20:07:19.892033,NYC_GOID_000001,Accessory Sign Regulation Interagency Task Force,alternate_or_former_names,Test Alias,,admin_ui_edits.csv,Set to,Removing Test Alias to test workflow,,@npstorey via NYCGO Admin UI,direct_set
