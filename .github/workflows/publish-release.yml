@@ -1,12 +1,14 @@
 name: Publish Release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'data/audit/runs/**'
-      - 'data/working/NYCGO_golden_dataset_*.csv'
+  # Note: Push trigger removed - process-edit.yml explicitly calls workflow_dispatch
+  # This prevents duplicate runs when admin UI commits audit artifacts
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'data/audit/runs/**'
+  #     - 'data/working/NYCGO_golden_dataset_*.csv'
   workflow_dispatch:
     inputs:
       run_id:
