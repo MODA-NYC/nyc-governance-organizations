@@ -409,5 +409,31 @@ jobs:
           fi
 
       - name: Notify user of completion
-        if: github.event.inputs.triggered_by != ''
-        run: echo "Would notify ${{ github.event.inputs.triggered_by }}"
+        if: github.event.inputs.triggered_by != '' && steps.create-release.outcome == 'success'
+        run: |
+          TRIGGERED_BY="${{ github.event.inputs.triggered_by }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          RUN_ID="${{ steps.run-id.outputs.run_id }}"
+          IS_TEST="${{ steps.mode.outputs.is_test }}"
+
+          if [ "$IS_TEST" = "true" ]; then
+            RELEASE_URL="https://github.com/${{ github.repository }}/releases"
+          else
+            RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
+          fi
+
+          NOTIFICATION_BODY="@${TRIGGERED_BY} Your edit has been processed. Release: ${VERSION}, Run: ${RUN_ID}. View: ${RELEASE_URL}"
+
+          echo "Notification: $NOTIFICATION_BODY"
+
+          LATEST_COMMIT=$(git rev-parse HEAD)
+
+          curl -s -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/${LATEST_COMMIT}/comments" \
+            -d "{\"body\": \"$NOTIFICATION_BODY\"}"
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### User Notification" >> $GITHUB_STEP_SUMMARY
+          echo "Notified @${TRIGGERED_BY} of release completion." >> $GITHUB_STEP_SUMMARY
