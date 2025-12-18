@@ -1,0 +1,129 @@
+{
+  "validation_report_version": "1.0.0",
+  "generated_at": "2025-12-18T19:32:15.602279+00:00",
+  "dataset": {
+    "name": "nycgo_golden_dataset",
+    "title": "NYC Governance Organizations Golden Dataset",
+    "schema_version": "1.6.0",
+    "schema_hash": "410671f8f7eb",
+    "version": "v1.7.1"
+  },
+  "asset": {
+    "filename": "NYCGO_golden_dataset_v1.7.1.csv",
+    "filepath": "data/published/latest/NYCGO_golden_dataset_v1.7.1.csv",
+    "sha256": "676f95995b00b27ddd3f60cb7814df7c59fa18161096c8eb50505d94b97dd8b0",
+    "size_bytes": 225522,
+    "row_count": 434,
+    "column_count": 38
+  },
+  "schema": {
+    "filepath": "schemas/nycgo_golden_dataset.tableschema.json",
+    "field_count": 38
+  },
+  "valid": true,
+  "summary": {
+    "total_checks": 17,
+    "passed_checks": 17,
+    "failed_checks": 0,
+    "error_count": 0,
+    "warning_count": 1
+  },
+  "checks": [
+    {
+      "name": "file_parseable",
+      "passed": true,
+      "message": "CSV parsed successfully"
+    },
+    {
+      "name": "row_count_positive",
+      "passed": true,
+      "message": "Row count: 434"
+    },
+    {
+      "name": "required_columns_present",
+      "passed": true,
+      "message": "All 38 expected columns present"
+    },
+    {
+      "name": "column_order",
+      "passed": true,
+      "message": "Column order matches schema"
+    },
+    {
+      "name": "primary_key_unique",
+      "passed": true,
+      "message": "All 434 record_id values are unique"
+    },
+    {
+      "name": "required_field_record_id",
+      "passed": true,
+      "message": "Field 'record_id' has no empty values"
+    },
+    {
+      "name": "required_field_name",
+      "passed": true,
+      "message": "Field 'name' has no empty values"
+    },
+    {
+      "name": "pattern_record_id",
+      "passed": true,
+      "message": "Field 'record_id' matches pattern"
+    },
+    {
+      "name": "pattern_founding_year",
+      "passed": true,
+      "message": "Field 'founding_year' matches pattern"
+    },
+    {
+      "name": "enum_operational_status",
+      "passed": true,
+      "message": "Field 'operational_status' has valid enum values"
+    },
+    {
+      "name": "enum_organization_type",
+      "passed": true,
+      "message": "Field 'organization_type' has valid enum values"
+    },
+    {
+      "name": "enum_in_org_chart",
+      "passed": true,
+      "message": "Field 'in_org_chart' has valid enum values"
+    },
+    {
+      "name": "enum_jan_2025_org_chart",
+      "passed": true,
+      "message": "Field 'jan_2025_org_chart' has valid enum values"
+    },
+    {
+      "name": "enum_listed_in_nyc_gov_agency_directory",
+      "passed": true,
+      "message": "Field 'listed_in_nyc_gov_agency_directory' has valid enum values"
+    },
+    {
+      "name": "url_format_url",
+      "passed": true,
+      "message": "Field 'url' contains valid URLs"
+    },
+    {
+      "name": "url_format_open_datasets_url",
+      "passed": true,
+      "message": "Field 'open_datasets_url' contains valid URLs"
+    },
+    {
+      "name": "url_format_principal_officer_contact_url",
+      "passed": true,
+      "message": "Field 'principal_officer_contact_url' has 1 bad URLs"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    {
+      "check": "url_format",
+      "field": "principal_officer_contact_url",
+      "message": "Field 'principal_officer_contact_url' has 1 invalid URLs",
+      "sample_invalid": [
+        "Non-existant"
+      ]
+    }
+  ]
+}
