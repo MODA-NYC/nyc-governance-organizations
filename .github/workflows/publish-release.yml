@@ -26,6 +26,14 @@ on:
         required: false
         type: boolean
         default: false
+      triggered_by:
+        description: 'GitHub username who triggered the original edit (for notification)'
+        required: false
+        type: string
+      source_repo:
+        description: 'Source repository where the edit was submitted'
+        required: false
+        type: string
 
 jobs:
   publish:
