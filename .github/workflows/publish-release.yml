@@ -407,3 +407,60 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Notify user of completion
+        if: github.event.inputs.triggered_by != '' && steps.create-release.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TRIGGERED_BY="${{ github.event.inputs.triggered_by }}"
+          SOURCE_REPO="${{ github.event.inputs.source_repo }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          RUN_ID="${{ steps.run-id.outputs.run_id }}"
+          IS_TEST="${{ steps.mode.outputs.is_test }}"
+
+          if [ "$IS_TEST" = "true" ]; then
+            RELEASE_TYPE="draft"
+            RELEASE_URL="https://github.com/${{ github.repository }}/releases"
+          else
+            RELEASE_TYPE="published"
+            RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
+          fi
+
+          # Build notification message
+          NOTIFICATION_BODY="@${TRIGGERED_BY} Your edit has been fully processed and ${RELEASE_TYPE}!
+
+**Release:** [${VERSION}](${RELEASE_URL})
+**Run ID:** \`${RUN_ID}\`
+**Mode:** $([ "$IS_TEST" = "true" ] && echo "TEST (draft release)" || echo "PRODUCTION")
+
+[View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+          echo "Notification for @${TRIGGERED_BY}:"
+          echo "$NOTIFICATION_BODY"
+
+          # Post comment on the most recent commit (the release commit)
+          # This will send a GitHub notification to the @mentioned user
+          LATEST_COMMIT=$(git rev-parse HEAD)
+
+          # Use GitHub API to post a commit comment
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/${LATEST_COMMIT}/comments" \
+            -d "$(jq -n --arg body "$NOTIFICATION_BODY" '{body: $body}')")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+
+          if [ "$HTTP_CODE" -eq 201 ]; then
+            echo "Successfully posted notification comment"
+          else
+            echo "Warning: Failed to post comment (HTTP $HTTP_CODE)"
+            echo "Response: $(echo "$RESPONSE" | sed '$d')"
+          fi
+
+          # Add to step summary for visibility
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### User Notification" >> $GITHUB_STEP_SUMMARY
+          echo "Notified @${TRIGGERED_BY} of release completion via commit comment." >> $GITHUB_STEP_SUMMARY
+
