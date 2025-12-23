@@ -14,9 +14,6 @@
     .controls button:hover { background: #3d5a87; }
     #canvas { width: 100%; height: calc(100vh - 60px); background: white; }
     .bjs-powered-by { display: none; }
-    .bjs-breadcrumbs { padding: 8px 16px; background: #f0f0f0; border-bottom: 1px solid #ddd; font-size: 14px; }
-    .bjs-breadcrumbs a { color: #1a365d; text-decoration: none; }
-    .bjs-breadcrumbs a:hover { text-decoration: underline; }
   </style>
   <script>
 /*! bpmn-js - bpmn-viewer v17.11.1 | Copyright (c) 2014-present, camunda Services GmbH | bpmn.io/license */
@@ -914,8 +911,10 @@ function(e){const t=qe('<a href="http://bpmn.io" target="_blank" class="bjs-powe
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
-    <!-- Subprocess Plane: Run Pipeline -->
+  <!-- Subprocess Diagram: Run Pipeline -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_RunPipeline">
     <bpmndi:BPMNPlane id="BPMNPlane_RunPipeline" bpmnElement="SubProcess_RunPipeline">
       <bpmndi:BPMNShape id="Start_Pipeline_di" bpmnElement="Start_Pipeline">
         <dc:Bounds x="180" y="160" width="36" height="36" />
@@ -981,8 +980,10 @@ function(e){const t=qe('<a href="http://bpmn.io" target="_blank" class="bjs-powe
         <di:waypoint x="1020" y="178" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
-    <!-- Subprocess Plane: Validate Release Assets -->
+  <!-- Subprocess Diagram: Validate Release Assets -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Validation">
     <bpmndi:BPMNPlane id="BPMNPlane_Validation" bpmnElement="SubProcess_Validation">
       <bpmndi:BPMNShape id="Start_Validation_di" bpmnElement="Start_Validation">
         <dc:Bounds x="180" y="160" width="36" height="36" />

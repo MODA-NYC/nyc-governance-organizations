@@ -857,8 +857,10 @@
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
-    <!-- Subprocess Plane: Run Pipeline -->
+  <!-- Subprocess Diagram: Run Pipeline -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_RunPipeline">
     <bpmndi:BPMNPlane id="BPMNPlane_RunPipeline" bpmnElement="SubProcess_RunPipeline">
       <bpmndi:BPMNShape id="Start_Pipeline_di" bpmnElement="Start_Pipeline">
         <dc:Bounds x="180" y="160" width="36" height="36" />
@@ -924,8 +926,10 @@
         <di:waypoint x="1020" y="178" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
-    <!-- Subprocess Plane: Validate Release Assets -->
+  <!-- Subprocess Diagram: Validate Release Assets -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Validation">
     <bpmndi:BPMNPlane id="BPMNPlane_Validation" bpmnElement="SubProcess_Validation">
       <bpmndi:BPMNShape id="Start_Validation_di" bpmnElement="Start_Validation">
         <dc:Bounds x="180" y="160" width="36" height="36" />
