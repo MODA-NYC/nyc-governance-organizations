@@ -9,11 +9,15 @@
     body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
     header { background: #1a365d; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
     header h1 { margin: 0; font-size: 1.5rem; }
-    .controls { display: flex; gap: 0.5rem; }
+    .controls { display: flex; gap: 0.5rem; align-items: center; }
     .controls button { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; background: #2d4a77; color: white; font-size: 0.875rem; }
     .controls button:hover { background: #3d5a87; }
+    .controls button:disabled { background: #666; cursor: not-allowed; }
+    .controls button.back-btn { background: #b45309; }
+    .controls button.back-btn:hover { background: #d97706; }
     #canvas { width: 100%; height: calc(100vh - 60px); background: white; }
     .bjs-powered-by { display: none; }
+    #current-view { color: #fbbf24; margin-right: 1rem; font-size: 0.875rem; }
   </style>
   <script src="https://unpkg.com/bpmn-js@17/dist/bpmn-viewer.production.min.js"></script>
 </head>
@@ -21,9 +25,11 @@
   <header>
     <h1>NYCGO Edit-Publish Pipeline</h1>
     <div class="controls">
-      <button onclick="zoomIn()">Zoom In (+)</button>
-      <button onclick="zoomOut()">Zoom Out (-)</button>
-      <button onclick="resetZoom()">Reset View</button>
+      <span id="current-view">Main Diagram</span>
+      <button id="back-btn" class="back-btn" onclick="goBack()" disabled>← Back to Main</button>
+      <button onclick="zoomIn()">Zoom +</button>
+      <button onclick="zoomOut()">Zoom -</button>
+      <button onclick="resetZoom()">Reset</button>
     </div>
   </header>
   <div id="canvas"></div>
@@ -998,17 +1004,53 @@
 
 </bpmn:definitions>
 `;
-    const viewer = new BpmnJS({ container: '#canvas' });
-    viewer.importXML(bpmnXML).then(function(result) {
-      if (result.warnings.length) console.warn('BPMN import warnings:', result.warnings);
-      viewer.get('canvas').zoom('fit-viewport');
-    }).catch(function(err) {
-      console.error('Failed to import BPMN diagram:', err);
-      document.getElementById('canvas').innerHTML = '<div style="padding: 2rem; color: red;">Error loading diagram: ' + err.message + '</div>';
-    });
+    let viewer;
+    let rootElement = null;
+
+    function initViewer() {
+      viewer = new BpmnJS({ container: '#canvas' });
+
+      viewer.importXML(bpmnXML).then(function(result) {
+        if (result.warnings.length) console.warn('BPMN import warnings:', result.warnings);
+
+        const canvas = viewer.get('canvas');
+        rootElement = canvas.getRootElement();
+        canvas.zoom('fit-viewport');
+
+        viewer.on('root.set', function(event) {
+          const newRoot = event.element;
+          const backBtn = document.getElementById('back-btn');
+          const viewLabel = document.getElementById('current-view');
+
+          if (newRoot && newRoot.id !== rootElement.id) {
+            backBtn.disabled = false;
+            const name = newRoot.businessObject ? (newRoot.businessObject.name || newRoot.id) : newRoot.id;
+            viewLabel.textContent = 'Subprocess: ' + name;
+          } else {
+            backBtn.disabled = true;
+            viewLabel.textContent = 'Main Diagram';
+          }
+        });
+
+      }).catch(function(err) {
+        console.error('Failed to import BPMN diagram:', err);
+        document.getElementById('canvas').innerHTML = '<div style="padding: 2rem; color: red;">Error loading diagram: ' + err.message + '</div>';
+      });
+    }
+
+    function goBack() {
+      if (viewer && rootElement) {
+        const canvas = viewer.get('canvas');
+        canvas.setRootElement(rootElement);
+        canvas.zoom('fit-viewport');
+      }
+    }
+
     function zoomIn() { viewer.get('zoomScroll').stepZoom(1); }
     function zoomOut() { viewer.get('zoomScroll').stepZoom(-1); }
     function resetZoom() { viewer.get('canvas').zoom('fit-viewport'); }
+
+    initViewer();
   </script>
 </body>
 </html>
