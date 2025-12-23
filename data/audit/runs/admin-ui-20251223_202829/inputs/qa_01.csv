@@ -1,0 +1,4 @@
+record_id,record_name,field_name,action,justification,evidence_url
+NYC_GOID_000191,"Fire Department of the City of New York",principal_officer_full_name,"Set to ""Mark Guerra""","Mayor Adams appointed Mark Guerra as the new Fire Commissioner.","https://www.nyc.gov/mayors-office/news/2025/12/mayor-adams-appoints-mark-guerra-as-36th-fire-commissioner-of-fd"
+NYC_GOID_000191,"Fire Department of the City of New York",principal_officer_first_name,"Set to ""Mark""","Mayor Adams appointed Mark Guerra as the new Fire Commissioner.","https://www.nyc.gov/mayors-office/news/2025/12/mayor-adams-appoints-mark-guerra-as-36th-fire-commissioner-of-fd"
+NYC_GOID_000191,"Fire Department of the City of New York",principal_officer_last_name,"Set to ""Guerra""","Mayor Adams appointed Mark Guerra as the new Fire Commissioner.","https://www.nyc.gov/mayors-office/news/2025/12/mayor-adams-appoints-mark-guerra-as-36th-fire-commissioner-of-fd"
