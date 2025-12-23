@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  id="Definitions_NYCGO"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <!-- Collaboration (Pools) -->
+  <bpmn:collaboration id="Collaboration_NYCGO_Pipeline">
+    <bpmn:participant id="Pool_AdminUI" name="NYCGO Admin UI" processRef="Process_AdminUI" />
+    <bpmn:participant id="Pool_ProcessEdit" name="Process Edit Workflow" processRef="Process_EditWorkflow" />
+    <bpmn:participant id="Pool_PublishRelease" name="Publish Release Workflow" processRef="Process_PublishRelease" />
+    <bpmn:messageFlow id="Flow_EditSubmission" sourceRef="Task_CommitCSV" targetRef="Event_EditReceived" name="CSV to pending-edits/" />
+    <bpmn:messageFlow id="Flow_TriggerPublish" sourceRef="Task_TriggerPublish" targetRef="Event_PublishTriggered" name="workflow_dispatch" />
+  </bpmn:collaboration>
+
+  <!-- Process 1: Admin UI (User Submission) -->
+  <bpmn:process id="Process_AdminUI" isExecutable="true">
+    <bpmn:startEvent id="Start_UserEdit" name="User Opens Admin UI">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_LoadGolden" name="Load Golden Dataset from GitHub">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_SearchOrg" name="Search/Select Organization">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_FillForm" name="Fill Edit Form (field, action, justification)">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_Schedule" name="Schedule for later?">
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+      <bpmn:outgoing>Flow_05a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_SetSchedule" name="Set Scheduled Date/Time">
+      <bpmn:incoming>Flow_05a</bpmn:incoming>
+      <bpmn:outgoing>Flow_06a</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CommitScheduled" name="Commit to scheduled-edits/">
+      <bpmn:incoming>Flow_06a</bpmn:incoming>
+      <bpmn:outgoing>Flow_07a</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CommitCSV" name="Commit CSV to pending-edits/">
+      <bpmn:incoming>Flow_05b</bpmn:incoming>
+      <bpmn:outgoing>Flow_07b</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_UserSubmit" name="Edit Submitted">
+      <bpmn:incoming>Flow_07a</bpmn:incoming>
+      <bpmn:incoming>Flow_07b</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="Start_UserEdit" targetRef="Task_LoadGolden" />
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_LoadGolden" targetRef="Task_SearchOrg" />
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_SearchOrg" targetRef="Task_FillForm" />
+    <bpmn:sequenceFlow id="Flow_04" sourceRef="Task_FillForm" targetRef="Gateway_Schedule" />
+    <bpmn:sequenceFlow id="Flow_05a" name="Yes" sourceRef="Gateway_Schedule" targetRef="Task_SetSchedule" />
+    <bpmn:sequenceFlow id="Flow_05b" name="No" sourceRef="Gateway_Schedule" targetRef="Task_CommitCSV" />
+    <bpmn:sequenceFlow id="Flow_06a" sourceRef="Task_SetSchedule" targetRef="Task_CommitScheduled" />
+    <bpmn:sequenceFlow id="Flow_07a" sourceRef="Task_CommitScheduled" targetRef="End_UserSubmit" />
+    <bpmn:sequenceFlow id="Flow_07b" sourceRef="Task_CommitCSV" targetRef="End_UserSubmit" />
+  </bpmn:process>
+
+  <!-- Process 2: Process Edit Workflow -->
+  <bpmn:process id="Process_EditWorkflow" isExecutable="true">
+    <bpmn:startEvent id="Event_EditReceived" name="Edit CSV Pushed / Scheduled Trigger">
+      <bpmn:outgoing>Flow_PE01</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1" />
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_CheckScheduled" name="Check and Promote Scheduled Edits">
+      <bpmn:incoming>Flow_PE01</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE02</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_HasEdits" name="Has pending edits?">
+      <bpmn:incoming>Flow_PE02</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE03a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PE03b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:endEvent id="End_NoEdits" name="No Edits to Process">
+      <bpmn:incoming>Flow_PE03b</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:task id="Task_DetermineMode" name="Determine Mode (test/demo/production)">
+      <bpmn:incoming>Flow_PE03a</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE04</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CheckoutPipeline" name="Checkout Pipeline Repo">
+      <bpmn:incoming>Flow_PE04</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE05</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_FindGolden" name="Find Latest Golden Dataset">
+      <bpmn:incoming>Flow_PE05</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE06</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CombineEdits" name="Combine Pending Edits into QA File">
+      <bpmn:incoming>Flow_PE06</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE07</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:subProcess id="SubProcess_RunPipeline" name="Run Pipeline (run_pipeline.py)">
+      <bpmn:incoming>Flow_PE07</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE08</bpmn:outgoing>
+
+      <bpmn:startEvent id="Start_Pipeline" name="Start Pipeline">
+        <bpmn:outgoing>Flow_SP01</bpmn:outgoing>
+      </bpmn:startEvent>
+
+      <bpmn:task id="Task_LoadInputs" name="Load Golden + QA Inputs">
+        <bpmn:incoming>Flow_SP01</bpmn:incoming>
+        <bpmn:outgoing>Flow_SP02</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:task id="Task_ApplyEdits" name="Apply QA Edits to Dataset">
+        <bpmn:incoming>Flow_SP02</bpmn:incoming>
+        <bpmn:outgoing>Flow_SP03</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:task id="Task_ApplyRules" name="Apply Directory Rules">
+        <bpmn:incoming>Flow_SP03</bpmn:incoming>
+        <bpmn:outgoing>Flow_SP04</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:task id="Task_GenerateOutputs" name="Generate golden_pre-release.csv and published_pre-release.csv">
+        <bpmn:incoming>Flow_SP04</bpmn:incoming>
+        <bpmn:outgoing>Flow_SP05</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:task id="Task_WriteRunSummary" name="Write run_summary.json">
+        <bpmn:incoming>Flow_SP05</bpmn:incoming>
+        <bpmn:outgoing>Flow_SP06</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:endEvent id="End_Pipeline" name="Pipeline Complete">
+        <bpmn:incoming>Flow_SP06</bpmn:incoming>
+      </bpmn:endEvent>
+
+      <bpmn:sequenceFlow id="Flow_SP01" sourceRef="Start_Pipeline" targetRef="Task_LoadInputs" />
+      <bpmn:sequenceFlow id="Flow_SP02" sourceRef="Task_LoadInputs" targetRef="Task_ApplyEdits" />
+      <bpmn:sequenceFlow id="Flow_SP03" sourceRef="Task_ApplyEdits" targetRef="Task_ApplyRules" />
+      <bpmn:sequenceFlow id="Flow_SP04" sourceRef="Task_ApplyRules" targetRef="Task_GenerateOutputs" />
+      <bpmn:sequenceFlow id="Flow_SP05" sourceRef="Task_GenerateOutputs" targetRef="Task_WriteRunSummary" />
+      <bpmn:sequenceFlow id="Flow_SP06" sourceRef="Task_WriteRunSummary" targetRef="End_Pipeline" />
+    </bpmn:subProcess>
+
+    <bpmn:task id="Task_CommitAudit" name="Commit Audit Artifacts to Target Branch">
+      <bpmn:incoming>Flow_PE08</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE09</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_TriggerPublish" name="Trigger Publish?">
+      <bpmn:incoming>Flow_PE09</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE10a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PE10b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_DetermineVersion" name="Determine Version Bump (patch/minor)">
+      <bpmn:incoming>Flow_PE10a</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE11</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_TriggerPublish" name="Trigger publish-release Workflow">
+      <bpmn:incoming>Flow_PE11</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE12</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_ArchiveEdits" name="Archive Processed Edits">
+      <bpmn:incoming>Flow_PE10b</bpmn:incoming>
+      <bpmn:incoming>Flow_PE12</bpmn:incoming>
+      <bpmn:outgoing>Flow_PE13</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_ProcessEdit" name="Edit Processing Complete">
+      <bpmn:incoming>Flow_PE13</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_PE01" sourceRef="Event_EditReceived" targetRef="Task_CheckScheduled" />
+    <bpmn:sequenceFlow id="Flow_PE02" sourceRef="Task_CheckScheduled" targetRef="Gateway_HasEdits" />
+    <bpmn:sequenceFlow id="Flow_PE03a" name="Yes" sourceRef="Gateway_HasEdits" targetRef="Task_DetermineMode" />
+    <bpmn:sequenceFlow id="Flow_PE03b" name="No" sourceRef="Gateway_HasEdits" targetRef="End_NoEdits" />
+    <bpmn:sequenceFlow id="Flow_PE04" sourceRef="Task_DetermineMode" targetRef="Task_CheckoutPipeline" />
+    <bpmn:sequenceFlow id="Flow_PE05" sourceRef="Task_CheckoutPipeline" targetRef="Task_FindGolden" />
+    <bpmn:sequenceFlow id="Flow_PE06" sourceRef="Task_FindGolden" targetRef="Task_CombineEdits" />
+    <bpmn:sequenceFlow id="Flow_PE07" sourceRef="Task_CombineEdits" targetRef="SubProcess_RunPipeline" />
+    <bpmn:sequenceFlow id="Flow_PE08" sourceRef="SubProcess_RunPipeline" targetRef="Task_CommitAudit" />
+    <bpmn:sequenceFlow id="Flow_PE09" sourceRef="Task_CommitAudit" targetRef="Gateway_TriggerPublish" />
+    <bpmn:sequenceFlow id="Flow_PE10a" name="Demo or Production" sourceRef="Gateway_TriggerPublish" targetRef="Task_DetermineVersion" />
+    <bpmn:sequenceFlow id="Flow_PE10b" name="Test Only" sourceRef="Gateway_TriggerPublish" targetRef="Task_ArchiveEdits" />
+    <bpmn:sequenceFlow id="Flow_PE11" sourceRef="Task_DetermineVersion" targetRef="Task_TriggerPublish" />
+    <bpmn:sequenceFlow id="Flow_PE12" sourceRef="Task_TriggerPublish" targetRef="Task_ArchiveEdits" />
+    <bpmn:sequenceFlow id="Flow_PE13" sourceRef="Task_ArchiveEdits" targetRef="End_ProcessEdit" />
+  </bpmn:process>
+
+  <!-- Process 3: Publish Release Workflow -->
+  <bpmn:process id="Process_PublishRelease" isExecutable="true">
+    <bpmn:startEvent id="Event_PublishTriggered" name="Publish Workflow Triggered">
+      <bpmn:outgoing>Flow_PR01</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_2" />
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_DetermineTestMode" name="Determine Mode (test vs production)">
+      <bpmn:incoming>Flow_PR01</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR02</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_FindRunID" name="Find Run ID from Audit Runs">
+      <bpmn:incoming>Flow_PR02</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR03</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CalcVersion" name="Calculate Next Version">
+      <bpmn:incoming>Flow_PR03</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR04</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_RunPublish" name="Run publish_run.py">
+      <bpmn:incoming>Flow_PR04</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR05</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CreateLatest" name="Create _latest.csv Copies">
+      <bpmn:incoming>Flow_PR05</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR06</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:subProcess id="SubProcess_Validation" name="Validate Release Assets">
+      <bpmn:incoming>Flow_PR06</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR07</bpmn:outgoing>
+
+      <bpmn:startEvent id="Start_Validation">
+        <bpmn:outgoing>Flow_V01</bpmn:outgoing>
+      </bpmn:startEvent>
+
+      <bpmn:task id="Task_ValidateGolden" name="Validate Golden Dataset Schema">
+        <bpmn:incoming>Flow_V01</bpmn:incoming>
+        <bpmn:outgoing>Flow_V02</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:task id="Task_ValidatePublished" name="Validate Published Dataset Schema">
+        <bpmn:incoming>Flow_V02</bpmn:incoming>
+        <bpmn:outgoing>Flow_V03</bpmn:outgoing>
+      </bpmn:task>
+
+      <bpmn:endEvent id="End_Validation">
+        <bpmn:incoming>Flow_V03</bpmn:incoming>
+      </bpmn:endEvent>
+
+      <bpmn:sequenceFlow id="Flow_V01" sourceRef="Start_Validation" targetRef="Task_ValidateGolden" />
+      <bpmn:sequenceFlow id="Flow_V02" sourceRef="Task_ValidateGolden" targetRef="Task_ValidatePublished" />
+      <bpmn:sequenceFlow id="Flow_V03" sourceRef="Task_ValidatePublished" targetRef="End_Validation" />
+    </bpmn:subProcess>
+
+    <bpmn:boundaryEvent id="Event_ValidationFailed" name="Validation Failed" attachedToRef="SubProcess_Validation">
+      <bpmn:outgoing>Flow_PR_Error</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1" />
+    </bpmn:boundaryEvent>
+
+    <bpmn:endEvent id="End_ValidationError" name="Release Blocked">
+      <bpmn:incoming>Flow_PR_Error</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_2" />
+    </bpmn:endEvent>
+
+    <bpmn:task id="Task_GenerateJSON" name="Generate Socrata-Compatible JSON">
+      <bpmn:incoming>Flow_PR07</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR08</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_IsProduction" name="Production Mode?">
+      <bpmn:incoming>Flow_PR08</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR09a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PR09b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_CommitPublished" name="Commit Published Files to Main">
+      <bpmn:incoming>Flow_PR09a</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR10a</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PrepareNotes" name="Prepare Release Notes">
+      <bpmn:incoming>Flow_PR09b</bpmn:incoming>
+      <bpmn:incoming>Flow_PR10a</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR11</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CreateRelease" name="Create GitHub Release">
+      <bpmn:incoming>Flow_PR11</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR12</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_NotifyUser" name="Triggered by User?">
+      <bpmn:incoming>Flow_PR12</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR13a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PR13b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_NotifyUser" name="Notify User of Completion">
+      <bpmn:incoming>Flow_PR13a</bpmn:incoming>
+      <bpmn:outgoing>Flow_PR14</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="End_PublishComplete" name="Release Published">
+      <bpmn:incoming>Flow_PR13b</bpmn:incoming>
+      <bpmn:incoming>Flow_PR14</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_PR01" sourceRef="Event_PublishTriggered" targetRef="Task_DetermineTestMode" />
+    <bpmn:sequenceFlow id="Flow_PR02" sourceRef="Task_DetermineTestMode" targetRef="Task_FindRunID" />
+    <bpmn:sequenceFlow id="Flow_PR03" sourceRef="Task_FindRunID" targetRef="Task_CalcVersion" />
+    <bpmn:sequenceFlow id="Flow_PR04" sourceRef="Task_CalcVersion" targetRef="Task_RunPublish" />
+    <bpmn:sequenceFlow id="Flow_PR05" sourceRef="Task_RunPublish" targetRef="Task_CreateLatest" />
+    <bpmn:sequenceFlow id="Flow_PR06" sourceRef="Task_CreateLatest" targetRef="SubProcess_Validation" />
+    <bpmn:sequenceFlow id="Flow_PR07" sourceRef="SubProcess_Validation" targetRef="Task_GenerateJSON" />
+    <bpmn:sequenceFlow id="Flow_PR_Error" sourceRef="Event_ValidationFailed" targetRef="End_ValidationError" />
+    <bpmn:sequenceFlow id="Flow_PR08" sourceRef="Task_GenerateJSON" targetRef="Gateway_IsProduction" />
+    <bpmn:sequenceFlow id="Flow_PR09a" name="Yes" sourceRef="Gateway_IsProduction" targetRef="Task_CommitPublished" />
+    <bpmn:sequenceFlow id="Flow_PR09b" name="No (Test/Demo)" sourceRef="Gateway_IsProduction" targetRef="Task_PrepareNotes" />
+    <bpmn:sequenceFlow id="Flow_PR10a" sourceRef="Task_CommitPublished" targetRef="Task_PrepareNotes" />
+    <bpmn:sequenceFlow id="Flow_PR11" sourceRef="Task_PrepareNotes" targetRef="Task_CreateRelease" />
+    <bpmn:sequenceFlow id="Flow_PR12" sourceRef="Task_CreateRelease" targetRef="Gateway_NotifyUser" />
+    <bpmn:sequenceFlow id="Flow_PR13a" name="Yes" sourceRef="Gateway_NotifyUser" targetRef="Task_NotifyUser" />
+    <bpmn:sequenceFlow id="Flow_PR13b" name="No" sourceRef="Gateway_NotifyUser" targetRef="End_PublishComplete" />
+    <bpmn:sequenceFlow id="Flow_PR14" sourceRef="Task_NotifyUser" targetRef="End_PublishComplete" />
+  </bpmn:process>
+
+  <!-- Diagram Layout -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_NYCGO_Pipeline">
+
+      <!-- Pool 1: Admin UI -->
+      <bpmndi:BPMNShape id="Pool_AdminUI_di" bpmnElement="Pool_AdminUI" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1200" height="280" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_UserEdit_di" bpmnElement="Start_UserEdit">
+        <dc:Bounds x="212" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="190" y="235" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_LoadGolden_di" bpmnElement="Task_LoadGolden">
+        <dc:Bounds x="290" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_SearchOrg_di" bpmnElement="Task_SearchOrg">
+        <dc:Bounds x="430" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_FillForm_di" bpmnElement="Task_FillForm">
+        <dc:Bounds x="570" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_Schedule_di" bpmnElement="Gateway_Schedule" isMarkerVisible="true">
+        <dc:Bounds x="715" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="697" y="155" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_SetSchedule_di" bpmnElement="Task_SetSchedule">
+        <dc:Bounds x="810" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CommitScheduled_di" bpmnElement="Task_CommitScheduled">
+        <dc:Bounds x="960" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CommitCSV_di" bpmnElement="Task_CommitCSV">
+        <dc:Bounds x="810" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_UserSubmit_di" bpmnElement="End_UserSubmit">
+        <dc:Bounds x="1122" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1105" y="235" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Pool 2: Process Edit Workflow -->
+      <bpmndi:BPMNShape id="Pool_ProcessEdit_di" bpmnElement="Pool_ProcessEdit" isHorizontal="true">
+        <dc:Bounds x="160" y="400" width="1600" height="400" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Event_EditReceived_di" bpmnElement="Event_EditReceived">
+        <dc:Bounds x="212" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="605" width="88" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CheckScheduled_di" bpmnElement="Task_CheckScheduled">
+        <dc:Bounds x="290" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_HasEdits_di" bpmnElement="Gateway_HasEdits" isMarkerVisible="true">
+        <dc:Bounds x="435" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="418" y="525" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_NoEdits_di" bpmnElement="End_NoEdits">
+        <dc:Bounds x="442" y="702" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="420" y="745" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_DetermineMode_di" bpmnElement="Task_DetermineMode">
+        <dc:Bounds x="530" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CheckoutPipeline_di" bpmnElement="Task_CheckoutPipeline">
+        <dc:Bounds x="670" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_FindGolden_di" bpmnElement="Task_FindGolden">
+        <dc:Bounds x="810" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CombineEdits_di" bpmnElement="Task_CombineEdits">
+        <dc:Bounds x="950" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="SubProcess_RunPipeline_di" bpmnElement="SubProcess_RunPipeline" isExpanded="false">
+        <dc:Bounds x="1090" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CommitAudit_di" bpmnElement="Task_CommitAudit">
+        <dc:Bounds x="1230" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_TriggerPublish_di" bpmnElement="Gateway_TriggerPublish" isMarkerVisible="true">
+        <dc:Bounds x="1375" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1361" y="525" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_DetermineVersion_di" bpmnElement="Task_DetermineVersion">
+        <dc:Bounds x="1470" y="440" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_TriggerPublish_di" bpmnElement="Task_TriggerPublish">
+        <dc:Bounds x="1470" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ArchiveEdits_di" bpmnElement="Task_ArchiveEdits">
+        <dc:Bounds x="1470" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_ProcessEdit_di" bpmnElement="End_ProcessEdit">
+        <dc:Bounds x="1632" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1610" y="725" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Pool 3: Publish Release Workflow -->
+      <bpmndi:BPMNShape id="Pool_PublishRelease_di" bpmnElement="Pool_PublishRelease" isHorizontal="true">
+        <dc:Bounds x="160" y="840" width="1600" height="380" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Event_PublishTriggered_di" bpmnElement="Event_PublishTriggered">
+        <dc:Bounds x="212" y="1002" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="194" y="1045" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_DetermineTestMode_di" bpmnElement="Task_DetermineTestMode">
+        <dc:Bounds x="290" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_FindRunID_di" bpmnElement="Task_FindRunID">
+        <dc:Bounds x="430" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CalcVersion_di" bpmnElement="Task_CalcVersion">
+        <dc:Bounds x="570" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_RunPublish_di" bpmnElement="Task_RunPublish">
+        <dc:Bounds x="710" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CreateLatest_di" bpmnElement="Task_CreateLatest">
+        <dc:Bounds x="850" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="SubProcess_Validation_di" bpmnElement="SubProcess_Validation" isExpanded="false">
+        <dc:Bounds x="990" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Event_ValidationFailed_di" bpmnElement="Event_ValidationFailed">
+        <dc:Bounds x="1022" y="1042" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1000" y="1085" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_ValidationError_di" bpmnElement="End_ValidationError">
+        <dc:Bounds x="1022" y="1142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1000" y="1185" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_GenerateJSON_di" bpmnElement="Task_GenerateJSON">
+        <dc:Bounds x="1130" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_IsProduction_di" bpmnElement="Gateway_IsProduction" isMarkerVisible="true">
+        <dc:Bounds x="1275" y="995" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1257" y="965" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CommitPublished_di" bpmnElement="Task_CommitPublished">
+        <dc:Bounds x="1250" y="870" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_PrepareNotes_di" bpmnElement="Task_PrepareNotes">
+        <dc:Bounds x="1370" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_CreateRelease_di" bpmnElement="Task_CreateRelease">
+        <dc:Bounds x="1510" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_NotifyUser_di" bpmnElement="Gateway_NotifyUser" isMarkerVisible="true">
+        <dc:Bounds x="1535" y="1095" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1595" y="1113" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_NotifyUser_di" bpmnElement="Task_NotifyUser">
+        <dc:Bounds x="1630" y="980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_PublishComplete_di" bpmnElement="End_PublishComplete">
+        <dc:Bounds x="1662" y="1102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1700" y="1113" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flows for Admin UI -->
+      <bpmndi:BPMNEdge id="Flow_01_di" bpmnElement="Flow_01">
+        <di:waypoint x="248" y="210" />
+        <di:waypoint x="290" y="210" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_02_di" bpmnElement="Flow_02">
+        <di:waypoint x="390" y="210" />
+        <di:waypoint x="430" y="210" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03">
+        <di:waypoint x="530" y="210" />
+        <di:waypoint x="570" y="210" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_04_di" bpmnElement="Flow_04">
+        <di:waypoint x="670" y="210" />
+        <di:waypoint x="715" y="210" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_05a_di" bpmnElement="Flow_05a">
+        <di:waypoint x="740" y="185" />
+        <di:waypoint x="740" y="140" />
+        <di:waypoint x="810" y="140" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="746" y="160" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_05b_di" bpmnElement="Flow_05b">
+        <di:waypoint x="740" y="235" />
+        <di:waypoint x="740" y="280" />
+        <di:waypoint x="810" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="748" y="255" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_06a_di" bpmnElement="Flow_06a">
+        <di:waypoint x="910" y="140" />
+        <di:waypoint x="960" y="140" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_07a_di" bpmnElement="Flow_07a">
+        <di:waypoint x="1060" y="140" />
+        <di:waypoint x="1140" y="140" />
+        <di:waypoint x="1140" y="192" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_07b_di" bpmnElement="Flow_07b">
+        <di:waypoint x="910" y="280" />
+        <di:waypoint x="1140" y="280" />
+        <di:waypoint x="1140" y="228" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Sequence Flows for Process Edit -->
+      <bpmndi:BPMNEdge id="Flow_PE01_di" bpmnElement="Flow_PE01">
+        <di:waypoint x="248" y="580" />
+        <di:waypoint x="290" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE02_di" bpmnElement="Flow_PE02">
+        <di:waypoint x="390" y="580" />
+        <di:waypoint x="435" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE03a_di" bpmnElement="Flow_PE03a">
+        <di:waypoint x="485" y="580" />
+        <di:waypoint x="530" y="580" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="562" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE03b_di" bpmnElement="Flow_PE03b">
+        <di:waypoint x="460" y="605" />
+        <di:waypoint x="460" y="702" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="651" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE04_di" bpmnElement="Flow_PE04">
+        <di:waypoint x="630" y="580" />
+        <di:waypoint x="670" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE05_di" bpmnElement="Flow_PE05">
+        <di:waypoint x="770" y="580" />
+        <di:waypoint x="810" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE06_di" bpmnElement="Flow_PE06">
+        <di:waypoint x="910" y="580" />
+        <di:waypoint x="950" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE07_di" bpmnElement="Flow_PE07">
+        <di:waypoint x="1050" y="580" />
+        <di:waypoint x="1090" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE08_di" bpmnElement="Flow_PE08">
+        <di:waypoint x="1190" y="580" />
+        <di:waypoint x="1230" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE09_di" bpmnElement="Flow_PE09">
+        <di:waypoint x="1330" y="580" />
+        <di:waypoint x="1375" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE10a_di" bpmnElement="Flow_PE10a">
+        <di:waypoint x="1400" y="555" />
+        <di:waypoint x="1400" y="480" />
+        <di:waypoint x="1470" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1390" y="443" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE10b_di" bpmnElement="Flow_PE10b">
+        <di:waypoint x="1400" y="605" />
+        <di:waypoint x="1400" y="700" />
+        <di:waypoint x="1470" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1390" y="713" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE11_di" bpmnElement="Flow_PE11">
+        <di:waypoint x="1520" y="520" />
+        <di:waypoint x="1520" y="540" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE12_di" bpmnElement="Flow_PE12">
+        <di:waypoint x="1520" y="620" />
+        <di:waypoint x="1520" y="660" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PE13_di" bpmnElement="Flow_PE13">
+        <di:waypoint x="1570" y="700" />
+        <di:waypoint x="1632" y="700" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Sequence Flows for Publish Release -->
+      <bpmndi:BPMNEdge id="Flow_PR01_di" bpmnElement="Flow_PR01">
+        <di:waypoint x="248" y="1020" />
+        <di:waypoint x="290" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR02_di" bpmnElement="Flow_PR02">
+        <di:waypoint x="390" y="1020" />
+        <di:waypoint x="430" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR03_di" bpmnElement="Flow_PR03">
+        <di:waypoint x="530" y="1020" />
+        <di:waypoint x="570" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR04_di" bpmnElement="Flow_PR04">
+        <di:waypoint x="670" y="1020" />
+        <di:waypoint x="710" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR05_di" bpmnElement="Flow_PR05">
+        <di:waypoint x="810" y="1020" />
+        <di:waypoint x="850" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR06_di" bpmnElement="Flow_PR06">
+        <di:waypoint x="950" y="1020" />
+        <di:waypoint x="990" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR07_di" bpmnElement="Flow_PR07">
+        <di:waypoint x="1090" y="1020" />
+        <di:waypoint x="1130" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR_Error_di" bpmnElement="Flow_PR_Error">
+        <di:waypoint x="1040" y="1078" />
+        <di:waypoint x="1040" y="1142" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR08_di" bpmnElement="Flow_PR08">
+        <di:waypoint x="1230" y="1020" />
+        <di:waypoint x="1275" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR09a_di" bpmnElement="Flow_PR09a">
+        <di:waypoint x="1300" y="995" />
+        <di:waypoint x="1300" y="950" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1306" y="970" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR09b_di" bpmnElement="Flow_PR09b">
+        <di:waypoint x="1325" y="1020" />
+        <di:waypoint x="1370" y="1020" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1310" y="1023" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR10a_di" bpmnElement="Flow_PR10a">
+        <di:waypoint x="1350" y="910" />
+        <di:waypoint x="1420" y="910" />
+        <di:waypoint x="1420" y="980" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR11_di" bpmnElement="Flow_PR11">
+        <di:waypoint x="1470" y="1020" />
+        <di:waypoint x="1510" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR12_di" bpmnElement="Flow_PR12">
+        <di:waypoint x="1560" y="1060" />
+        <di:waypoint x="1560" y="1095" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR13a_di" bpmnElement="Flow_PR13a">
+        <di:waypoint x="1560" y="1095" />
+        <di:waypoint x="1560" y="1020" />
+        <di:waypoint x="1630" y="1020" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1566" y="1055" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR13b_di" bpmnElement="Flow_PR13b">
+        <di:waypoint x="1585" y="1120" />
+        <di:waypoint x="1662" y="1120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1616" y="1102" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_PR14_di" bpmnElement="Flow_PR14">
+        <di:waypoint x="1680" y="1060" />
+        <di:waypoint x="1680" y="1102" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Message Flows -->
+      <bpmndi:BPMNEdge id="Flow_EditSubmission_di" bpmnElement="Flow_EditSubmission">
+        <di:waypoint x="860" y="320" />
+        <di:waypoint x="860" y="370" />
+        <di:waypoint x="230" y="370" />
+        <di:waypoint x="230" y="562" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_TriggerPublish_di" bpmnElement="Flow_TriggerPublish">
+        <di:waypoint x="1520" y="620" />
+        <di:waypoint x="1520" y="810" />
+        <di:waypoint x="230" y="810" />
+        <di:waypoint x="230" y="1002" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn:definitions>
