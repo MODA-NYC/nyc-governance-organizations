@@ -857,6 +857,108 @@
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>
+
+    <!-- Subprocess Plane: Run Pipeline -->
+    <bpmndi:BPMNPlane id="BPMNPlane_RunPipeline" bpmnElement="SubProcess_RunPipeline">
+      <bpmndi:BPMNShape id="Start_Pipeline_di" bpmnElement="Start_Pipeline">
+        <dc:Bounds x="180" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="203" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_LoadInputs_di" bpmnElement="Task_LoadInputs">
+        <dc:Bounds x="270" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ApplyEdits_di" bpmnElement="Task_ApplyEdits">
+        <dc:Bounds x="420" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ApplyRules_di" bpmnElement="Task_ApplyRules">
+        <dc:Bounds x="570" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_GenerateOutputs_di" bpmnElement="Task_GenerateOutputs">
+        <dc:Bounds x="720" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_WriteRunSummary_di" bpmnElement="Task_WriteRunSummary">
+        <dc:Bounds x="870" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_Pipeline_di" bpmnElement="End_Pipeline">
+        <dc:Bounds x="1020" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="995" y="203" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_SP01_di" bpmnElement="Flow_SP01">
+        <di:waypoint x="216" y="178" />
+        <di:waypoint x="270" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SP02_di" bpmnElement="Flow_SP02">
+        <di:waypoint x="370" y="178" />
+        <di:waypoint x="420" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SP03_di" bpmnElement="Flow_SP03">
+        <di:waypoint x="520" y="178" />
+        <di:waypoint x="570" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SP04_di" bpmnElement="Flow_SP04">
+        <di:waypoint x="670" y="178" />
+        <di:waypoint x="720" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SP05_di" bpmnElement="Flow_SP05">
+        <di:waypoint x="820" y="178" />
+        <di:waypoint x="870" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_SP06_di" bpmnElement="Flow_SP06">
+        <di:waypoint x="970" y="178" />
+        <di:waypoint x="1020" y="178" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+
+    <!-- Subprocess Plane: Validate Release Assets -->
+    <bpmndi:BPMNPlane id="BPMNPlane_Validation" bpmnElement="SubProcess_Validation">
+      <bpmndi:BPMNShape id="Start_Validation_di" bpmnElement="Start_Validation">
+        <dc:Bounds x="180" y="160" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ValidateGolden_di" bpmnElement="Task_ValidateGolden">
+        <dc:Bounds x="270" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ValidatePublished_di" bpmnElement="Task_ValidatePublished">
+        <dc:Bounds x="420" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="End_Validation_di" bpmnElement="End_Validation">
+        <dc:Bounds x="572" y="160" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_V01_di" bpmnElement="Flow_V01">
+        <di:waypoint x="216" y="178" />
+        <di:waypoint x="270" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_V02_di" bpmnElement="Flow_V02">
+        <di:waypoint x="370" y="178" />
+        <di:waypoint x="420" y="178" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_V03_di" bpmnElement="Flow_V03">
+        <di:waypoint x="520" y="178" />
+        <di:waypoint x="572" y="178" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+
   </bpmndi:BPMNDiagram>
 
 </bpmn:definitions>
