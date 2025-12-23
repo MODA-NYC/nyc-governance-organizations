@@ -7,6 +7,7 @@ An analysis-ready reference of NYC agencies and governance organizaitons—stand
 ### Quick links
 - **Dataset on NYC Open Data (t3jq-9nkf)**: [NYC Agencies and Governance Organizations](https://data.cityofnewyork.us/d/t3jq-9nkf/)
 - **Feedback & corrections (Airtable form)**: [Submit a change request](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form)
+- **Pipeline diagram**: [View interactive BPMN](https://moda-nyc.github.io/nyc-governance-organizations/docs/nycgo-edit-publish-pipeline-standalone.html) | [Mermaid version](docs/nycgo-edit-publish-pipeline.mermaid.md)
 - **Baseline run artifacts spec**: [`docs/Run_Artifacts.md`](docs/Run_Artifacts.md)
 - **Release history**: see [Release History](#release-history) in this README
 - **Contributing (CONTRIBUTING.md)**: (TODO: add)
@@ -264,6 +265,47 @@ Accepted evidence includes official nyc.gov pages showing the value, Executive O
 - Updates to existing records
 - “Can’t find it” reports
 - Proposing a new organization
+
+## Admin UI Integration
+
+This repository works in conjunction with **nycgo-admin-ui**, an internal web interface that allows authorized editors to submit individual record edits without running the full pipeline manually.
+
+> **Note**: The Admin UI repository ([MODA-NYC/nycgo-admin-ui](https://github.com/MODA-NYC/nycgo-admin-ui)) is **internal/private** and requires organization membership to access.
+
+### How the repositories interact
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  nycgo-admin-ui (internal)                                              │
+│  ├── Web UI for searching/editing organizations                         │
+│  ├── pending-edits/     ← User commits CSV edits here                   │
+│  ├── scheduled-edits/   ← Future-dated edits (promoted hourly)          │
+│  └── .github/workflows/process-edit.yml  ← Triggers on CSV commit       │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Workflow clones this repo,
+                                    │ runs pipeline, commits results
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  nyc-governance-organizations (this repo)                               │
+│  ├── data/published/latest/   ← Golden dataset (source of truth)        │
+│  ├── data/audit/runs/         ← Run artifacts with full audit trail     │
+│  ├── .github/workflows/publish-release.yml  ← Creates GitHub releases   │
+│  └── Releases                 ← Versioned datasets + validation reports │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Pipeline flow
+
+See the [interactive pipeline diagram](https://moda-nyc.github.io/nyc-governance-organizations/docs/nycgo-edit-publish-pipeline-standalone.html) or the [Mermaid version](docs/nycgo-edit-publish-pipeline.mermaid.md) for a complete visualization of:
+
+1. **Admin UI** → User submits edit via web form → CSV committed to `pending-edits/`
+2. **Process Edit Workflow** → Validates, runs pipeline, commits audit artifacts
+3. **Publish Release Workflow** → Creates versioned GitHub release with validation reports
+
+### For Admin UI maintainers
+
+The Admin UI loads data directly from this repository's `data/published/latest/NYCGO_golden_dataset_latest.csv`. Configuration is in `js/config.js`.
 
 ## How to run this repo
 

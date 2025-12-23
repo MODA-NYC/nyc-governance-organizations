@@ -1,5 +1,9 @@
 # NYCGO Edit-Publish Pipeline
 
+> **Interactive BPMN Viewer**: [View full diagram with zoom/pan controls](https://moda-nyc.github.io/nyc-governance-organizations/docs/nycgo-edit-publish-pipeline-standalone.html)
+>
+> **Source files**: [BPMN XML](./nycgo-edit-publish-pipeline.bpmn) (importable to Camunda, Bizagi, etc.)
+
 ```mermaid
 flowchart TB
     subgraph AdminUI["NYCGO Admin UI"]
