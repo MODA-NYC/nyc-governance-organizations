@@ -14,7 +14,7 @@
     .controls button:hover { background: #3d5a87; }
     .controls button:disabled { background: #666; cursor: not-allowed; }
     .controls button.back-btn { background: #b45309; }
-    .controls button.back-btn:hover { background: #d97706; }
+    .controls button.back-btn:hover:not(:disabled) { background: #d97706; }
     #canvas { width: 100%; height: calc(100vh - 60px); background: white; }
     .bjs-powered-by { display: none; }
     #current-view { color: #fbbf24; margin-right: 1rem; font-size: 0.875rem; }
@@ -1046,9 +1046,21 @@
       }
     }
 
-    function zoomIn() { viewer.get('zoomScroll').stepZoom(1); }
-    function zoomOut() { viewer.get('zoomScroll').stepZoom(-1); }
-    function resetZoom() { viewer.get('canvas').zoom('fit-viewport'); }
+    function zoomIn() {
+      const canvas = viewer.get('canvas');
+      const currentZoom = canvas.zoom();
+      canvas.zoom(currentZoom * 1.2);
+    }
+
+    function zoomOut() {
+      const canvas = viewer.get('canvas');
+      const currentZoom = canvas.zoom();
+      canvas.zoom(currentZoom / 1.2);
+    }
+
+    function resetZoom() {
+      viewer.get('canvas').zoom('fit-viewport');
+    }
 
     initViewer();
   </script>

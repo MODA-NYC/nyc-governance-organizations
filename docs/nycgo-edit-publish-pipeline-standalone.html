@@ -14,14 +14,9 @@
     .controls button:hover { background: #3d5a87; }
     .controls button:disabled { background: #666; cursor: not-allowed; }
     .controls button.back-btn { background: #b45309; }
-    .controls button.back-btn:hover { background: #d97706; }
+    .controls button.back-btn:hover:not(:disabled) { background: #d97706; }
     #canvas { width: 100%; height: calc(100vh - 60px); background: white; }
     .bjs-powered-by { display: none; }
-    .bjs-breadcrumbs { position: absolute; top: 70px; left: 10px; background: rgba(255,255,255,0.95); padding: 8px 16px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100; font-size: 14px; }
-    .bjs-breadcrumbs li { display: inline; }
-    .bjs-breadcrumbs li + li:before { content: " > "; color: #666; }
-    .bjs-breadcrumbs a { color: #1a365d; text-decoration: none; font-weight: 500; }
-    .bjs-breadcrumbs a:hover { text-decoration: underline; }
     #current-view { color: #fbbf24; margin-right: 1rem; font-size: 0.875rem; }
   </style>
   <script>
@@ -1045,19 +1040,16 @@ function(e){const t=qe('<a href="http://bpmn.io" target="_blank" class="bjs-powe
         rootElement = canvas.getRootElement();
         canvas.zoom('fit-viewport');
 
-        // Listen for root element changes (drill-down/up)
         viewer.on('root.set', function(event) {
           const newRoot = event.element;
           const backBtn = document.getElementById('back-btn');
           const viewLabel = document.getElementById('current-view');
 
           if (newRoot && newRoot.id !== rootElement.id) {
-            // We're in a subprocess
             backBtn.disabled = false;
             const name = newRoot.businessObject ? (newRoot.businessObject.name || newRoot.id) : newRoot.id;
             viewLabel.textContent = 'Subprocess: ' + name;
           } else {
-            // We're at root
             backBtn.disabled = true;
             viewLabel.textContent = 'Main Diagram';
           }
@@ -1077,9 +1069,21 @@ function(e){const t=qe('<a href="http://bpmn.io" target="_blank" class="bjs-powe
       }
     }
 
-    function zoomIn() { viewer.get('zoomScroll').stepZoom(1); }
-    function zoomOut() { viewer.get('zoomScroll').stepZoom(-1); }
-    function resetZoom() { viewer.get('canvas').zoom('fit-viewport'); }
+    function zoomIn() {
+      const canvas = viewer.get('canvas');
+      const currentZoom = canvas.zoom();
+      canvas.zoom(currentZoom * 1.2);
+    }
+
+    function zoomOut() {
+      const canvas = viewer.get('canvas');
+      const currentZoom = canvas.zoom();
+      canvas.zoom(currentZoom / 1.2);
+    }
+
+    function resetZoom() {
+      viewer.get('canvas').zoom('fit-viewport');
+    }
 
     initViewer();
   </script>
