@@ -123,3 +123,29 @@ flowchart LR
 | `[[text]]` | Subprocess (collapsed) |
 | `-.->` | Message flow (cross-pool) |
 | `-->` | Sequence flow |
+
+---
+
+## Future Enhancements
+
+The following visualization capabilities are documented for future development:
+
+### Token Simulation (Interactive Walkthrough)
+
+Allow users to step through the process flow interactively - clicking "play" to see tokens move through the diagram. Useful for training and demos.
+
+- **Library**: [bpmn-js-token-simulation](https://github.com/bpmn-io/bpmn-js-token-simulation)
+- **Demo**: [bpmn.io Token Simulation](https://bpmn-io.github.io/bpmn-js-token-simulation/modeler.html)
+- **Complexity**: Medium - requires build tooling to bundle ES modules
+
+### Live Process Monitoring
+
+Real-time visualization showing actual workflow execution status - highlighting active tasks, completed steps, and current state as GitHub Actions run.
+
+- **Requirements**:
+  - Poll GitHub Actions API for workflow run status
+  - Map workflow steps to BPMN elements
+  - WebSocket or polling for real-time updates
+  - Overlay API to highlight active/completed elements
+- **Reference**: [Camunda Cockpit](https://docs.camunda.org/manual/latest/webapps/cockpit/) (commercial example)
+- **Complexity**: High - requires custom integration with GitHub Actions API
