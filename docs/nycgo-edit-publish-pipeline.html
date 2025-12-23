@@ -18,8 +18,9 @@
     #canvas { width: 100%; height: calc(100vh - 60px); background: white; }
     .bjs-powered-by { display: none; }
     #current-view { color: #fbbf24; margin-right: 1rem; font-size: 0.875rem; }
+    .hint { color: #94a3b8; font-size: 0.75rem; margin-left: 0.5rem; }
   </style>
-  <script src="https://unpkg.com/bpmn-js@17/dist/bpmn-viewer.production.min.js"></script>
+  <script src="https://unpkg.com/bpmn-js@17/dist/bpmn-navigated-viewer.production.min.js"></script>
 </head>
 <body>
   <header>
@@ -30,6 +31,7 @@
       <button onclick="zoomIn()">Zoom +</button>
       <button onclick="zoomOut()">Zoom -</button>
       <button onclick="resetZoom()">Reset</button>
+      <span class="hint">Drag to pan • Scroll to zoom</span>
     </div>
   </header>
   <div id="canvas"></div>
