@@ -274,7 +274,7 @@ def handle_append_from_csv(
 def handle_direct_set(
     df_mod: pd.DataFrame,
     qa_row: pd.Series,
-    match: re.Match,
+    match: re.Match | None,
     src_name: str,
     user: str,
     prefix: str,
@@ -305,15 +305,17 @@ def handle_direct_set(
             )
 
     provided_col = _get_qa_column(qa_row, "Column", "field_name") or (
-        match.group("column") if "column" in match.groupdict() else None
+        match.group("column") if match and "column" in match.groupdict() else None
     )
     target_col = _get_column(df_mod.columns, provided_col)
     if not target_col:
         return
-    val_str = match.group("value")
-    clean_val = _sanitize_wrapped_text(val_str)
+
+    # Get value from new_value column (preferred) or action regex (legacy)
+    clean_val, _value_source = _get_edit_value(qa_row, match)
     if clean_val is None:
-        clean_val = ""
+        return
+
     target_indices = df_mod[df_mod["record_id"] == record_id].index
     for index in target_indices:
         # Use provided record_name if available, otherwise lookup from dataset
@@ -341,6 +343,41 @@ def handle_direct_set(
             evidence_url=evidence_url,
         )
         df_mod.loc[index, target_col] = clean_val
+
+
+def _get_edit_value(
+    qa_row: pd.Series, match: re.Match | None
+) -> tuple[str | None, str]:
+    """
+    Extract the value to set from either new_value column or action regex match.
+
+    Supports two formats:
+    1. Preferred: new_value column with direct value
+    2. Legacy: action column with 'Set to "value"' syntax
+
+    Args:
+        qa_row: Row from QA edits CSV
+        match: Regex match object from detect_rule (may be None)
+
+    Returns:
+        Tuple of (clean_value, action_type) where:
+        - clean_value: The sanitized value to set, or None if no value found
+        - action_type: Either 'new_value' or 'action' indicating which column was used
+    """
+    # Check for new_value column first (preferred format)
+    if "new_value" in qa_row.index:
+        new_val = qa_row.get("new_value")
+        if pd.notna(new_val) and str(new_val).strip():
+            clean_val = _sanitize_wrapped_text(str(new_val).strip())
+            return (clean_val if clean_val else "", "new_value")
+
+    # Fall back to action column regex match (legacy format)
+    if match and "value" in match.groupdict():
+        val_str = match.group("value")
+        clean_val = _sanitize_wrapped_text(val_str)
+        return (clean_val if clean_val else "", "action")
+
+    return (None, "")
 
 
 def handle_policy_query(
@@ -599,9 +636,16 @@ def apply_qa_edits(  # noqa: C901
     - record_id (old: Row(s)): RecordID for existing records, or 'NEW'
     - record_name (optional): Entity name for human review and validation
     - field_name (old: Column): Name of the field to modify
-    - action (old: feedback): Action instruction, e.g., 'Set to "value"'
+    - new_value: The new value to set (preferred format)
+    - action (old: feedback): Action instruction, e.g., 'Set to "value"' (legacy)
     - justification (old: reason): Narrative explanation for the change
     - evidence_url (new): URL(s) providing evidence (pipe-separated)
+
+    Value Specification (two formats supported):
+    1. Preferred: Use 'new_value' column with the direct value
+    2. Legacy: Use 'action' column with 'Set to "value"' syntax
+
+    If both 'new_value' and 'action' columns have values, 'new_value' takes precedence.
 
     Note: record_name is optional but recommended for existing records to
     improve human review and changelog traceability. If not provided, the
@@ -620,12 +664,17 @@ def apply_qa_edits(  # noqa: C901
     - If 'name' field comes after other fields, those fields will be temporarily tracked
       and migrated to the name-based key when the name field is encountered
 
-    Example NEW record structure::
+    Example NEW record (preferred format)::
 
-        NEW,name,'Set to "Entity Name"',Justification text,https://evidence.url
-        NEW,operational_status,'Set to "Active"',Justification,https://evidence.url
-        NEW,name,'Set to "Another Entity"',Justification,https://evidence.url
-        NEW,operational_status,'Set to "Inactive"',Justification,
+        record_id,record_name,field_name,new_value,justification,evidence_url
+        NEW,Entity Name,name,Entity Name,Justification text,https://evidence.url
+        NEW,Entity Name,operational_status,Active,Justification,https://evidence.url
+
+    Example (legacy format still supported)::
+
+        record_id,record_name,field_name,action,justification,evidence_url
+        NEW,,name,'Set to "Entity Name"',Justification text,https://evidence.url
+        NEW,,operational_status,'Set to "Active"',Justification,https://evidence.url
     """
     df_mod = df.copy()
     src_name, base_dir = qa_path.name, qa_path.parent
@@ -641,11 +690,23 @@ def apply_qa_edits(  # noqa: C901
         None  # Current NEW record key (name if seen, otherwise sequence-based temp key)
     )
 
+    # Check if new_value column exists (preferred format)
+    has_new_value_col = "new_value" in qa_df.columns
+
     # Process all rows to collect NEW record data
     for _, qa_row in qa_df.iterrows():
         raw_feedback = str(_get_qa_column(qa_row, "feedback", "action", ""))
         feedback = _sanitize_wrapped_text(raw_feedback)
-        if not raw_feedback.strip() and not feedback:
+
+        # Check if this row has a new_value (preferred format)
+        has_new_value = (
+            has_new_value_col
+            and pd.notna(qa_row.get("new_value"))
+            and str(qa_row.get("new_value")).strip()
+        )
+
+        # Skip rows with no action and no new_value
+        if not raw_feedback.strip() and not feedback and not has_new_value:
             continue
 
         record_id = (
@@ -654,16 +715,24 @@ def apply_qa_edits(  # noqa: C901
 
         # Collect NEW record fields
         if record_id == "NEW":
+            # Detect action from action column (for legacy format or special actions)
             action, match = detect_rule(raw_feedback)
-            if action == QAAction.DIRECT_SET and match:
+
+            # If new_value column is present, treat as DIRECT_SET regardless of action
+            if has_new_value:
+                action = QAAction.DIRECT_SET
+
+            if action == QAAction.DIRECT_SET:
                 provided_col = _get_qa_column(qa_row, "Column", "field_name") or (
-                    match.group("column") if "column" in match.groupdict() else None
+                    match.group("column")
+                    if match and "column" in match.groupdict()
+                    else None
                 )
                 if provided_col:
                     target_col = _get_column(df_mod.columns, provided_col)
                     if target_col:
-                        val_str = match.group("value")
-                        clean_val = _sanitize_wrapped_text(val_str)
+                        # Get value from new_value column or action regex
+                        clean_val, _value_source = _get_edit_value(qa_row, match)
                         if clean_val is None:
                             clean_val = ""
 
@@ -719,7 +788,16 @@ def apply_qa_edits(  # noqa: C901
     for _, qa_row in qa_df.iterrows():
         raw_feedback = str(_get_qa_column(qa_row, "feedback", "action", ""))
         feedback = _sanitize_wrapped_text(raw_feedback)
-        if not raw_feedback.strip() and not feedback:
+
+        # Check if this row has a new_value (preferred format)
+        has_new_value = (
+            has_new_value_col
+            and pd.notna(qa_row.get("new_value"))
+            and str(qa_row.get("new_value")).strip()
+        )
+
+        # Skip rows with no action and no new_value
+        if not raw_feedback.strip() and not feedback and not has_new_value:
             continue
 
         record_id = (
@@ -734,6 +812,10 @@ def apply_qa_edits(  # noqa: C901
         # Store evidence_url separately; keep reason as just the justification
         reason = justification
         action, match = detect_rule(raw_feedback)
+
+        # If new_value column is present, treat as DIRECT_SET regardless of action
+        if has_new_value:
+            action = QAAction.DIRECT_SET
 
         if action == QAAction.DELETE_RECORD and match:
             df_mod = handle_delete_record(
@@ -757,7 +839,7 @@ def apply_qa_edits(  # noqa: C901
                 prefix,
                 evidence_url=evidence_url,
             )
-        elif action == QAAction.DIRECT_SET and match:
+        elif action == QAAction.DIRECT_SET and (match or has_new_value):
             handle_direct_set(df_mod, qa_row, match, src_name, user, prefix, feedback)
         elif action == QAAction.POLICY_QUERY:
             handle_policy_query(df_mod, qa_row, src_name, user, prefix, feedback)
