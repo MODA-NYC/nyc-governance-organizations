@@ -12,17 +12,20 @@ This workspace contains two related repositories for managing NYC Governance Org
 
 ## Sprint Planning
 
-Sprint documentation lives in `docs/sprints/`:
-- `SPRINT_1.md` - Admin UI Infrastructure ✅ COMPLETED
-- `SPRINT_2.md` - Pipeline Testing & Validation ✅ COMPLETED
-- `SPRINT_3.md` - v1.1.2 Release Fix & Production Pipeline Test ✅ COMPLETED
-- `SPRINT_4.md` - Edit Submission Rate Limiting ✅ COMPLETED
-- `SPRINT_4.5.md` - Release Notes & Smart Versioning ✅ COMPLETED
-- `SPRINT_5.md` - Data Quality & Standardization ✅ COMPLETED
-- `SPRINT_6.md` - Schema Alignment & Directory Logic Refactoring 📋 PLANNED (deferred)
-- `SPRINT_6A.md` - Directory Logic Transparency ✅ COMPLETED (Dec 2024)
-- `SPRINT_6B.md` - QA & Polish ✅ COMPLETED (Dec 2024)
-- `FUTURE.md` - Phase II Data Release 🔮 DEFERRED
+Sprint documentation lives in `nyc-governance-organizations/docs/sprints/`:
+
+**Completed:**
+- `SPRINT_1.md` - Admin UI Infrastructure
+- `SPRINT_2.md` - Pipeline Testing & Validation
+- `SPRINT_3.md` - v1.1.2 Release Fix & Production Pipeline Test
+- `SPRINT_4.md` - Edit Submission Rate Limiting
+- `SPRINT_4.5.md` - Release Notes & Smart Versioning
+- `SPRINT_5.md` - Data Quality & Standardization
+- `SPRINT_6.md` - Directory Logic Transparency & QA (Dec 2024, released v1.6.0)
+
+**Planned:**
+- `SPRINT_7.md` - Cleanup & Technical Debt (schema docs, externalize configs, etc.)
+- `PHASE_II.md` - Phase II Data Release (46-field schema, 9 new orgs - deferred indefinitely)
 
 ---
 
@@ -136,9 +139,9 @@ The process-edit.yml workflow has three modes (controlled by repo variables):
 
 ---
 
-## Sprint 6A Completed (Dec 2024)
+## Sprint 6 Completed (Dec 2024)
 
-Sprint 6A focused on Directory Logic Transparency and field standardization:
+Sprint 6 focused on Directory Logic Transparency, field standardization, and QA:
 
 1. **Directory rules module**: `src/nycgo_pipeline/directory_rules.py` - single source of truth
 2. **Regression tests**: 70 test cases covering all organization types and edge cases
@@ -147,6 +150,7 @@ Sprint 6A focused on Directory Logic Transparency and field standardization:
 5. **Edit UI enhancement**: Shows directory eligibility status with reasoning
 6. **Admin UI fixes**: BOM handling in CSV parser, snake_case column support
 7. **Workflow fix**: Automatic release run detection uses name-based sorting (not mtime)
+8. **QA fixes**: URL corrections, release attribution, UI polish
 
 **Released**: v1.6.0 with snake_case columns
 
