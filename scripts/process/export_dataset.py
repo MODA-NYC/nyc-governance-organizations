@@ -854,8 +854,26 @@ def main_with_dataframe(
 
     is_directory_eligible = df_public.apply(check_directory_eligible, axis=1)
 
+    # Mayoral Offices should always be included in Open Data export
+    # (even if not directory-eligible, they are official city entities)
+    is_mayoral_office = (
+        df_public.get(
+            "organization_type", pd.Series(["" for _ in range(len(df_public))])
+        )
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        == "mayoral office"
+    )
+
     df_public = df_public[
-        (in_org_chart | has_ops_name | is_export_exception | is_directory_eligible)
+        (
+            in_org_chart
+            | has_ops_name
+            | is_export_exception
+            | is_directory_eligible
+            | is_mayoral_office
+        )
         & active_only
     ].copy()
 

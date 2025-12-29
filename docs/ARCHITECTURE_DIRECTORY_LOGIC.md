@@ -3,6 +3,31 @@
 This document explains how NYC.gov Agency Directory eligibility is determined
 and how the logic is kept in sync across documentation, code, and data.
 
+## Two Distinct Concepts
+
+There are two related but separate filtering concepts:
+
+### 1. Open Data Export Filter
+Determines which organizations appear in the **published dataset on NYC Open Data**.
+
+**Location:** `scripts/process/export_dataset.py`
+
+**Criteria (must be Active AND meet at least one):**
+- In citywide org chart (`in_org_chart = TRUE`)
+- Has operations name (`name_ops` field populated)
+- Is in export exceptions list
+- Is directory-eligible (see below)
+- Is a Mayoral Office (always included on Open Data)
+
+### 2. Directory Eligibility
+Determines the value of `listed_in_nyc_gov_agency_directory` field (TRUE/FALSE).
+This indicates whether the org should appear on the NYC.gov Agency Directory.
+
+**Location:** `src/nycgo_pipeline/directory_rules.py`
+
+**Note:** An organization can be on Open Data with `listed_in_nyc_gov_agency_directory = FALSE`.
+For example, a new Mayoral Office without a URL yet would be on Open Data but not in the Agency Directory.
+
 ## Single Source of Truth
 
 All directory eligibility rules are defined in:
