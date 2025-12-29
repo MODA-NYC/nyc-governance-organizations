@@ -2,13 +2,13 @@
   "changed_by": "@npstorey via NYCGO Admin UI",
   "counts": {
     "directory_field_changes": 0,
-    "global_rules_changes": 0,
-    "qa_changes": 2,
+    "global_rules_changes": 1,
+    "qa_changes": 1,
     "records_after_pipeline": 435
   },
   "inputs": {
-    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/inputs/golden_snapshot.csv",
-    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/inputs/qa_01.csv"
+    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/inputs/golden_snapshot.csv",
+    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/inputs/qa_01.csv"
   },
   "inputs_original": {
     "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
@@ -18,14 +18,14 @@
   },
   "operator": "admin-ui-bot",
   "outputs": {
-    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/outputs/golden_pre-release.csv",
-    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/outputs/published_pre-release.csv",
-    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/outputs/published_pre-release.json",
+    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/outputs/golden_pre-release.csv",
+    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/outputs/published_pre-release.json",
     "review_artifacts": {
-      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/review/review_manifest.json"
+      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/review/review_manifest.json"
     },
-    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_214922/outputs/run_changelog.csv"
+    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20251229_222451/outputs/run_changelog.csv"
   },
-  "run_id": "admin-ui-20251229_214922",
-  "timing_seconds": 0.45
+  "run_id": "admin-ui-20251229_222451",
+  "timing_seconds": 0.46
 }

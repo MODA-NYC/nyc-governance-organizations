@@ -3587,6 +3587,15 @@
     "listed_in_nyc_gov_agency": true
   },
   {
+    "record_id": "NYC_GOID_000303",
+    "name": "Municipal Division of Transitional Services",
+    "name_alphabetized": "Division of Transitional Services, Municipal",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "in_org_chart": false,
+    "listed_in_nyc_gov_agency": false
+  },
+  {
     "record_id": "NYC_GOID_000306",
     "name": "Mayor's Office of Municipal Services Assessment",
     "name_alphabetized": "Municipal Services Assessment, Mayor's Office of",
@@ -4208,6 +4217,15 @@
     "reports_to": "Mayor's Office of Climate and Environmental Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_000367",
+    "name": "Office of Healthcare Accountability",
+    "name_alphabetized": "Healthcare Accountability, Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "in_org_chart": false,
+    "listed_in_nyc_gov_agency": false
   },
   {
     "record_id": "NYC_GOID_000371",
@@ -5455,5 +5473,15 @@
     "reports_to": "Office of Technology and Innovation",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100031",
+    "name": "Mayor's Office of Rodent Mitigation",
+    "name_alphabetized": "Rodent Mitigation, Mayor's Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_title": "Director",
+    "in_org_chart": false,
+    "listed_in_nyc_gov_agency": false
   }
 ]
