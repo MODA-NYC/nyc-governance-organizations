@@ -115,6 +115,40 @@ Verify Sprint 4's rate limiting feature works correctly.
 
 ---
 
+### 8. Branch Audit & Cleanup
+
+Audit and clean up unnecessary branches in both repositories.
+
+**Repositories**:
+- `nyc-governance-organizations` (pipeline)
+- `nycgo-admin-ui` (admin interface)
+
+**Known branches to review**:
+- `demo` - Deprecated after Option A implementation (test mode now commits to main)
+- `admin-ui-test` - Used for test-without-release mode
+- `dev` - Verify if still needed
+- `test` - Verify if still needed
+
+**Test commit cleanup**:
+Test mode commits are tagged with `test-run-*` for easy identification and cleanup.
+
+```bash
+# List test tags
+git tag -l "test-run-*"
+
+# Delete test tags (after deleting draft releases)
+git tag -l "test-run-*" | xargs -I {} git tag -d {}
+git push origin --delete $(git tag -l "test-run-*")
+```
+
+**Tasks**:
+- [ ] List all branches in both repos
+- [ ] Identify which branches are still needed
+- [ ] Delete `demo` branch (no longer used)
+- [ ] Document which branches should exist and why
+
+---
+
 ## Technical Debt Log
 
 Items identified but not yet prioritized:
@@ -140,6 +174,7 @@ Items identified but not yet prioritized:
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
 - [ ] Failing tests fixed (MTA eligibility, changelog schema)
+- [ ] Branch audit complete, unnecessary branches removed
 
 ---
 
