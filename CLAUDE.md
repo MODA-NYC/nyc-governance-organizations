@@ -14,7 +14,7 @@ This workspace contains two related repositories for managing NYC Governance Org
 
 Sprint documentation lives in `nyc-governance-organizations/docs/sprints/`:
 
-**Completed:**
+**Completed** (in `completed/` subfolder):
 - `SPRINT_1.md` - Admin UI Infrastructure
 - `SPRINT_2.md` - Pipeline Testing & Validation
 - `SPRINT_3.md` - v1.1.2 Release Fix & Production Pipeline Test
@@ -23,7 +23,7 @@ Sprint documentation lives in `nyc-governance-organizations/docs/sprints/`:
 - `SPRINT_5.md` - Data Quality & Standardization
 - `SPRINT_6.md` - Directory Logic Transparency & QA (Dec 2024, released v1.6.0)
 
-**Planned:**
+**Active/Planned** (in root folder):
 - `SPRINT_7.md` - Cleanup & Technical Debt (schema docs, externalize configs, etc.)
 - `PHASE_II.md` - Phase II Data Release (46-field schema, 9 new orgs - deferred indefinitely)
 
