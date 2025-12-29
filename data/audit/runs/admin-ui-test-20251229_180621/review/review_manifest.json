@@ -1,0 +1,5 @@
+{
+  "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20251229_180621/outputs/golden_pre-release.csv",
+  "previous_published": null,
+  "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20251229_180621/outputs/published_pre-release.csv"
+}
