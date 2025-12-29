@@ -1,9 +1,8 @@
-# FUTURE: Phase II Data Release
+# Phase II Data Release
 
-**Status: 🔮 DEFERRED**
-**Originally: Sprint 4**
+**Status: DEFERRED**
 
-This was originally planned as Sprint 4 but has been deferred. When ready, this work will execute the Phase II data release.
+This was originally planned as Sprint 4 but has been deferred indefinitely. When ready, this work will execute the Phase II data release with expanded schema and new organizations.
 
 ## Overview
 
