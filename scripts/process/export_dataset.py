@@ -23,12 +23,13 @@ from datetime import datetime, timezone
 
 import pandas as pd
 
-# Import exemption lists from the single source of truth
+# Import exemption lists and eligibility function from the single source of truth
 from nycgo_pipeline.directory_rules import (
     ADVISORY_EXEMPTIONS,
     MANUAL_OVERRIDE_FALSE,
     MANUAL_OVERRIDE_TRUE,
     NONPROFIT_EXEMPTIONS,
+    evaluate_eligibility,
 )
 
 # =============================================================================
@@ -843,8 +844,19 @@ def main_with_dataframe(
         .str.lower()
         == "active"
     )
+
+    # Check directory eligibility using the canonical rules
+    # This ensures orgs that qualify for NYC.gov Agency Directory are included
+    def check_directory_eligible(row):
+        record = row.to_dict()
+        result = evaluate_eligibility(record)
+        return result.eligible
+
+    is_directory_eligible = df_public.apply(check_directory_eligible, axis=1)
+
     df_public = df_public[
-        (in_org_chart | has_ops_name | is_export_exception) & active_only
+        (in_org_chart | has_ops_name | is_export_exception | is_directory_eligible)
+        & active_only
     ].copy()
 
     if rows_before_filter != len(df_public):
