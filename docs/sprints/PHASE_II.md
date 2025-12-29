@@ -278,6 +278,17 @@ Verify these files exist and are correct:
 - Total records: 434 → 443
 - RecordID format: NYC_GOID_XXXXXX (unchanged)
 
+### Possible Future Consideration: RecordID Format Migration
+
+A migration from `NYC_GOID_XXXXXX` to 6-digit numeric format (e.g., `100435`) was
+considered for its simplicity and ease of use. However, this would be a **breaking
+change** requiring coordination with NYC.gov frontend team, as record IDs are used
+in NYC.gov URLs and frontend code.
+
+**Decision:** Defer indefinitely. The current format works and a migration would
+require significant cross-team coordination. May revisit if there's a compelling
+reason to change.
+
 ### New Fields
 | Field | Description |
 |-------|-------------|

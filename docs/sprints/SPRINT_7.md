@@ -92,18 +92,9 @@ Modernize package management from `venv + pip` to UV.
 
 ---
 
-### 6. Rename DEMO_MODE to TEST_MODE
+### 6. ~~Rename DEMO_MODE to TEST_MODE~~ ✅ DONE
 
-The repo variable `DEMO_MODE` exists but the workflow uses `TEST_MODE`.
-
-**Current state**:
-- Repo has `DEMO_MODE=false` (unused)
-- Workflow checks `TEST_MODE` (which defaults to `false`)
-
-**Tasks**:
-- [ ] Delete `DEMO_MODE` variable
-- [ ] Create `TEST_MODE` variable
-- [ ] Update any documentation references
+Fixed December 2024. `DEMO_MODE` deleted, `TEST_MODE` created.
 
 ---
 
@@ -133,6 +124,9 @@ Items identified but not yet prioritized:
 | Duplicate exception lists | `export_dataset.py` | Lines 563-566 duplicated at 760-763 |
 | No integration tests | export logic | Only unit tests exist |
 | Complex directory logic | multiple functions | Could be simplified |
+| Failing test: MTA eligibility | `test_directory_rules.py` | State Government Agency rule for MTA returns False, expected True |
+| Failing test: changelog schema | `test_changelog_schema.py` | Fields `founding_year`, `jan_2025_org_chart` not in allowed list |
+| Failing test: regression snapshot | `test_directory_rules.py` | MTA regression test expects True, gets False |
 
 ---
 
@@ -143,8 +137,9 @@ Items identified but not yet prioritized:
 - [ ] Schema change detection automated
 - [ ] Directory field alignment implemented
 - [ ] UV migration complete (optional)
-- [ ] DEMO_MODE renamed to TEST_MODE
+- [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
+- [ ] Failing tests fixed (MTA eligibility, changelog schema)
 
 ---
 
