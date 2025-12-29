@@ -1,19 +1,19 @@
 {
   "validation_report_version": "1.0.0",
-  "generated_at": "2025-12-23T20:28:55.084555+00:00",
+  "generated_at": "2025-12-29T21:49:47.930232+00:00",
   "dataset": {
     "name": "nycgo_published_dataset",
     "title": "NYC Governance Organizations Published Dataset",
     "schema_version": "1.7.0",
     "schema_hash": "8a4dd8658240",
-    "version": "v1.7.10"
+    "version": "v1.7.11"
   },
   "asset": {
-    "filename": "NYCGovernanceOrganizations_v1.7.10.csv",
-    "filepath": "data/published/latest/NYCGovernanceOrganizations_v1.7.10.csv",
-    "sha256": "628a1cdedfd2bd3322440606e1f1c9ab1c309dc3625c5403cba2d3d5ed6ae188",
-    "size_bytes": 80806,
-    "row_count": 305,
+    "filename": "NYCGovernanceOrganizations_v1.7.11.csv",
+    "filepath": "data/published/latest/NYCGovernanceOrganizations_v1.7.11.csv",
+    "sha256": "a717a93e2f2b2ff8cc901a992303253c542f7798d9b36c9d2af3f9058fa04dec",
+    "size_bytes": 81951,
+    "row_count": 310,
     "column_count": 17
   },
   "schema": {
@@ -37,7 +37,7 @@
     {
       "name": "row_count_positive",
       "passed": true,
-      "message": "Row count: 305"
+      "message": "Row count: 310"
     },
     {
       "name": "required_columns_present",
@@ -52,7 +52,7 @@
     {
       "name": "primary_key_unique",
       "passed": true,
-      "message": "All 305 record_id values are unique"
+      "message": "All 310 record_id values are unique"
     },
     {
       "name": "required_field_record_id",
