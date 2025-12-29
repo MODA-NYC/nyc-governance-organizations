@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-test-20251229_185323_1,2025-12-29T18:53:24.808499,NYC_GOID_100031,Mayor's Office of Rodent Mitigation,_ROW_ADDED,N/A,Mayor's Office of Rodent Mitigation,admin_ui_edits.csv,New record created with 7 fields,,,@npstorey via NYCGO Admin UI,direct_set

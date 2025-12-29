@@ -1,0 +1,8 @@
+record_id,record_name,field_name,action,justification,evidence_url
+NEW,"Mayor's Office of Rodent Mitigation",name,"Set to ""Mayor's Office of Rodent Mitigation""","New mayoral office established by Executive Order 63","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
+NEW,"Mayor's Office of Rodent Mitigation",name_alphabetized,"Set to ""Rodent Mitigation, Mayor's Office of""","Alphabetized version of official name","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
+NEW,"Mayor's Office of Rodent Mitigation",operational_status,"Set to ""Active""","Newly established office","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
+NEW,"Mayor's Office of Rodent Mitigation",organization_type,"Set to ""Mayoral Office""","Established within Office of the Mayor per EO 63","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
+NEW,"Mayor's Office of Rodent Mitigation",description,"Set to ""Coordinates citywide rodent mitigation efforts across agencies, community organizations, and private sector""","Per Executive Order 63","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
+NEW,"Mayor's Office of Rodent Mitigation",in_org_chart,"Set to ""FALSE""","Not yet on citywide org chart per manual check","https://www.nyc.gov/main/your-government/citywide-org-chart"
+NEW,"Mayor's Office of Rodent Mitigation",url,"Set to ""https://www.nyc.gov/rodent-mitigation""","Official page for the office","https://www.nyc.gov/mayors-office/news/2025/12/executive-order-63"
