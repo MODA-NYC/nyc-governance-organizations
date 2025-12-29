@@ -474,24 +474,29 @@ def _convert_recordid_to_new_format(old_id: str) -> int | None:
 
 def _generate_next_record_id(df: pd.DataFrame) -> str:
     """
-    Generate the next available record_id in new 6-digit numeric format.
+    Generate the next available record_id in NYC_GOID_XXXXXX format.
 
     Ensures uniqueness by:
-    1. Converting all existing IDs to new format
+    1. Converting all existing IDs to internal numeric format
     2. Finding the maximum ID
     3. Generating next sequential ID (max + 1)
-    4. Verifying the generated ID doesn't already exist (handles edge cases)
+    4. Converting back to NYC_GOID_ format
+    5. Verifying the generated ID doesn't already exist (handles edge cases)
 
     Returns:
-        A 6-digit numeric string (e.g., "100318")
+        A string in NYC_GOID_XXXXXX format (e.g., "NYC_GOID_000435")
 
     Note: This approach ensures uniqueness within the current dataset.
     For concurrent operations, ensure records are added sequentially or
     use a transaction/locking mechanism.
+
+    TODO: A future migration to 6-digit numeric format (e.g., "100435") is
+    under consideration. See PHASE_II.md and Sprint 7 for details. When that
+    decision is made, update this function to return the new format.
     """
     existing_ids = df["record_id"].astype(str)
 
-    # Convert all existing IDs to new format and find max
+    # Convert all existing IDs to internal numeric format and find max
     max_new_id = 100000  # Start from minimum valid ID
     existing_new_format_ids = set()
 
@@ -506,7 +511,7 @@ def _generate_next_record_id(df: pd.DataFrame) -> str:
         except (ValueError, AttributeError):
             continue
 
-    # Generate next ID in new 6-digit format
+    # Generate next ID (internally as numeric)
     next_num = max_new_id + 1
 
     # Safety check: ensure generated ID doesn't already exist
@@ -514,14 +519,23 @@ def _generate_next_record_id(df: pd.DataFrame) -> str:
     while next_num in existing_new_format_ids:
         next_num += 1
 
-    # Ensure it's 6 digits (should already be, but pad just in case)
-    generated_id = f"{next_num:06d}"
+    # Convert internal numeric format back to NYC_GOID_ format
+    # Internal 100435 → NYC_GOID_000435
+    # Internal 110026 → NYC_GOID_100026
+    if next_num >= 110000:
+        # Handle IDs that map to NYC_GOID_1XXXXX range
+        suffix = next_num - 10000  # 110026 → 100026
+        generated_id = f"NYC_GOID_{suffix:06d}"
+    else:
+        # Standard case: 100435 → NYC_GOID_000435
+        suffix = next_num - 100000
+        generated_id = f"NYC_GOID_{suffix:06d}"
 
-    # Final validation: ensure we haven't exceeded 6-digit range
-    if len(generated_id) > 6 or int(generated_id) > 999999:
+    # Final validation: ensure suffix is valid
+    if suffix < 0 or suffix > 999999:
         raise ValueError(
-            f"RecordID sequence exhausted. Generated ID {generated_id} exceeds "
-            "6-digit limit. Consider migrating to a new ID format."
+            f"RecordID sequence exhausted. Generated suffix {suffix} is invalid. "
+            "Consider migrating to a new ID format."
         )
 
     return generated_id

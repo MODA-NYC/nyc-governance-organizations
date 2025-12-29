@@ -29,15 +29,14 @@ def test_generate_next_record_id_basic():
     """Test basic RecordID generation."""
     df = pd.DataFrame(
         {
-            "record_id": ["100000", "100001", "100002"],
+            "record_id": ["NYC_GOID_000000", "NYC_GOID_000001", "NYC_GOID_000002"],
             "name": ["Entity 1", "Entity 2", "Entity 3"],
         }
     )
 
     next_id = _generate_next_record_id(df)
-    assert next_id == "100003"
-    assert len(next_id) == 6
-    assert next_id.isdigit()
+    assert next_id == "NYC_GOID_000003"
+    assert next_id.startswith("NYC_GOID_")
 
 
 def test_generate_next_record_id_with_old_format():
@@ -50,23 +49,27 @@ def test_generate_next_record_id_with_old_format():
     )
 
     next_id = _generate_next_record_id(df)
-    # Should convert old IDs and generate next
-    assert next_id == "100003"
-    assert len(next_id) == 6
+    # Should generate next in NYC_GOID_ format
+    assert next_id == "NYC_GOID_000003"
+    assert next_id.startswith("NYC_GOID_")
 
 
 def test_generate_next_record_id_uniqueness():
     """Test that generated IDs are unique."""
     df = pd.DataFrame(
         {
-            "record_id": ["100000", "100001", "100003"],  # Gap at 100002
+            "record_id": [
+                "NYC_GOID_000000",
+                "NYC_GOID_000001",
+                "NYC_GOID_000003",
+            ],  # Gap at 000002
             "name": ["Entity 1", "Entity 2", "Entity 3"],
         }
     )
 
     next_id = _generate_next_record_id(df)
-    # Should generate 100004 (next after max), not fill gap
-    assert next_id == "100004"
+    # Should generate 000004 (next after max), not fill gap
+    assert next_id == "NYC_GOID_000004"
 
     # Verify it's not in existing IDs
     assert next_id not in df["record_id"].values
@@ -82,8 +85,8 @@ def test_generate_next_record_id_mixed_formats():
     )
 
     next_id = _generate_next_record_id(df)
-    # Should handle both formats and generate next
-    assert next_id == "100003"
+    # Should handle both formats and generate next in NYC_GOID_ format
+    assert next_id == "NYC_GOID_000003"
 
 
 def test_generate_next_record_id_edge_case_100xxx():
@@ -96,8 +99,8 @@ def test_generate_next_record_id_edge_case_100xxx():
     )
 
     next_id = _generate_next_record_id(df)
-    # Should convert 100027 → 110027, then generate 110028
-    assert next_id == "110028"
+    # Should convert 100027 → internal 110027, then generate 110028 → NYC_GOID_100028
+    assert next_id == "NYC_GOID_100028"
 
 
 def test_generate_next_record_id_empty_dataset():
@@ -106,31 +109,35 @@ def test_generate_next_record_id_empty_dataset():
 
     next_id = _generate_next_record_id(df)
     # Should start from minimum + 1 (100000 is reserved/minimum)
-    assert next_id == "100001"
+    assert next_id == "NYC_GOID_000001"
 
 
 def test_generate_next_record_id_handles_duplicates():
     """Test that generation handles potential duplicate IDs."""
     df = pd.DataFrame(
         {
-            "record_id": ["100000", "100001", "100001"],  # Duplicate
+            "record_id": [
+                "NYC_GOID_000000",
+                "NYC_GOID_000001",
+                "NYC_GOID_000001",
+            ],  # Duplicate
             "name": ["Entity 1", "Entity 2", "Entity 3"],
         }
     )
 
     next_id = _generate_next_record_id(df)
     # Should still generate unique ID
-    assert next_id == "100002"
+    assert next_id == "NYC_GOID_000002"
     assert next_id not in df["record_id"].values
 
 
 def test_generate_next_record_id_sequential_generation():
     """Test generating multiple IDs sequentially."""
-    df = pd.DataFrame({"record_id": ["100000"], "name": ["Entity 1"]})
+    df = pd.DataFrame({"record_id": ["NYC_GOID_000000"], "name": ["Entity 1"]})
 
     # Generate first ID
     id1 = _generate_next_record_id(df)
-    assert id1 == "100001"
+    assert id1 == "NYC_GOID_000001"
 
     # Add it and generate next
     df = pd.concat(
@@ -138,7 +145,7 @@ def test_generate_next_record_id_sequential_generation():
         ignore_index=True,
     )
     id2 = _generate_next_record_id(df)
-    assert id2 == "100002"
+    assert id2 == "NYC_GOID_000002"
 
     # Verify both are unique
     assert id1 != id2
