@@ -115,7 +115,54 @@ Verify Sprint 4's rate limiting feature works correctly.
 
 ---
 
-### 8. Branch Audit & Cleanup
+### 8. Enhanced Release Notes with Export Changes
+
+Auto-generate release notes that summarize changes to the published dataset.
+
+**Current state**: Release notes only show run ID and basic metadata
+**Target state**: Release notes include summary of records added/removed and directory eligibility changes
+
+**Desired output in release notes**:
+```markdown
+## Published Dataset Changes
+
+**Records added to Open Data (3):**
+- NYC_GOID_100031 - Mayor's Office of Rodent Mitigation
+- NYC_GOID_000303 - Municipal Division of Transitional Services
+- ...
+
+**Records removed from Open Data (1):**
+- NYC_GOID_000474 - Director of Rodent Mitigation
+
+**Directory Eligibility Changes (1):**
+- NYC_GOID_000474: TRUE → FALSE
+```
+
+**Implementation approach**:
+1. Enhance pipeline to compare previous vs new published export
+2. Store changes in `run_summary.json`:
+   ```json
+   {
+     "published_export_changes": {
+       "added": [{"id": "NYC_GOID_100031", "name": "..."}],
+       "removed": [{"id": "NYC_GOID_000474", "name": "..."}],
+       "directory_status_changes": [
+         {"id": "NYC_GOID_000474", "name": "...", "from": "TRUE", "to": "FALSE"}
+       ]
+     }
+   }
+   ```
+3. Update publish-release workflow to format this into release notes
+
+**Tasks**:
+- [ ] Add comparison logic to pipeline (compare golden snapshots)
+- [ ] Update `run_summary.json` schema with export changes
+- [ ] Update release notes generation in `publish-release.yml`
+- [ ] Limit displayed orgs to first 5 with "and N more..." if needed
+
+---
+
+### 9. Branch Audit & Cleanup
 
 Audit and clean up unnecessary branches in both repositories.
 
@@ -173,6 +220,7 @@ Items identified but not yet prioritized:
 - [ ] UV migration complete (optional)
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
+- [ ] Enhanced release notes with export changes
 - [ ] Failing tests fixed (MTA eligibility, changelog schema)
 - [ ] Branch audit complete, unnecessary branches removed
 
