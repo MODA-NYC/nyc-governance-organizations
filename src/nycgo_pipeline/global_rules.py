@@ -521,7 +521,7 @@ def sync_nycgov_directory_status(
                 row.get("name", ""),
                 col,
                 current_val,
-                "False",
+                "FALSE",
                 "System_GlobalRule",
                 (
                     f"operational_status is '{row.get('operational_status', '')}', "
@@ -532,7 +532,7 @@ def sync_nycgov_directory_status(
                 "SYNC_NYCGOV_DIRECTORY",
                 prefix,
             )
-            df_processed.loc[i, col] = "False"
+            df_processed.loc[i, col] = "FALSE"
 
     return df_processed
 
