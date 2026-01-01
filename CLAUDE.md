@@ -90,6 +90,17 @@ make test
 - Batch review interface: `review-edits.html` for reviewing CSV uploads before commit
 - Workflow mode: Check repo variables (TEST_MODE / PRODUCTION_MODE)
 
+**⚠️ IMPORTANT: Cache-Busting for JS Changes**
+
+When modifying any JavaScript files in `nycgo-admin-ui/js/`, you MUST update the cache-busting version in BOTH HTML files to ensure users get the new code:
+
+1. Edit `index.html` - update all `?v=YYYYMMDD` params to today's date
+2. Edit `review-edits.html` - update all `?v=YYYYMMDD` params to today's date
+
+Example: Change `js/app.js?v=20260101` to `js/app.js?v=20260108`
+
+Without this step, users may continue loading old cached JavaScript.
+
 ---
 
 ## Data Flow
