@@ -2898,16 +2898,16 @@
     "operational_status": "Active",
     "organization_type": "Elected Office",
     "url": {
-      "url": "https://www.nyc.gov/office-of-the-mayor/index.page"
+      "url": "https://www.nyc.gov/mayors-office"
     },
     "alternate_or_former_names": "Office of the Mayor of the City of New York;Mayor's Office",
     "acronym": "OM",
-    "principal_officer_full_name": "Eric L. Adams",
-    "principal_officer_first_name": "Eric",
-    "principal_officer_last_name": "Adams",
+    "principal_officer_full_name": "Zohran K. Mamdani",
+    "principal_officer_first_name": "Zohran",
+    "principal_officer_last_name": "Mamdani",
     "principal_officer_title": "Mayor",
     "principal_officer_contact": {
-      "url": "https://www.nyc.gov/office-of-the-mayor/contact-the-mayor.page"
+      "url": "https://www.nyc.gov/mayors-office/contact-the-mayor"
     },
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
