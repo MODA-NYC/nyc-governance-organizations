@@ -1946,9 +1946,9 @@
     "alternate_or_former_names": "Department of Transportation",
     "acronym": "NYC DOT",
     "alternate_or_former_acronyms": "DOT",
-    "principal_officer_full_name": "Ydanis Rodriguez",
-    "principal_officer_first_name": "Ydanis",
-    "principal_officer_last_name": "Rodriguez",
+    "principal_officer_full_name": "Mike Flynn",
+    "principal_officer_first_name": "Mike",
+    "principal_officer_last_name": "Flynn",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/html/dot/html/contact/contact-form.shtml"
@@ -2352,9 +2352,9 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "acronym": "FDM",
-    "principal_officer_full_name": "Randy Mastro",
-    "principal_officer_first_name": "Randy",
-    "principal_officer_last_name": "Mastro",
+    "principal_officer_full_name": "Dean Fuleihan",
+    "principal_officer_first_name": "Dean",
+    "principal_officer_last_name": "Fuleihan",
     "principal_officer_title": "First Deputy Mayor",
     "reports_to": "Mayor",
     "in_org_chart": true,
@@ -2646,15 +2646,15 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "url": {
-      "url": "https://www1.nyc.gov/site/intergovernmental/index.page"
+      "url": "https://www.nyc.gov/site/intergovernmental/index.page"
     },
     "alternate_or_former_names": "Mayor's Office of Office of Intergovernmental Affairs",
     "acronym": "MOIGA",
     "alternate_or_former_acronyms": "IGA",
-    "principal_officer_full_name": "Tiffany Raspberry",
-    "principal_officer_first_name": "Tiffany",
-    "principal_officer_last_name": "Raspberry",
-    "principal_officer_title": "Deputy Mayor for Intergovernmental Affairs",
+    "principal_officer_full_name": "Jahmila Edward",
+    "principal_officer_first_name": "Jahmila",
+    "principal_officer_last_name": "Edward",
+    "principal_officer_title": "Director of Intergovernmental Affairs",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/intergovernmental/about/contact-moiga.page"
     },
@@ -2843,14 +2843,14 @@
   },
   {
     "record_id": "NYC_GOID_000246",
-    "name": "Deputy Mayor for Administration and Chief of Staff",
-    "name_alphabetized": "Administration and Chief of Staff, Deputy Mayor for",
+    "name": "Chief of Staff",
+    "name_alphabetized": "Chief of Staff",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Camille Joseph Varlack",
-    "principal_officer_first_name": "Camille",
-    "principal_officer_last_name": "Joseph Varlack",
-    "principal_officer_title": "Deputy Mayor for Administration and Chief of Staff",
+    "principal_officer_full_name": "Leila Bozorg",
+    "principal_officer_first_name": "Leila",
+    "principal_officer_last_name": "Bozorg",
+    "principal_officer_title": "Chief of Staff",
     "reports_to": "Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
@@ -5483,5 +5483,18 @@
     "principal_officer_title": "Director",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": false
+  },
+  {
+    "record_id": "NYC_GOID_100032",
+    "name": "Deputy Mayor for Housing and Planning",
+    "name_alphabetized": "Housing and Planning, Deputy Mayor for",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Leila Bozorg",
+    "principal_officer_first_name": "Leila",
+    "principal_officer_last_name": "Bozorg",
+    "principal_officer_title": "Deputy Mayor for Housing and Planning",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
   }
 ]
