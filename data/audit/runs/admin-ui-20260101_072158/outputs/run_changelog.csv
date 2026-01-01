@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260101_072158_1,2026-01-01T07:21:59.139409,NYC_GOID_000251,Office of the Mayor,principal_officer_full_name,N/A,N/A,admin_ui_edits.csv,Zohran K. Mamdani,Zohran Mamdani is Sworn in as Mayor of the City of New York,,@tlau-oti via NYCGO Admin UI,policy_query
+admin-ui-20260101_072158_2,2026-01-01T07:21:59.139769,NYC_GOID_000251,Office of the Mayor,principal_officer_given_name,N/A,N/A,admin_ui_edits.csv,Zohran,Zohran Mamdani is Sworn in as Mayor of the City of New York,,@tlau-oti via NYCGO Admin UI,policy_query
+admin-ui-20260101_072158_3,2026-01-01T07:21:59.140114,NYC_GOID_000251,Office of the Mayor,principal_officer_family_name,N/A,N/A,admin_ui_edits.csv,Mamdani,Zohran Mamdani is Sworn in as Mayor of the City of New York,,@tlau-oti via NYCGO Admin UI,policy_query
