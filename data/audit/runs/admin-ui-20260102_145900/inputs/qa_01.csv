@@ -1,0 +1,6 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000191,"Fire Department of the City of New York",principal_officer_title,"Acting Commissioner","Correction on title",""
+NYC_GOID_000382,"Office of Technology and Innovation",principal_officer_full_name,"Ruby Choi","Updating acting CTO as per OTI email announcement.",""
+NYC_GOID_000382,"Office of Technology and Innovation",principal_officer_title,"Acting Chief Technology Officer (CTO)","Updating acting CTO as per OTI email announcement.",""
+NYC_GOID_000382,"Office of Technology and Innovation",principal_officer_given_name,"Ruby","Updating acting CTO as per OTI email announcement.",""
+NYC_GOID_000382,"Office of Technology and Innovation",principal_officer_family_name,"Choi","Updating acting CTO as per OTI email announcement.",""
