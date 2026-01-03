@@ -318,6 +318,34 @@ jobs:
           EOF
           fi
 
+      - name: Check for schema changes
+        id: schema-check
+        continue-on-error: true
+        run: |
+          SCHEMA_CHANGES_PATH="/tmp/schema_changes.md"
+
+          # Run schema change detection
+          python scripts/check_schema_changes.py \
+            --schema schemas/nycgo_golden_dataset.tableschema.json \
+            --output "$SCHEMA_CHANGES_PATH"
+
+          # Check if there are schema changes to include
+          if [ -s "$SCHEMA_CHANGES_PATH" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Schema changes detected - will include in release notes"
+
+            # Append schema changes to release notes
+            RELEASE_NOTES_PATH="data/published/latest/RELEASE_NOTES_${{ steps.version.outputs.version }}.md"
+            echo "" >> "$RELEASE_NOTES_PATH"
+            echo "---" >> "$RELEASE_NOTES_PATH"
+            echo "" >> "$RELEASE_NOTES_PATH"
+            cat "$SCHEMA_CHANGES_PATH" >> "$RELEASE_NOTES_PATH"
+            echo "Schema changes appended to release notes"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No schema changes detected"
+          fi
+
       - name: Verify release files exist
         if: steps.mode.outputs.is_test == 'true'
         run: |

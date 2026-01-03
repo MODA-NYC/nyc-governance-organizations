@@ -92,3 +92,40 @@ When making schema changes:
 4. **Update `PUBLISHED_COLUMN_ORDER`** in `scripts/process/export_dataset.py` if changing published schema
 5. **Run pipeline validation** to ensure outputs match the new schema
 6. **Use minor or major version bump** (not patch) for schema changes
+
+---
+
+## Automated Schema Change Detection
+
+The release workflow automatically detects schema changes and includes them in release notes.
+
+### How It Works
+
+1. During `publish-release.yml`, the `check_schema_changes.py` script runs
+2. It compares current `schemas/nycgo_golden_dataset.tableschema.json` against the previous release
+3. If changes are detected, they're appended to the release notes
+
+### Manual Verification
+
+You can run the schema check locally:
+
+```bash
+# Check for changes since last release
+python scripts/check_schema_changes.py
+
+# Output to a file
+python scripts/check_schema_changes.py --output /tmp/changes.md
+
+# Compare against a specific tag
+python scripts/check_schema_changes.py --previous-tag v1.7.0
+```
+
+### What Gets Detected
+
+- Field additions and removals
+- Type changes
+- Constraint changes (required, enum, pattern)
+- Format changes
+- Schema version number changes
+
+**Note:** The automated check is informational. You should still manually update this changelog with context about *why* changes were made.

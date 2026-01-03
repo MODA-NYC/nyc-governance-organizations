@@ -106,14 +106,29 @@ After analysis, we decided to **keep exception lists in Python** rather than ext
 
 ---
 
-### 3. Schema Change Tracking Automation
+### 3. Schema Change Tracking Automation ✅ COMPLETE
+
+**Sprint 7.3 - Completed January 2026**
 
 Automate detection of schema changes between releases.
 
+**Implementation**:
+- Created `scripts/check_schema_changes.py` - compares current schema against previous release
+- Added "Check for schema changes" step to `publish-release.yml` (non-blocking)
+- If schema changes detected, they're automatically appended to release notes
+- Updated `schemas/SCHEMA_CHANGELOG.md` with documentation
+
+**What Gets Detected**:
+- Field additions/removals
+- Type changes
+- Constraint changes (required, enum, pattern)
+- Format changes
+- Schema version number changes
+
 **Tasks**:
-- [ ] Create `scripts/check_schema_changes.py`
-- [ ] Add warning step to publish-release.yml
-- [ ] Document process for updating schema changelog
+- [x] Create `scripts/check_schema_changes.py`
+- [x] Add warning step to publish-release.yml
+- [x] Document process for updating schema changelog
 
 ---
 
@@ -273,7 +288,7 @@ Items identified but not yet prioritized:
 
 - [x] Schema documentation complete (Sprint 7.1 - Jan 2026)
 - [x] ~~Exception lists in YAML config~~ Reconsidered - keeping Python (Sprint 7.2 - Jan 2026)
-- [ ] Schema change detection automated
+- [x] Schema change detection automated (Sprint 7.3 - Jan 2026)
 - [ ] Directory field alignment implemented
 - [ ] UV migration complete (optional)
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
