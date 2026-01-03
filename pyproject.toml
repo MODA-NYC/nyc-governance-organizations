@@ -27,6 +27,7 @@ dependencies = [
     "python-dateutil",
     "ftfy>=6.0",
     "nameparser",
+    "requests>=2.28",
 ]
 
 [project.optional-dependencies]
@@ -35,6 +36,9 @@ dev = [
     "ruff",
     "black",
     "pre-commit",
+]
+appointments = [
+    "beautifulsoup4>=4.12",
 ]
 
 [project.urls]
@@ -48,7 +52,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["nycgo_pipeline"]
+packages = ["nycgo_pipeline", "nycgo_pipeline.appointments"]
 
 [project.scripts]
 run-nycgo-pipeline = "scripts.pipeline.run_pipeline:main"

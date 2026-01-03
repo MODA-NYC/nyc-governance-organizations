@@ -51,3 +51,6 @@ htmlcov/
 !data/published/latest/*.csv
 !data/published/latest/*.json
 data/published/archive/
+
+# Cache
+.cache/

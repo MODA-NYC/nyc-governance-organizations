@@ -12,6 +12,49 @@ This sprint consolidates remaining cleanup work and technical debt items that we
 
 ## Items
 
+### 0. Repository & Docs Cleanup
+
+Consolidate and organize documentation that has accumulated over multiple sprints.
+
+**Problem**: The `docs/` folder has redundant and potentially stale files:
+- 4 different directory logic docs (`ARCHITECTURE_DIRECTORY_LOGIC.md`, `DIRECTORY_LOGIC.md`, `DIRECTORY_FIELD_CHANGELOG.md`, `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md`)
+- 4 pipeline diagram formats (`.html`, `.bpmn`, `.mermaid.md`, `-standalone.html`)
+- Phase II docs that are deferred indefinitely
+- Unclear what's current vs. historical
+
+**Tasks**:
+- [ ] Audit all files in `docs/` - identify what's current, redundant, or stale
+- [ ] Consolidate directory logic into single authoritative doc
+- [ ] Keep one pipeline diagram format, archive others
+- [ ] Move stale/historical docs to `docs/archive/`
+- [ ] Update or remove Phase II docs (or move to archive since deferred)
+- [ ] Review `docs/drafts/` - delete or promote
+- [ ] Ensure README.md and CLAUDE.md point to correct docs
+- [ ] Clean up any orphaned files in repo root
+
+**Current docs inventory**:
+```
+docs/
+├── APPOINTMENTS_MONITOR.md      # Active - appointments scanning feature
+├── ARCHITECTURE_DIRECTORY_LOGIC.md  # Redundant?
+├── BACKLOG.md                   # Active - backlog tracking
+├── CHANGELOG_SPEC.md            # Review - still needed?
+├── DIRECTORY_FIELD_CHANGELOG.md # Redundant?
+├── DIRECTORY_LOGIC.md           # Redundant?
+├── drafts/                      # Review contents
+├── GITHUB_RELEASE_GUIDE.md      # Active - how to release
+├── LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md  # Redundant?
+├── NYC_Agencies_and_Governance_Organizations_Data_Dictionary.xlsx  # Active
+├── nycgo-edit-publish-pipeline.*  # Keep one format
+├── PHASE_I_*.md                 # Review - still needed?
+├── PHASE_II_*.md                # Archive - deferred indefinitely
+├── run_artifacts.md             # Review - still needed?
+├── SCHEMA_VERSION_COMPARISON.md # Review - still needed?
+└── sprints/                     # Active
+```
+
+---
+
 ### 1. Schema Documentation
 
 Create comprehensive schema documentation.
