@@ -32,6 +32,8 @@ data/**
 !data/published/manifest.csv
 !data/samples/
 !data/input/public_sources/
+!data/input/README.md
+!data/input/templates/
 !data/audit/ingest_report.json
 data/audit/runs/
 

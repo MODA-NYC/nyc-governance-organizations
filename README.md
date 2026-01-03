@@ -322,22 +322,22 @@ source .venv/bin/activate
 
 ### Pipeline Workflow
 
-**Note**: Current pipeline generates Phase II format (v2.0.0-dev). For Phase I format workflow, see [`docs/PHASE_I_PIPELINE.md`](docs/PHASE_I_PIPELINE.md). For urgent Phase I-compatible updates during Phase II development, use [`scripts/pipeline/export_phase_i.py`](scripts/pipeline/export_phase_i.py).
+**Note**: The pipeline currently generates v1.7.x format (38 fields, snake_case columns). Phase II schema expansion is deferred indefinitely.
 
 #### 1 · Prepare Schema *(optional)*
 ~~~bash
 python scripts/process/manage_schema.py \
-  --input_csv  data/input/NYCGovernanceOrganizations_DRAFT_20250410.csv \
-  --output_csv data/input/NYCGovernanceOrganizations_DRAFT_20250604.csv \
-  --add_columns "PrincipalOfficerFullName,PrincipalOfficerGivenName,PrincipalOfficerMiddleNameOrInitial,PrincipalOfficerFamilyName,PrincipalOfficerSuffix" \
+  --input_csv  data/published/latest/NYCGO_golden_dataset_latest.csv \
+  --output_csv data/input/pending/updated_schema.csv \
+  --add_columns "new_column_name" \
   --default_value ""
 ~~~
 
 #### 2 · Run the pipeline orchestrator
-The new CLI stages inputs, applies global rules + QA edits, exports pre-release outputs, and emits the per-run changelog and summary.
+The CLI stages inputs, applies global rules + QA edits, exports pre-release outputs, and emits the per-run changelog and summary.
 ~~~bash
-make run-pipeline GOLDEN=data/input/NYCGovernanceOrganizations_DRAFT_20250604.csv \
-                 QA=data/input/Agency_Name_QA_Edits.csv \
+make run-pipeline GOLDEN=data/published/latest/NYCGO_golden_dataset_latest.csv \
+                 QA=data/input/pending/my_edits.csv \
                  DESCRIPTOR=qa-pass
 ~~~
 _The CLI will create a run id when one is not supplied and writes artifacts under `data/audit/runs/<run_id>/`._
@@ -355,10 +355,10 @@ _Publish creates `_final` artifacts in `data/published/`, updates `latest/`, arc
 
 #### 5 · Audit & Compare *(optional)*
 ~~~bash
-python compare_datasets.py \
-  --original_csv  data/input/NYCGovernanceOrganizations_DRAFT_20250410.csv \
-  --processed_csv data/published/NYCGovernanceOrganizations_v2.8.csv \
-  --output_report_csv data/audit/comparison_report_v2.8.csv
+python scripts/maint/compare_datasets.py \
+  --original_csv  data/published/latest/NYCGO_golden_dataset_latest.csv \
+  --processed_csv data/audit/runs/<run_id>/outputs/golden_pre-release.csv \
+  --output_report_csv data/audit/comparison_report.csv
 ~~~
 
 ### Script Reference

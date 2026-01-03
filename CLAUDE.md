@@ -48,7 +48,10 @@ Both are symlinks to the actual repos.
 **Purpose**: Data pipeline for processing, validating, and publishing the NYC Governance Organizations dataset.
 
 **Key Directories**:
-- `data/input/` - Source QA edit files
+- `data/input/` - QA edit files (see `data/input/README.md` for structure)
+  - `pending/` - Active edits waiting to be processed
+  - `processed/` - Archive of processed edits (by month)
+  - `research/` - Reference materials
 - `data/published/latest/` - Single source of truth for golden datasets
 - `data/audit/runs/` - Run artifacts with inputs/outputs/review
 - `data/changelog.csv` - Master append-only changelog
@@ -57,8 +60,8 @@ Both are symlinks to the actual repos.
 - `.github/workflows/publish-release.yml` - Automated release workflow
 
 **Current Versions**:
-- v1.6.0 - Latest published (434 records, 38 fields, snake_case column names)
-- v1.2.0 - Development (443 records, 46 fields, Phase II schema - deferred)
+- v1.7.x - Latest published (434 records, 38 fields, snake_case column names)
+- Phase II - Deferred indefinitely (46 fields schema)
 
 **Pipeline Commands**:
 ```bash

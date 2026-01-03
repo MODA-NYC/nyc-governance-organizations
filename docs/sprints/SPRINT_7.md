@@ -1,6 +1,7 @@
 # Sprint 7: Cleanup & Technical Debt
 
-**Status: PLANNED**
+**Status: IN PROGRESS**
+**Started: January 2026**
 
 ## Overview
 
@@ -12,7 +13,7 @@ This sprint consolidates remaining cleanup work and technical debt items that we
 
 ## Items
 
-### 0. Repository & Docs Cleanup
+### 0. Repository & Docs Cleanup ✅ PARTIAL
 
 Consolidate and organize documentation that has accumulated over multiple sprints.
 
@@ -22,36 +23,31 @@ Consolidate and organize documentation that has accumulated over multiple sprint
 - Phase II docs that are deferred indefinitely
 - Unclear what's current vs. historical
 
-**Tasks**:
-- [ ] Audit all files in `docs/` - identify what's current, redundant, or stale
-- [ ] Consolidate directory logic into single authoritative doc
-- [ ] Keep one pipeline diagram format, archive others
-- [ ] Move stale/historical docs to `docs/archive/`
-- [ ] Update or remove Phase II docs (or move to archive since deferred)
-- [ ] Review `docs/drafts/` - delete or promote
-- [ ] Ensure README.md and CLAUDE.md point to correct docs
-- [ ] Clean up any orphaned files in repo root
+**Completed (January 2026)**:
+- [x] Audit all files in `docs/` - identified current, redundant, and stale
+- [x] Deleted redundant `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md` (admin UI uses auto-generated `DIRECTORY_LOGIC.md`)
+- [x] Reorganized `data/input/` folder structure:
+  - `pending/` - active edits waiting to be processed
+  - `processed/` - archive organized by month
+  - `research/` - reference materials
+  - Created `README.md` explaining workflow
+- [x] Moved `docs/drafts/mamdani_transition_draft.csv` to `data/input/pending/mamdani_transition.csv`
+- [x] Updated `CLAUDE.md` with new folder structure and current version (v1.7.x)
+- [x] Updated `README.md` pipeline examples to use new `pending/` paths
 
-**Current docs inventory**:
-```
-docs/
-├── APPOINTMENTS_MONITOR.md      # Active - appointments scanning feature
-├── ARCHITECTURE_DIRECTORY_LOGIC.md  # Redundant?
-├── BACKLOG.md                   # Active - backlog tracking
-├── CHANGELOG_SPEC.md            # Review - still needed?
-├── DIRECTORY_FIELD_CHANGELOG.md # Redundant?
-├── DIRECTORY_LOGIC.md           # Redundant?
-├── drafts/                      # Review contents
-├── GITHUB_RELEASE_GUIDE.md      # Active - how to release
-├── LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md  # Redundant?
-├── NYC_Agencies_and_Governance_Organizations_Data_Dictionary.xlsx  # Active
-├── nycgo-edit-publish-pipeline.*  # Keep one format
-├── PHASE_I_*.md                 # Review - still needed?
-├── PHASE_II_*.md                # Archive - deferred indefinitely
-├── run_artifacts.md             # Review - still needed?
-├── SCHEMA_VERSION_COMPARISON.md # Review - still needed?
-└── sprints/                     # Active
-```
+**Remaining Tasks**:
+- [ ] Archive Phase I docs (`PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt`) to `docs/sprints/phase-i-archive/`
+- [ ] Archive Phase II docs (`PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md`) to `docs/sprints/phase-ii-archive/`
+- [ ] Update `sprints/PHASE_II.md` to reflect "resuming after Sprint 7" status
+- [ ] Review pipeline diagram formats - keep one, archive others (optional)
+
+**Docs Audit Summary**:
+| Category | Files | Status |
+|----------|-------|--------|
+| Current/Active | `DIRECTORY_LOGIC.md` (auto-gen), `ARCHITECTURE_DIRECTORY_LOGIC.md`, `BACKLOG.md`, `APPOINTMENTS_MONITOR.md`, `GITHUB_RELEASE_GUIDE.md`, `CHANGELOG_SPEC.md`, `run_artifacts.md`, `DIRECTORY_FIELD_CHANGELOG.md` | Keep |
+| Stale (Phase II) | `PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md` | Archive |
+| Stale (Phase I) | `PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt` | Archive |
+| Deleted | `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md` | Done |
 
 ---
 
