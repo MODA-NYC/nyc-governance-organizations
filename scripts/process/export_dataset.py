@@ -575,11 +575,12 @@ def calculate_directory_eligibility_all(df: pd.DataFrame) -> pd.DataFrame:
     def calc_eligibility(row):
         record = row.to_dict()
         result = evaluate_eligibility(record)
-        return result.eligible
+        # Return uppercase strings to match schema enum: "TRUE", "FALSE", ""
+        return "TRUE" if result.eligible else "FALSE"
 
     df["listed_in_nyc_gov_agency_directory"] = df.apply(calc_eligibility, axis=1)
 
-    eligible_count = df["listed_in_nyc_gov_agency_directory"].sum()
+    eligible_count = (df["listed_in_nyc_gov_agency_directory"] == "TRUE").sum()
     print(f"  - {eligible_count} of {len(df)} records are directory-eligible")
 
     return df
