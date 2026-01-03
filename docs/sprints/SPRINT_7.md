@@ -89,23 +89,20 @@ Created `docs/SCHEMA.md` containing:
 
 ---
 
-### 2. Externalize Exception Lists to YAML
+### 2. ~~Externalize Exception Lists to YAML~~ ✅ RECONSIDERED
 
-Move hardcoded exception lists from Python to a YAML config file.
+**Status**: Intentionally declined (January 2026)
 
-**Current state**: Lists are in `src/nycgo_pipeline/directory_rules.py` (Python)
-**Target state**: Lists in `config/export_rules.yaml` (YAML)
+After analysis, we decided to **keep exception lists in Python** rather than externalize to YAML.
 
-**Benefits**:
-- Non-developers can review/edit
-- Changes don't require code deployment
-- Includes justification and dates for each entry
+**Rationale**:
+- The current `directory_rules.py` architecture is a **Single Source of Truth** that drives evaluation, documentation generation, and changelog tracking
+- Rules include Python lambdas that cannot be expressed in YAML; externalizing only the lists would split the source of truth
+- Change detection and audit trail already exist via `generate_directory_docs.py`
+- The lists total ~18 entries and rarely change—YAML overhead isn't justified
+- If justifications are needed, Python comments serve the same purpose
 
-**Tasks**:
-- [ ] Create `config/export_rules.yaml` with all exception lists
-- [ ] Update pipeline to read from YAML
-- [ ] Add validation to ensure config is valid
-- [ ] Migrate existing lists with justifications
+**Documentation**: See `docs/ARCHITECTURE_DIRECTORY_LOGIC.md` → "Design Decisions" section for full explanation.
 
 ---
 
@@ -275,7 +272,7 @@ Items identified but not yet prioritized:
 ## Definition of Done
 
 - [x] Schema documentation complete (Sprint 7.1 - Jan 2026)
-- [ ] Exception lists in YAML config
+- [x] ~~Exception lists in YAML config~~ Reconsidered - keeping Python (Sprint 7.2 - Jan 2026)
 - [ ] Schema change detection automated
 - [ ] Directory field alignment implemented
 - [ ] UV migration complete (optional)

@@ -146,6 +146,47 @@ Every time rules change and documentation is regenerated, an entry is appended t
 
 This provides a complete audit trail of all directory logic changes.
 
+## Design Decisions
+
+### Why Python Instead of YAML/Config Files?
+
+The exemption lists (e.g., `NONPROFIT_EXEMPTIONS`, `ADVISORY_EXEMPTIONS`) are kept in Python
+rather than externalized to YAML or JSON config files. This was a deliberate choice:
+
+**Benefits of the Python approach:**
+
+1. **Single Source of Truth** - Rules and exemption lists live together in one file.
+   The doc generator imports directly from Python, guaranteeing docs match runtime behavior.
+
+2. **Rules require code** - The eligibility rules include Python lambdas (e.g.,
+   `check=lambda r: r.get("name") in NONPROFIT_EXEMPTIONS`). These cannot be expressed
+   in YAML, so splitting exemptions to YAML would create two sources of truth.
+
+3. **Change detection already exists** - The `generate_directory_docs.py` script
+   snapshots rules, detects changes, and appends to a changelog CSV. This provides
+   audit trail without needing YAML's inline documentation.
+
+4. **Lists rarely change** - The exemption lists total ~18 entries and change
+   infrequently. The overhead of YAML loading, validation, and sync logic isn't
+   justified by the editing convenience.
+
+5. **Simpler testing** - Tests import directly from Python. No need to mock or
+   manage separate config file loading.
+
+**If you need justifications per entry**, add Python comments:
+
+```python
+NONPROFIT_EXEMPTIONS = [
+    "Brooklyn Public Library",      # Core NYC library system
+    "Queens Public Library",        # Core NYC library system
+    "New York Public Library",      # Serves Manhattan, Bronx, Staten Island
+]
+```
+
+This keeps documentation co-located without architectural changes.
+
+---
+
 ## Related Documentation
 
 - [DIRECTORY_LOGIC.md](DIRECTORY_LOGIC.md) - Auto-generated rule documentation
