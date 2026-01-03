@@ -48,10 +48,7 @@ Both are symlinks to the actual repos.
 **Purpose**: Data pipeline for processing, validating, and publishing the NYC Governance Organizations dataset.
 
 **Key Directories**:
-- `data/input/` - QA edit files (see `data/input/README.md` for structure)
-  - `pending/` - Active edits waiting to be processed
-  - `processed/` - Archive of processed edits (by month)
-  - `research/` - Reference materials
+- `data/input/` - Source QA edit files
 - `data/published/latest/` - Single source of truth for golden datasets
 - `data/audit/runs/` - Run artifacts with inputs/outputs/review
 - `data/changelog.csv` - Master append-only changelog
@@ -60,8 +57,8 @@ Both are symlinks to the actual repos.
 - `.github/workflows/publish-release.yml` - Automated release workflow
 
 **Current Versions**:
-- v1.7.x - Latest published (434 records, 38 fields, snake_case column names)
-- Phase II - Deferred indefinitely (46 fields schema)
+- v1.6.0 - Latest published (434 records, 38 fields, snake_case column names)
+- v1.2.0 - Development (443 records, 46 fields, Phase II schema - deferred)
 
 **Pipeline Commands**:
 ```bash
@@ -201,16 +198,67 @@ cd nycgo-admin-ui && python3 -m http.server 8000
 
 ---
 
+## Safety Protocols for Schema/Breaking Changes
+
+When making changes to the golden dataset schema, field names, or other breaking changes:
+
+### 1. Commit Before Breaking Changes
+```bash
+cd nyc-governance-organizations
+git add -A && git commit -m "chore: Complete work before [change description]"
+```
+
+### 2. Create Baseline Tag
+```bash
+git tag v1.X.Y-pre-[change-name] -m "Stable baseline before [change description]"
+```
+This enables easy rollback if something goes wrong.
+
+### 3. Make Changes
+Update all affected files:
+- `data/published/latest/NYCGO_golden_dataset_latest.csv` - Data file
+- `schemas/nycgo_golden_dataset.tableschema.json` - Schema definition
+- `scripts/process/export_dataset.py` - Export logic
+- `src/nycgo_pipeline/*.py` - Pipeline code
+- `tests/` - Test fixtures and assertions
+
+### 4. Run Tests
+```bash
+make test
+```
+Verify no new failures (pre-existing failures are documented in SPRINT_7.md).
+
+### 5. Pipeline Smoke Test
+```bash
+echo "record_id,record_name,field_name,action,justification,evidence_url" > /tmp/empty_qa.csv
+make run-pipeline GOLDEN=data/published/latest/NYCGO_golden_dataset_latest.csv \
+                  QA=/tmp/empty_qa.csv \
+                  DESCRIPTOR="post-change-test"
+```
+Verify: Golden=38 fields, Published=17 fields (or expected counts).
+
+### 6. Clean Up Test Artifacts
+```bash
+rm -rf data/audit/runs/*post-change-test*
+```
+
+### 7. Commit Changes
+Include the baseline tag reference in the commit message for traceability.
+
+---
+
 ## Schema Reference
 
-**Current (v1.6.x)**: 38 fields, snake_case column names, `record_id` format `NYC_GOID_XXXXXX`
-**Phase II (v1.2.x)**: 46 fields (deferred), `record_id` format `XXXXXX` (6-digit numeric)
+**Current (v1.8.x)**: 38 fields, snake_case column names, `record_id` format `NYC_GOID_XXXXXX`
+**Phase II**: 46 fields (deferred indefinitely)
 
-Key fields (snake_case):
+See `nyc-governance-organizations/docs/SCHEMA.md` for complete field documentation.
+
+Key fields:
 - `record_id`, `name`, `name_alphabetized`
 - `operational_status`, `organization_type`, `url`
 - `in_org_chart`, `listed_in_nyc_gov_agency_directory`
-- `principal_officer_full_name`, `principal_officer_title`
+- `principal_officer_full_name`, `principal_officer_first_name`, `principal_officer_last_name`, `principal_officer_title`
 
 ---
 
