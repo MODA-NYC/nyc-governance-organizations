@@ -1,353 +1,352 @@
 # Phase II Data Release
 
-**Status: DEFERRED**
+**Status: PAUSED - Resuming after Sprint 7**
+**Last Updated: January 2026**
 
-This was originally planned as Sprint 4 but has been deferred indefinitely. When ready, this work will execute the Phase II data release with expanded schema and new organizations.
+This document tracks the Phase II schema expansion and data population work for the NYC Governance Organizations dataset. Phase II adds governance and legal authority fields to better capture organizational relationships.
+
+> **Archived Documentation**: Detailed technical specs from the original planning phase are archived in `docs/sprints/phase-ii-archive/`:
+> - `PHASE_II_SCHEMA.md` - Original schema documentation
+> - `PHASE_II_PROGRESS.md` - November 2024 progress tracking
+> - `SCHEMA_VERSION_COMPARISON.md` - Phase I vs Phase II field comparison
+
+---
 
 ## Overview
 
-This work executes the Phase II data release by running the prepared edits file through the validated pipeline. This is the culmination of the infrastructure work from Sprints 1-3.
+**Current Production**: v1.7.x (38 golden fields, 16 public export fields, 436 records)
+**Target Release**: v2.0.0 (42 golden fields, 20 public export fields)
 
-**Inputs**:
-- Validated pipeline and review interface (Sprint 1-2)
-- Standardized formatting (Sprint 3)
-- `NYCGO_phase2_edits_to_make_20251118.csv` (233 edit rows)
+### Schema Changes (v1.7.x → v2.0.0)
 
-**Outputs**:
-- v1.2.0 release with 46-column schema
-- 9 new organizations added
-- ~90 MOA crosswalk mappings
-- Phase II governance fields populated
+**New Fields (4 additions + 1 type field = 5 total)**:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `org_chart_oversight` | String | No | Administrative oversight from Mayor's org charts |
+| `authorizing_authority` | String | **Yes (100%)** | Legal authority citation (Charter, Local Law, EO, etc.) |
+| `authorizing_authority_type` | Enum | Recommended | Type of legal authority (controlled vocabulary) |
+| `authorizing_url` | URL | 90%+ target | Link to authorizing legal document |
+| `appointments_summary` | Text | For MOA entities | How leadership is appointed |
+
+**Breaking Change**: `ReportsTo` field semantics narrowed from "org chart + political oversight" to "legal/Charter-defined reporting only". Org chart relationships move to `org_chart_oversight`.
 
 ---
 
-## Phase II Scope
+## Completed Work
 
-### Schema Changes (v1.1.x → v1.2.0)
+### Phase II.0: Infrastructure Setup (100% Complete)
 
-**New columns (8 additions)**:
-| Column | Description |
-|--------|-------------|
-| Name - MOA | Mayor's Office of Appointments crosswalk |
-| AuthorizingAuthority | Legal authority citation (e.g., "NYC Charter § 1524") |
-| AuthorizingAuthorityType | Type: NYC Charter, Local Law, Executive Order, etc. |
-| AuthorizingURL | URL to authorizing document |
-| AppointmentsSummary | Summary of appointment process |
-| GovernanceStructure | Description of governance structure |
-| ParentOrganizationRecordID | RecordID of parent organization |
-| ParentOrganizationName | Name of parent organization |
+Completed November 2024. MCP servers and research skills configured.
 
-### New Organizations (9 additions)
+- civic-ai-tools integration (opengov-mcp-server, playwright-civic)
+- Research skills for MOA protocol and legal citations
+- Development environment ready for data collection
 
-| Name | Type | Status |
+### Phase II.1: Schema Expansion (100% Complete)
+
+Completed November 2024. Schema modified in development dataset.
+
+- Development file: `data/working/NYCGO_golden_dataset_v2.0.0-dev.csv` (42 fields, 433 records)
+- Validation rules added to `src/nycgo_pipeline/global_rules.py`
+- Export functionality updated in `scripts/process/export_dataset.py`
+
+**Schema Status**: Dev file ready, but data population work never started.
+
+---
+
+## Remaining Work
+
+### Phase II.2: Data Population (NOT STARTED)
+
+This is the main work remaining. Research and populate the 5 new fields for all ~436 entities.
+
+#### Tasks:
+
+1. **Research `authorizing_authority` (100% population required)**
+   - Review NYC Charter, Admin Code, Local Laws, Executive Orders
+   - Document legal basis using standard citation format
+   - Example: "NYC Charter § 1301" (Department of City Planning)
+
+2. **Find `authorizing_url` (90%+ target)**
+   - Locate official source documents
+   - Prefer stable NYC.gov/codelibrary.amlegal.com URLs
+   - Verify links are accessible
+
+3. **Populate `authorizing_authority_type`**
+   - Categorize using controlled vocabulary (see below)
+   - Must align with `authorizing_authority` field
+
+4. **Extract `org_chart_oversight`**
+   - Review current Mayor's organizational charts
+   - Map administrative oversight relationships
+   - Use RecordIDs from dataset
+
+5. **Document `appointments_summary`**
+   - Scrape Mayor's Office of Appointments page
+   - Research Charter provisions for appointment mechanisms
+   - Focus on entities with mayoral appointments
+
+### Phase II.3: ReportsTo Audit (NOT STARTED)
+
+Audit and correct `ReportsTo` values to match new strict definition.
+
+- Review all 436 values
+- Move org chart relationships to `org_chart_oversight`
+- Verify against NYC Charter/enabling legislation
+- May result in many records changing
+
+### Phase II.4: QA & Validation (NOT STARTED)
+
+- Full dataset validation against Phase II rules
+- Cross-check new fields for accuracy
+- Verify all URLs accessible
+- Test pipeline with expanded schema
+
+### Phase II.5: Release (NOT STARTED)
+
+- Generate v2.0.0 release files
+- Update documentation
+- Publish to NYC Open Data
+- Create migration guide for v1.x users
+
+---
+
+## Field Definitions
+
+### `org_chart_oversight`
+
+**Type:** String (RecordID reference)
+**Required:** No
+**Default:** Empty string
+
+**Definition:**
+The organization shown as the parent/supervisor on the official Mayor's office organizational charts for administrative oversight purposes, even if there is no formal legal reporting relationship.
+
+**Purpose:**
+Distinguishes political/administrative oversight from legal reporting relationships. Many entities appear under specific offices in org charts for coordination purposes without formal legal subordination.
+
+**Examples:**
+- Department of City Planning → appears under Deputy Mayor for Strategic Initiatives
+- NYC Health + Hospitals → appears under First Deputy Mayor
+- Independent Budget Office → appears in chart but reports to Mayor and Council
+
+**Validation Rules:**
+- Must match a valid RecordID from the dataset if populated
+- May differ from `ReportsTo` field
+- Should align with current Mayor's org chart
+
+---
+
+### `authorizing_authority`
+
+**Type:** String
+**Required:** **YES (100% population target)**
+**Default:** Empty string
+
+**Definition:**
+The legal authority (statute, charter provision, executive order, or local law) that established or authorizes the organization to exist and operate.
+
+**Purpose:**
+Documents the legal foundation for each entity's existence and authority. Critical for understanding jurisdictional boundaries, statutory mandates, and legal basis for operations.
+
+**Format:**
+- NYC Charter § [section number]
+- NYC Administrative Code § [section]
+- Executive Order [number] ([year])
+- Local Law [number] of [year]
+- NYS [statute citation]
+- Multiple sources separated by semicolons
+
+**Examples:**
+- "NYC Charter § 1301" (Department of City Planning)
+- "NYC Charter § 2203; Health and Hospitals Corporation Act of 1969" (NYC Health + Hospitals)
+- "NYC Charter § 259; Local Law 128 of 2013" (Independent Budget Office)
+- "Executive Order 16 (2014)" (Office of Immigrant Affairs)
+
+**Citation Guidance:**
+- Prefer codified citations (Charter/Admin Code) over Local Law numbers
+- Include Local Law only when no codified citation exists
+- Multiple authorities: separate with semicolons
+
+---
+
+### `authorizing_authority_type`
+
+**Type:** String (Controlled Vocabulary)
+**Required:** Recommended when `authorizing_authority` is populated
+**Default:** Empty string
+
+**Definition:**
+Categorizes the type of legal authority that establishes the organization.
+
+**Controlled Vocabulary (EXACT VALUES ONLY):**
+
+| Value | Use When |
+|-------|----------|
+| `NYC Charter` | Entity established by NYC Charter provision |
+| `NYC Administrative Code` | Entity established by NYC Admin Code section |
+| `City Council Local Law` | Entity established by Local Law (not codified) |
+| `Mayoral Executive Order` | Entity established by EO (not codified) |
+| `New York State Law` | Entity established by NYS statute |
+| `Federal Law` | Entity established by federal statute |
+| `Other` | Other legal authority (use sparingly) |
+
+**Critical Rules:**
+- Single value only (no semicolons)
+- Prefer codified citations (Charter/Admin Code over Local Law/EO when codified)
+- Must match `authorizing_authority` field
+
+**Selection Priority:**
+1. If codified in Charter → use "NYC Charter"
+2. If codified in Admin Code → use "NYC Administrative Code"
+3. If only in Local Law (not codified) → use "City Council Local Law"
+4. If only in Executive Order (not codified) → use "Mayoral Executive Order"
+
+---
+
+### `authorizing_url`
+
+**Type:** String (URL)
+**Required:** No (90%+ population target)
+**Default:** Empty string
+
+**Definition:**
+Direct URL link to the official legal document, statute, or charter provision that establishes the organization's legal authority.
+
+**Critical Rule: Exactly ONE URL per row**
+
+Use only the canonical URL representing the primary legal authority.
+
+**URL Selection Priority:**
+1. Charter or Administrative Code section (preferred - most stable)
+2. State law URL (if authority is state law only)
+3. Local Law URL (only if no codified citation)
+4. Executive Order URL (only if no codified citation)
+
+**Examples:**
+- `https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCcharter/0-0-0-1301`
+- `https://www.nyc.gov/assets/home/downloads/pdf/executive-orders/2014/eo_16.pdf`
+
+**Quality Standards:**
+- Must be valid URL format (https://...)
+- Should return 200 OK when checked
+- Prefer stable/permalink URLs
+- Must be from official government source
+
+---
+
+### `appointments_summary`
+
+**Type:** String (Free text)
+**Required:** For entities with mayoral appointments
+**Default:** Empty string
+
+**Definition:**
+Brief description of how the organization's leadership and key positions are appointed, including appointing authority, term lengths, and confirmation requirements.
+
+**Important:** Describes the **appointment mechanism/rules** as defined in Charter or enabling legislation, NOT specific appointment events.
+
+**Format:**
+Free-text summary, typically 1-3 sentences. Use semicolons to separate multiple appointment types.
+
+**Examples (CORRECT - describing mechanisms):**
+- "Commissioner appointed by Mayor; Deputy Commissioners appointed by Commissioner"
+- "15-member board: 5 appointed by Mayor, 5 by Public Advocate, 5 by Borough Presidents; 6-year staggered terms"
+- "Director appointed by Mayor with City Council approval; 5-year term; may be removed for cause"
+
+**Examples (INCORRECT - describing specific events):**
+- "Mayor Adams appointed 26 members in Dec 2022" (specific event)
+- "26 members appointed by Mayor" (current composition, not mechanism)
+
+**Key Information to Include:**
+- Appointing authority (Mayor, Governor, Board, etc.)
+- Term length if applicable
+- Confirmation/approval requirements
+- Removal conditions
+- Board composition if applicable
+
+---
+
+## Research Sources
+
+| Field | Primary Sources |
+|-------|----------------|
+| `authorizing_authority` | NYC Charter (codelibrary.amlegal.com), NYC Admin Code, Local Laws, Executive Orders archive |
+| `authorizing_url` | Same as above, prefer permalinks |
+| `authorizing_authority_type` | Derived from `authorizing_authority` |
+| `appointments_summary` | Mayor's Office of Appointments (nyc.gov/appointments), NYC Charter |
+| `org_chart_oversight` | Mayor's Office organizational charts, City Hall documentation |
+
+---
+
+## Breaking Changes Summary (v1.x → v2.0.0)
+
+### ReportsTo Semantics Changed
+
+**v1.x Definition:** Conflated org chart placement, political oversight, AND legal reporting
+**v2.0.0 Definition:** STRICTLY legal/Charter-defined reporting only
+
+| What | v1.x | v2.0.0 |
 |------|------|--------|
-| Technology Development Corporation | Public Benefit or Development Organization | Dissolved |
-| Community Investment Advisory Board | Advisory or Regulatory Organization | Inactive |
-| Civil Service Commission - Screening Committee | Advisory or Regulatory Organization | Verification Pending |
-| MTA Capital Program Review Board | Advisory or Regulatory Organization | Verification Pending |
-| World Trade Center Captive Insurance Company | Public Benefit or Development Organization | Verification Pending |
-| Quadrennial Advisory Commission for the Review of Compensation Levels of Elected Officials | Advisory or Regulatory Organization | Verification Pending |
-| Veterans' Advisory Board | Advisory or Regulatory Organization | Verification Pending |
-| New York City Global Partners | Nonprofit Organization | Verification Pending |
-| SWMP Converted Marine Transfer Station Community Advisory Group - Gansevoort (Manhattan) | Advisory or Regulatory Organization | Inactive |
+| Legal/Charter reporting | In `ReportsTo` | In `ReportsTo` |
+| Org chart placement | In `ReportsTo` | In `org_chart_oversight` |
+| Political oversight | In `ReportsTo` | In `org_chart_oversight` |
 
-### Data Enhancements
+**Migration Impact:**
+- Many `ReportsTo` values will change
+- Previous org chart values move to `org_chart_oversight`
+- Users must update queries relying on old `ReportsTo` semantics
 
-- ~90 "Name - MOA" crosswalk mappings added
-- Governance fields populated for select organizations (Banking Commission, Sustainability Advisory Board, etc.)
-- Parent organization relationships established
+### New Fields Added (5 total)
+- `org_chart_oversight` - Administrative oversight
+- `authorizing_authority` - Legal basis (required)
+- `authorizing_authority_type` - Authority classification
+- `authorizing_url` - Source document link
+- `appointments_summary` - Appointment mechanisms
 
----
-
-## Pre-Sprint Checklist
-
-Before starting Sprint 4, verify:
-
-- [ ] Sprint 1 complete: Admin UI infrastructure working
-- [ ] Sprint 2 complete: Pipeline validated with test edits
-- [ ] Sprint 3 complete: Formatting standards implemented
-- [ ] `NYCGO_phase2_edits_to_make_20251118.csv` preserved and accessible
-- [ ] Current published version is v1.1.2 (or latest from Sprint 2)
+### Schema Impact
+- Golden dataset: 38 → 42 fields (+4, +1 type field already existed)
+- Public export: 16 → 20 fields (+4)
+- Record count: ~436 (may increase if new orgs discovered)
 
 ---
 
-## Phase 1: Review Edits File
-
-### Prepare Edits File
-
-1. Locate the edits file:
-   ```
-   nyc-governance-organizations/data/input/NYCGO_phase2_edits_to_make_20251118.csv
-   ```
-
-2. Verify file integrity:
-   - [ ] 233 rows (excluding header)
-   - [ ] All required columns present
-   - [ ] No encoding issues
-
-### Upload to Review Interface
-
-1. Open review interface (review-edits.html)
-2. Upload `NYCGO_phase2_edits_to_make_20251118.csv`
-3. Review validation results
-
-### Expected Validation Results
-
-The review interface should flag:
-- [ ] New record creation (records with `NEW` as record_id)
-- [ ] New field names not in v1.1.x schema
-- [ ] Any formatting issues
-
-### Review Strategy
-
-Given the large number of edits (233 rows), organize review by category:
-
-#### Category 1: Name - MOA Crosswalk Mappings (~90 edits)
-- Simple field additions
-- Low risk, high volume
-- Review sample, bulk approve if pattern consistent
-
-#### Category 2: New Organizations (9 orgs × ~10 fields = ~90 edits)
-- Higher scrutiny needed
-- Verify each organization's:
-  - Name and name_alphabetized
-  - Operational status
-  - Organization type
-  - Authorizing authority and URL
-  - Parent organization (if applicable)
-
-#### Category 3: Governance Field Updates (~50 edits)
-- Updates to existing records
-- Verify authorizing authority citations
-- Check URL validity
-
-### Review Checklist
-
-For each edit category:
-- [ ] Sample edits reviewed for accuracy
-- [ ] Field values match evidence URLs
-- [ ] No obvious errors or typos
-- [ ] Consistent with data standards (Sprint 3)
-
----
-
-## Phase 2: Process Approved Edits
-
-### Batch Processing
-
-If review interface supports batching:
-1. Approve Category 1 (MOA mappings) as batch
-2. Review and approve Category 2 (new orgs) individually
-3. Review and approve Category 3 (governance updates) individually
-
-### Commit to Pending Edits
-
-1. Generate approved edits CSV
-2. Commit to `nycgo-admin-ui/pending-edits/`
-3. Verify process-edit.yml workflow triggers
-
-### Monitor Pipeline
-
-- [ ] Workflow starts automatically
-- [ ] Pipeline processes without errors
-- [ ] Audit artifacts created in `audit/runs/<run_id>/`
-
-### Review Pipeline Output
-
-Before publishing:
-- [ ] Record count: 434 + 9 = 443 records
-- [ ] Column count: 38 + 8 = 46 columns
-- [ ] New organizations present and correctly formatted
-- [ ] MOA mappings populated
-- [ ] Governance fields populated where expected
-- [ ] No data corruption in existing records
-
----
-
-## Phase 3: Validation
-
-### Schema Validation
-
-```bash
-# Check column count
-head -1 data/audit/runs/<run_id>/outputs/golden_pre-release.csv | tr ',' '\n' | wc -l
-# Expected: 46
-
-# Check record count
-wc -l data/audit/runs/<run_id>/outputs/golden_pre-release.csv
-# Expected: 444 (443 records + 1 header)
-```
-
-### New Organization Validation
-
-For each new organization, verify:
-
-| Organization | RecordID Generated | All Fields Populated | Status |
-|--------------|-------------------|---------------------|--------|
-| Technology Development Corporation | [ ] | [ ] | [ ] |
-| Community Investment Advisory Board | [ ] | [ ] | [ ] |
-| Civil Service Commission - Screening Committee | [ ] | [ ] | [ ] |
-| MTA Capital Program Review Board | [ ] | [ ] | [ ] |
-| World Trade Center Captive Insurance Company | [ ] | [ ] | [ ] |
-| Quadrennial Advisory Commission... | [ ] | [ ] | [ ] |
-| Veterans' Advisory Board | [ ] | [ ] | [ ] |
-| New York City Global Partners | [ ] | [ ] | [ ] |
-| SWMP CAG - Gansevoort | [ ] | [ ] | [ ] |
-
-### MOA Crosswalk Validation
-
-Spot-check 10 random MOA mappings:
-- [ ] RecordID correct
-- [ ] Name - MOA value matches MOA appointments page
-- [ ] No typos
-
-### Governance Field Validation
-
-For organizations with governance updates:
-- [ ] AuthorizingAuthority format consistent
-- [ ] AuthorizingAuthorityType uses controlled vocabulary
-- [ ] AuthorizingURL is valid and accessible
-- [ ] Parent relationships correctly established
-
-### Data Quality Checks (Sprint 3 standards)
-
-- [ ] Boolean fields: TRUE/FALSE format
-- [ ] BudgetCode: 3-digit zero-padded
-- [ ] FoundingYear: integer format
-- [ ] No .0 suffixes
-
----
-
-## Phase 4: Publish v1.2.0
-
-### Pre-Publish Checklist
-
-- [ ] All validation checks pass
-- [ ] Changelog entry prepared
-- [ ] Release notes drafted
-
-### Publish Steps
-
-1. Trigger publish-release.yml with version `v1.2.0`
-2. Monitor workflow execution
-3. Verify release artifacts created
-
-### Release Artifacts
-
-Verify these files exist and are correct:
-- [ ] `data/published/latest/NYCGO_golden_dataset_v1.2.0.csv`
-- [ ] `data/published/latest/NYCGO_golden_dataset_latest.csv` (updated)
-- [ ] `data/published/latest/NYCGovernanceOrganizations_v1.2.0.csv`
-- [ ] `data/published/latest/NYCGovernanceOrganizations_latest.csv` (updated)
-- [ ] GitHub release created with tag `v1.2.0`
-
-### Post-Publish Verification
-
-- [ ] Admin UI loads v1.2.0 data
-- [ ] New columns visible (if UI updated to show them)
-- [ ] New organizations searchable
-- [ ] MOA crosswalk data accessible
-
----
-
-## Phase 5: Documentation & Communication
-
-### Update Documentation
-
-- [ ] README.md - Update to reflect v1.2.0
-- [ ] CHANGELOG.md - Add v1.2.0 entry with full details
-- [ ] Schema documentation - Document new fields
-- [ ] Data dictionary - Update field definitions
-
-### Release Notes Template
-
-```markdown
-## v1.2.0 - Phase II Release
-
-### New Features
-- Added 8 new governance-related fields
-- Added Name - MOA crosswalk column
-
-### New Data
-- 9 new organizations added
-- ~90 MOA crosswalk mappings populated
-- Governance fields populated for select organizations
-
-### Schema Changes
-- Total columns: 38 → 46
-- Total records: 434 → 443
-- RecordID format: NYC_GOID_XXXXXX (unchanged)
-
-### Possible Future Consideration: RecordID Format Migration
-
-A migration from `NYC_GOID_XXXXXX` to 6-digit numeric format (e.g., `100435`) was
-considered for its simplicity and ease of use. However, this would be a **breaking
-change** requiring coordination with NYC.gov frontend team, as record IDs are used
-in NYC.gov URLs and frontend code.
-
-**Decision:** Defer indefinitely. The current format works and a migration would
-require significant cross-team coordination. May revisit if there's a compelling
-reason to change.
-
-### New Fields
-| Field | Description |
-|-------|-------------|
-| Name - MOA | Mayor's Office of Appointments crosswalk |
-| AuthorizingAuthority | Legal authority citation |
-| AuthorizingAuthorityType | Type of authorizing authority |
-| AuthorizingURL | URL to authorizing document |
-| AppointmentsSummary | Appointment process summary |
-| GovernanceStructure | Governance structure description |
-| ParentOrganizationRecordID | Parent organization RecordID |
-| ParentOrganizationName | Parent organization name |
-
-### New Organizations
-1. Technology Development Corporation (Dissolved)
-2. Community Investment Advisory Board (Inactive)
-3. Civil Service Commission - Screening Committee
-4. MTA Capital Program Review Board
-5. World Trade Center Captive Insurance Company
-6. Quadrennial Advisory Commission for the Review of Compensation Levels of Elected Officials
-7. Veterans' Advisory Board
-8. New York City Global Partners
-9. SWMP Converted Marine Transfer Station Community Advisory Group - Gansevoort (Manhattan) (Inactive)
-```
-
-### Communication
-
-- [ ] Update NYC Open Data portal (if applicable)
-- [ ] Notify downstream data consumers
-- [ ] Update any internal documentation
-
----
-
-## Rollback Plan
-
-If critical issues discovered post-publish:
-
-### Immediate Rollback
-```bash
-# Revert to v1.1.2
-cp data/published/archive/NYCGO_golden_dataset_v1.1.2.csv \
-   data/published/latest/NYCGO_golden_dataset_latest.csv
-git add data/published/latest/
-git commit -m "Rollback to v1.1.2 due to [issue]"
-git push
-```
-
-### Issue Documentation
-Document any issues that required rollback for future reference.
+## Data Population Targets
+
+| Field | Target | Notes |
+|-------|--------|-------|
+| `authorizing_authority` | 100% | Required for all entities |
+| `authorizing_url` | 90%+ | Some older EOs may lack URLs |
+| `authorizing_authority_type` | 100% | Derived from authority field |
+| `org_chart_oversight` | 80%+ | Only entities in org charts |
+| `appointments_summary` | MOA entities | ~50-100 entities with mayoral appointments |
+| `ReportsTo` (audit) | 100% | Correct to new definition |
 
 ---
 
 ## Definition of Done
 
-- [ ] All 233 edits reviewed and approved
-- [ ] Pipeline processed edits successfully
-- [ ] Validation checks pass (schema, data quality, new orgs)
-- [ ] v1.2.0 published to data/published/latest/
-- [ ] GitHub release created
-- [ ] Admin UI shows v1.2.0 data
-- [ ] Documentation updated
-- [ ] Release notes published
-- [ ] Downstream consumers notified (if applicable)
+- [ ] Phase II.2: All new fields populated to target levels
+- [ ] Phase II.3: ReportsTo audit complete, values corrected
+- [ ] Phase II.4: Full validation passing, all URLs verified
+- [ ] Phase II.5: v2.0.0 published with migration guide
+- [ ] Documentation updated (README, data dictionary)
+- [ ] NYC Open Data portal updated
+
+---
+
+## Timeline
+
+Phase II work resumes after Sprint 7 cleanup items are complete. No specific dates set - prioritize based on:
+1. User/stakeholder demand for governance fields
+2. Available research time
+3. Other project priorities
+
+---
+
+## Version History
+
+- **November 2024**: Phase II.0 & II.1 completed (infrastructure + schema expansion)
+- **December 2024**: Phase II deferred, focus shifted to Sprint 5-7
+- **January 2026**: Documentation consolidated, ready to resume after Sprint 7

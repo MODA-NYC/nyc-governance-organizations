@@ -36,17 +36,17 @@ Consolidate and organize documentation that has accumulated over multiple sprint
 - [x] Updated `README.md` pipeline examples to use new `pending/` paths
 
 **Remaining Tasks**:
-- [ ] Archive Phase I docs (`PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt`) to `docs/sprints/phase-i-archive/`
-- [ ] Archive Phase II docs (`PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md`) to `docs/sprints/phase-ii-archive/`
-- [ ] Update `sprints/PHASE_II.md` to reflect "resuming after Sprint 7" status
+- [x] Archive Phase I docs (`PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt`) to `docs/sprints/phase-i-archive/`
+- [x] Archive Phase II docs (`PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md`) to `docs/sprints/phase-ii-archive/`
+- [x] Update `sprints/PHASE_II.md` to reflect "resuming after Sprint 7" status (consolidated with full field definitions, completed work status, 42-column schema target)
 - [ ] Review pipeline diagram formats - keep one, archive others (optional)
 
 **Docs Audit Summary**:
 | Category | Files | Status |
 |----------|-------|--------|
 | Current/Active | `DIRECTORY_LOGIC.md` (auto-gen), `ARCHITECTURE_DIRECTORY_LOGIC.md`, `BACKLOG.md`, `APPOINTMENTS_MONITOR.md`, `GITHUB_RELEASE_GUIDE.md`, `CHANGELOG_SPEC.md`, `run_artifacts.md`, `DIRECTORY_FIELD_CHANGELOG.md` | Keep |
-| Stale (Phase II) | `PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md` | Archive |
-| Stale (Phase I) | `PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt` | Archive |
+| Archived (Phase II) | `PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md` | Done (moved to `sprints/phase-ii-archive/`) |
+| Archived (Phase I) | `PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt` | Done (moved to `sprints/phase-i-archive/`) |
 | Deleted | `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md` | Done |
 
 ---
