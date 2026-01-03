@@ -295,6 +295,7 @@ Items identified but not yet prioritized:
 | Failing test: MTA eligibility | `test_directory_rules.py` | State Government Agency rule for MTA returns False, expected True |
 | ~~Failing test: changelog schema~~ | ~~`test_changelog_schema.py`~~ | ~~Fixed in Sprint 7.1 - added missing fields to ALLOWED_FIELDS~~ |
 | Failing test: regression snapshot | `test_directory_rules.py` | MTA regression test expects True, gets False |
+| Confusing workflow mode variables | `nycgo-admin-ui` repo variables | Two variables (TEST_MODE, PRODUCTION_MODE) should be simplified to one |
 
 ---
 
