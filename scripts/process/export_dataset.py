@@ -553,6 +553,38 @@ def add_nycgov_directory_column(
 ### END OF DIRECTORY FIELD LOGIC (v2) ###
 
 
+def calculate_directory_eligibility_all(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate directory eligibility for ALL records in the dataframe.
+
+    This ensures the golden dataset has freshly calculated directory eligibility
+    values, consistent with what the published export would calculate.
+
+    Uses evaluate_eligibility() from directory_rules.py (single source of truth).
+
+    Args:
+        df: DataFrame with organization records (expects snake_case column names)
+
+    Returns:
+        DataFrame with listed_in_nyc_gov_agency_directory column updated
+    """
+    print("\nCalculating directory eligibility for all records...")
+
+    df = df.copy()
+
+    def calc_eligibility(row):
+        record = row.to_dict()
+        result = evaluate_eligibility(record)
+        return result.eligible
+
+    df["listed_in_nyc_gov_agency_directory"] = df.apply(calc_eligibility, axis=1)
+
+    eligible_count = df["listed_in_nyc_gov_agency_directory"].sum()
+    print(f"  - {eligible_count} of {len(df)} records are directory-eligible")
+
+    return df
+
+
 def main():
     """Main function to process the dataset for export."""
     parser = argparse.ArgumentParser(
@@ -608,6 +640,11 @@ def main():
     except FileNotFoundError:
         print(f"Error: Input CSV file not found at '{args.input_csv}'", file=sys.stderr)
         sys.exit(1)
+
+    # Calculate directory eligibility for ALL records before saving golden.
+    # This ensures golden and published datasets have consistent values.
+    # (Sprint 7.4: "Calculate once, use everywhere")
+    df = calculate_directory_eligibility_all(df)
 
     # Load previous export if provided (for changelog comparison)
     df_previous_export = None
@@ -784,6 +821,11 @@ def main_with_dataframe(
     Note: Expects DataFrame with snake_case column names (standardized format).
     """
     df_input = df.copy()
+
+    # Calculate directory eligibility for ALL records before saving golden.
+    # (Sprint 7.4: "Calculate once, use everywhere")
+    df_input = calculate_directory_eligibility_all(df_input)
+
     df_previous_export = None
     if previous_export and previous_export.exists():
         df_previous_export = pd.read_csv(previous_export, dtype=str)

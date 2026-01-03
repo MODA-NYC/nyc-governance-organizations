@@ -132,18 +132,32 @@ Automate detection of schema changes between releases.
 
 ---
 
-### 4. Golden/Published Directory Field Alignment
+### 4. Golden/Published Directory Field Alignment ✅ COMPLETE
+
+**Sprint 7.4 - Completed January 2026**
 
 Ensure the directory eligibility field is calculated consistently.
 
-**Problem**: Golden dataset `NYC.gov Agency Directory` can diverge from published `listed_in_nyc_gov_agency_directory` because they're calculated at different times.
+**Problem**: Golden dataset `listed_in_nyc_gov_agency_directory` could diverge from the published export because:
+- Golden preserved stale/empty values from input CSV
+- Published export recalculated fresh using current rules
+- This resulted in 86+ mismatches between the datasets
 
-**Solution**: Calculate once, use everywhere (Option B from original Sprint 6).
+**Solution**: "Calculate once, use everywhere"
+
+**Implementation**:
+- Added `calculate_directory_eligibility_all()` function to `scripts/process/export_dataset.py`
+- This function uses `evaluate_eligibility()` from `directory_rules.py` (single source of truth)
+- Called BEFORE saving golden dataset, so all records get freshly calculated values
+- Published export then uses these same values (consistency guaranteed)
+
+**Files updated**:
+- `scripts/process/export_dataset.py` - Added new function and calls in `main()` and `main_with_dataframe()`
 
 **Tasks**:
-- [ ] Refactor export to calculate directory eligibility once
-- [ ] Apply same value to both golden and published datasets
-- [ ] Records not in published export get `False` in golden
+- [x] Refactor export to calculate directory eligibility once
+- [x] Apply same value to both golden and published datasets
+- [x] Records not in published export get calculated `True`/`False` in golden
 
 ---
 
@@ -289,7 +303,7 @@ Items identified but not yet prioritized:
 - [x] Schema documentation complete (Sprint 7.1 - Jan 2026)
 - [x] ~~Exception lists in YAML config~~ Reconsidered - keeping Python (Sprint 7.2 - Jan 2026)
 - [x] Schema change detection automated (Sprint 7.3 - Jan 2026)
-- [ ] Directory field alignment implemented
+- [x] Directory field alignment implemented (Sprint 7.4 - Jan 2026)
 - [ ] UV migration complete (optional)
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
