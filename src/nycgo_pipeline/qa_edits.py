@@ -48,10 +48,10 @@ RULES = {
 }
 
 # Column synonyms for backward compatibility with edit files
-# Maps common variations to canonical snake_case names
+# Maps old names to current canonical names
 SYNONYM_COLUMN_MAP = {
-    "principal_officer_first_name": "principal_officer_given_name",
-    "principal_officer_last_name": "principal_officer_family_name",
+    "principal_officer_given_name": "principal_officer_first_name",
+    "principal_officer_family_name": "principal_officer_last_name",
 }
 
 

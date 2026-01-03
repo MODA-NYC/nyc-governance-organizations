@@ -53,19 +53,39 @@ Consolidate and organize documentation that has accumulated over multiple sprint
 
 ---
 
-### 1. Schema Documentation
+### 1. Schema Documentation & Field Alignment ✅ COMPLETE
 
-Create comprehensive schema documentation.
+**Sprint 7.1 - Completed January 2026**
 
-**Files to create**:
-- `docs/SCHEMA.md` - Field definitions for golden and published datasets
-- `docs/SCHEMA_CHANGELOG.md` - Historical record of schema changes
+This sprint addressed schema documentation and aligned field names between golden and published datasets.
 
-**Tasks**:
-- [ ] Document all 38 golden dataset fields
-- [ ] Document all 16 published dataset fields
-- [ ] Create field mapping table (golden → published)
-- [ ] Document `InOrgChart` vs `Jan 2025 Org Chart` distinction
+#### Field Rename (Golden Dataset)
+
+Renamed fields to match published export naming:
+- `principal_officer_given_name` → `principal_officer_first_name`
+- `principal_officer_family_name` → `principal_officer_last_name`
+
+**Files updated**:
+- `data/published/latest/NYCGO_golden_dataset_latest.csv` - Column headers
+- `schemas/nycgo_golden_dataset.tableschema.json` - Schema definition
+- `scripts/process/export_dataset.py` - Removed mapping code, updated GOLDEN_COLUMN_ORDER
+- `src/nycgo_pipeline/qa_edits.py` - Reversed synonym map for backward compatibility
+- `scripts/maint/standardize_field_names.py` - Updated COLUMN_MAP
+- `tests/fixtures/appointments/golden_sample.csv` - Test fixture headers
+- `tests/test_changelog_schema.py` - Added legacy field names to ALLOWED_FIELDS
+
+**Why this is safe**: The published export already used `first_name`/`last_name`. This change removes the mapping step and makes the golden dataset consistent with the published output.
+
+#### Schema Documentation Created
+
+Created `docs/SCHEMA.md` containing:
+- [x] All 38 golden dataset fields with descriptions
+- [x] Field mapping table (which 21 fields are golden-only)
+- [x] Reference to Excel data dictionary for published field details
+- [x] Historical note about field rename (v1.8.0)
+- [x] Explanation of `in_org_chart` vs `jan_2025_org_chart`
+
+**Baseline Tag**: `v1.7.21-pre-sprint7.1` (created before changes)
 
 ---
 
@@ -247,14 +267,14 @@ Items identified but not yet prioritized:
 | No integration tests | export logic | Only unit tests exist |
 | Complex directory logic | multiple functions | Could be simplified |
 | Failing test: MTA eligibility | `test_directory_rules.py` | State Government Agency rule for MTA returns False, expected True |
-| Failing test: changelog schema | `test_changelog_schema.py` | Fields `founding_year`, `jan_2025_org_chart` not in allowed list |
+| ~~Failing test: changelog schema~~ | ~~`test_changelog_schema.py`~~ | ~~Fixed in Sprint 7.1 - added missing fields to ALLOWED_FIELDS~~ |
 | Failing test: regression snapshot | `test_directory_rules.py` | MTA regression test expects True, gets False |
 
 ---
 
 ## Definition of Done
 
-- [ ] Schema documentation complete
+- [x] Schema documentation complete (Sprint 7.1 - Jan 2026)
 - [ ] Exception lists in YAML config
 - [ ] Schema change detection automated
 - [ ] Directory field alignment implemented
@@ -262,7 +282,7 @@ Items identified but not yet prioritized:
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
 - [ ] Enhanced release notes with export changes
-- [ ] Failing tests fixed (MTA eligibility, changelog schema)
+- [ ] Failing tests fixed (MTA eligibility) - changelog schema fixed in 7.1
 - [ ] Branch audit complete, unnecessary branches removed
 
 ---

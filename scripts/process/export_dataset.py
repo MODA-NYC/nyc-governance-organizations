@@ -62,9 +62,9 @@ GOLDEN_COLUMN_ORDER = [
     "founding_year",
     # Principal Officer (matches published 10-14, plus golden-only fields)
     "principal_officer_full_name",
-    "principal_officer_given_name",
+    "principal_officer_first_name",
     "principal_officer_middle_name_or_initial",
-    "principal_officer_family_name",
+    "principal_officer_last_name",
     "principal_officer_suffix",
     "principal_officer_name",  # Legacy field
     "principal_officer_title",
@@ -639,13 +639,6 @@ def main():
     print("\nProcessing data for public export...")
     df_public = df.copy()
 
-    # Rename columns for clarity (legacy support - now using snake_case)
-    rename_map = {
-        "principal_officer_given_name": "principal_officer_first_name",
-        "principal_officer_family_name": "principal_officer_last_name",
-    }
-    df_public.rename(columns=rename_map, inplace=True)
-
     # --- Filter for records to include in public output ---
     print("Applying filters for public export...")
     rows_before_filter = len(df_public)
@@ -801,12 +794,6 @@ def main_with_dataframe(
     df_golden_ordered.to_csv(output_golden, index=False, encoding="utf-8-sig")
 
     df_public = df_input.copy()
-    # Rename given_name/family_name to first_name/last_name for export
-    rename_map = {
-        "principal_officer_given_name": "principal_officer_first_name",
-        "principal_officer_family_name": "principal_officer_last_name",
-    }
-    df_public.rename(columns=rename_map, inplace=True)
 
     # Apply the same published dataset filters used by the CLI entrypoint
     # Published export exceptions: records that should always be included

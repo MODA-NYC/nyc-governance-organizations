@@ -31,6 +31,8 @@ ALLOWED_FIELDS = {
     "url",
     "alternate_or_former_names",
     "alternate_or_former_acronyms",
+    "description",
+    "founding_year",
     "principal_officer_title",
     "principal_officer_full_name",
     "principal_officer_first_name",
@@ -38,8 +40,12 @@ ALLOWED_FIELDS = {
     "principal_officer_contact_url",
     "reports_to",
     "in_org_chart",
+    "jan_2025_org_chart",
     "listed_in_nyc_gov_agency_directory",
     "notes",
+    # Legacy snake_case field names (pre-v1.8 changelog entries)
+    "principal_officer_given_name",
+    "principal_officer_family_name",
     # Legacy PascalCase field names (from older changelog entries)
     "NameAlphabetized",
     "Name",

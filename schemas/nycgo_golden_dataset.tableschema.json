@@ -3,7 +3,7 @@
   "name": "nycgo_golden_dataset",
   "title": "NYC Governance Organizations Golden Dataset",
   "description": "Complete dataset of NYC governance organizations with internal metadata fields",
-  "version": "1.6.0",
+  "version": "1.8.0",
   "primaryKey": "record_id",
   "missingValues": ["", "null", "NULL"],
   "fields": [
@@ -122,9 +122,9 @@
       "type": "string"
     },
     {
-      "name": "principal_officer_given_name",
-      "title": "Principal Officer Given Name",
-      "description": "Given (first) name of principal officer",
+      "name": "principal_officer_first_name",
+      "title": "Principal Officer First Name",
+      "description": "First name of principal officer",
       "type": "string"
     },
     {
@@ -134,9 +134,9 @@
       "type": "string"
     },
     {
-      "name": "principal_officer_family_name",
-      "title": "Principal Officer Family Name",
-      "description": "Family (last) name of principal officer",
+      "name": "principal_officer_last_name",
+      "title": "Principal Officer Last Name",
+      "description": "Last name of principal officer",
       "type": "string"
     },
     {
