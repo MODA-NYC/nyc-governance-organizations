@@ -13,15 +13,17 @@ This sprint consolidates remaining cleanup work and technical debt items that we
 
 ## Items
 
-### 0. Repository & Docs Cleanup ✅ PARTIAL
+### 0. Repository & Docs Cleanup ✅ COMPLETE
 
 Consolidate and organize documentation that has accumulated over multiple sprints.
 
-**Problem**: The `docs/` folder has redundant and potentially stale files:
+**Problem**: The `docs/` folder had redundant and potentially stale files:
 - 4 different directory logic docs (`ARCHITECTURE_DIRECTORY_LOGIC.md`, `DIRECTORY_LOGIC.md`, `DIRECTORY_FIELD_CHANGELOG.md`, `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md`)
 - 4 pipeline diagram formats (`.html`, `.bpmn`, `.mermaid.md`, `-standalone.html`)
 - Phase II docs that are deferred indefinitely
 - Unclear what's current vs. historical
+
+**Resolution**: Audited all files, deleted redundant docs, archived historical docs, consolidated diagram formats to 3 (each serves distinct purpose: Mermaid for GitHub, BPMN for tool interop, standalone HTML for interactive viewing).
 
 **Completed (January 2026)**:
 - [x] Audit all files in `docs/` - identified current, redundant, and stale
@@ -39,7 +41,7 @@ Consolidate and organize documentation that has accumulated over multiple sprint
 - [x] Archive Phase I docs (`PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt`) to `docs/sprints/phase-i-archive/`
 - [x] Archive Phase II docs (`PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md`) to `docs/sprints/phase-ii-archive/`
 - [x] Update `sprints/PHASE_II.md` to reflect "resuming after Sprint 7" status (consolidated with full field definitions, completed work status, 42-column schema target)
-- [ ] Review pipeline diagram formats - keep one, archive others (optional)
+- [x] Review pipeline diagram formats - evaluated all formats, kept 3 (Mermaid, BPMN XML, standalone HTML), deleted redundant CDN-dependent HTML (`nycgo-edit-publish-pipeline.html`)
 
 **Docs Audit Summary**:
 | Category | Files | Status |
@@ -47,7 +49,7 @@ Consolidate and organize documentation that has accumulated over multiple sprint
 | Current/Active | `DIRECTORY_LOGIC.md` (auto-gen), `ARCHITECTURE_DIRECTORY_LOGIC.md`, `BACKLOG.md`, `APPOINTMENTS_MONITOR.md`, `GITHUB_RELEASE_GUIDE.md`, `CHANGELOG_SPEC.md`, `run_artifacts.md`, `DIRECTORY_FIELD_CHANGELOG.md` | Keep |
 | Archived (Phase II) | `PHASE_II_SCHEMA.md`, `PHASE_II_PROGRESS.md`, `SCHEMA_VERSION_COMPARISON.md` | Done (moved to `sprints/phase-ii-archive/`) |
 | Archived (Phase I) | `PHASE_I_SCHEMA.md`, `PHASE_I_PIPELINE.md`, `PHASE_I_SCHEMA_FIELDS.txt` | Done (moved to `sprints/phase-i-archive/`) |
-| Deleted | `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md` | Done |
+| Deleted | `LISTED_IN_NYC_GOV_AGENCY_DIRECTORY_LOGIC.md`, `nycgo-edit-publish-pipeline.html` (redundant CDN version) | Done |
 
 ---
 
