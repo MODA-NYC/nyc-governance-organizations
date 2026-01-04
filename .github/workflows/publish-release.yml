@@ -93,10 +93,27 @@ jobs:
           fi
 
           RUN_DIR="data/audit/runs/$RUN_ID"
-          if [ ! -d "$RUN_DIR" ]; then
-            echo "Error: Run directory not found: $RUN_DIR"
-            exit 1
-          fi
+
+          # Retry loop: if run directory not found, pull latest and retry
+          # This handles race condition when triggered immediately after process-edit push
+          MAX_RETRIES=5
+          RETRY_DELAY=3
+          for i in $(seq 1 $MAX_RETRIES); do
+            if [ -d "$RUN_DIR" ]; then
+              echo "✅ Run directory found: $RUN_DIR"
+              break
+            fi
+
+            if [ $i -eq $MAX_RETRIES ]; then
+              echo "❌ Error: Run directory not found after $MAX_RETRIES retries: $RUN_DIR"
+              exit 1
+            fi
+
+            echo "⏳ Run directory not found (attempt $i/$MAX_RETRIES), pulling latest changes..."
+            sleep $RETRY_DELAY
+            git pull origin main --quiet
+            RETRY_DELAY=$((RETRY_DELAY * 2))  # Exponential backoff
+          done
 
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
           echo "run_dir=$RUN_DIR" >> $GITHUB_OUTPUT
