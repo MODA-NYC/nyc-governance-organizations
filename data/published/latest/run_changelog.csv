@@ -1,4 +1,1 @@
 ﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
-admin-ui-20260102_220906_1,2026-01-02T22:09:07.580609,NYC_GOID_000139,Department of Consumer and Worker Protection,principal_officer_full_name,Vilda Vera Mayuga,Samuel A.A. Levine,admin_ui_edits.csv,,New commissioner,,@vsubrath-doitt via NYCGO Admin UI,direct_set
-admin-ui-20260102_220906_2,2026-01-02T22:09:07.581397,NYC_GOID_000139,Department of Consumer and Worker Protection,principal_officer_given_name,Vilda Vera,Samuel,admin_ui_edits.csv,,New commissioner,,@vsubrath-doitt via NYCGO Admin UI,direct_set
-admin-ui-20260102_220906_3,2026-01-02T22:09:07.582118,NYC_GOID_000139,Department of Consumer and Worker Protection,principal_officer_family_name,Mayuga,A.A. Levine,admin_ui_edits.csv,,New commissioner,,@vsubrath-doitt via NYCGO Admin UI,direct_set
