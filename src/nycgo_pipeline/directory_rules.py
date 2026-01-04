@@ -164,10 +164,9 @@ TYPE_SPECIFIC_RULES = [
     ),
     Rule(
         name="state_government_agency",
-        description="State Government Agency: included if in exemption list",
-        check=lambda r: r.get("name") in STATE_GOVERNMENT_EXEMPTIONS,
+        description="State Government Agency: always included",
+        check=lambda r: r.get("organization_type") == "State Government Agency",
         category="type_specific",
-        details_on_match=lambda r: f"Exemption: {r.get('name')}",
     ),
     Rule(
         name="division_in_org_chart",

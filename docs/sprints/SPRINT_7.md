@@ -336,37 +336,40 @@ Auto-generate release notes that summarize changes to the published dataset.
 
 ---
 
-### 9. Branch Audit & Cleanup
+### 9. Branch Audit & Cleanup ✅ COMPLETE
 
-Audit and clean up unnecessary branches in both repositories.
+**Sprint 7.9 - Completed January 2026**
 
-**Repositories**:
-- `nyc-governance-organizations` (pipeline)
-- `nycgo-admin-ui` (admin interface)
+Audited and cleaned up unnecessary branches in both repositories.
 
-**Known branches to review**:
-- `demo` - Deprecated after Option A implementation (test mode now commits to main)
-- `admin-ui-test` - Used for test-without-release mode
-- `dev` - Verify if still needed
-- `test` - Verify if still needed
+**Branches Deleted (nyc-governance-organizations)**:
+- `demo` - Deprecated after Option A implementation
+- `dev` - Old development branch
+- `bpmn` - BPMN diagrams, merged to main
+- `sprint-6a-directory-logic-transparency` - Completed sprint
+- `sprint-6b-qa` - Completed sprint
 
-**Test commit cleanup**:
-Test mode commits are tagged with `test-run-*` for easy identification and cleanup.
+**Branches Deleted (nycgo-admin-ui)**:
+- `dev` - Old development branch
+- `feature/scheduled-edits` - Feature completed and merged
+- `sprint-6a-directory-logic-transparency` - Completed sprint
+- `sprint-6b-qa` - Completed sprint
 
-```bash
-# List test tags
-git tag -l "test-run-*"
+**Branches Kept (nyc-governance-organizations)**:
+- `main` - Primary branch
+- `backup/phase-i-pipeline-snapshot` - Historical backup
+- `backup/pre-merge-main-20250917T013339Z` - Historical backup
+- `backup/pre-working-removal-20251205` - Recent backup
 
-# Delete test tags (after deleting draft releases)
-git tag -l "test-run-*" | xargs -I {} git tag -d {}
-git push origin --delete $(git tag -l "test-run-*")
-```
+**Root File Cleanup**:
+- Archived 13 stale documentation files to `docs/archive/`
+- Added `_local_archives/` to `.gitignore`
 
 **Tasks**:
-- [ ] List all branches in both repos
-- [ ] Identify which branches are still needed
-- [ ] Delete `demo` branch (no longer used)
-- [ ] Document which branches should exist and why
+- [x] List all branches in both repos
+- [x] Identify which branches are still needed
+- [x] Delete unnecessary branches
+- [x] Archive stale root files
 
 ---
 
@@ -379,9 +382,9 @@ Items identified but not yet prioritized:
 | Duplicate exception lists | `export_dataset.py` | Lines 563-566 duplicated at 760-763 |
 | No integration tests | export logic | Only unit tests exist |
 | Complex directory logic | multiple functions | Could be simplified |
-| Failing test: MTA eligibility | `test_directory_rules.py` | State Government Agency rule for MTA returns False, expected True |
+| ~~Failing test: MTA eligibility~~ | ~~`test_directory_rules.py`~~ | ~~Fixed Jan 2026 - State Government Agency rule now treats all as eligible (like Mayoral Agency)~~ |
 | ~~Failing test: changelog schema~~ | ~~`test_changelog_schema.py`~~ | ~~Fixed in Sprint 7.1 - added missing fields to ALLOWED_FIELDS~~ |
-| Failing test: regression snapshot | `test_directory_rules.py` | MTA regression test expects True, gets False |
+| ~~Failing test: regression snapshot~~ | ~~`test_directory_rules.py`~~ | ~~Fixed Jan 2026 - MTA test now passes with State Government Agency rule fix~~ |
 | ~~Confusing workflow mode variables~~ | ~~`nycgo-admin-ui` repo variables~~ | ~~Fixed Jan 2026 - consolidated to single WORKFLOW_MODE variable~~ |
 | Auto-detect schema changes for version bump | `process-edit.yml` | Workflow should detect schema changes and auto-bump minor version instead of patch |
 
@@ -398,8 +401,8 @@ Items identified but not yet prioritized:
 - [x] Workflow mode variables simplified (Sprint 7.6 - Jan 2026)
 - [x] Rate limiting tested (Sprint 7.7 - Jan 2026)
 - [x] Enhanced release notes with export changes (Sprint 7.8 - Jan 2026)
-- [ ] Failing tests fixed (MTA eligibility) - changelog schema fixed in 7.1
-- [ ] Branch audit complete, unnecessary branches removed
+- [x] Failing tests fixed (MTA eligibility, regression snapshot) - Jan 2026
+- [x] Branch audit complete, unnecessary branches removed (Sprint 7.9 - Jan 2026)
 
 ---
 
