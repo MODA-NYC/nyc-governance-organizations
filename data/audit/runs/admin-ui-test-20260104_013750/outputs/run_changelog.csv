@@ -1,0 +1,3 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-test-20260104_013750_1,2026-01-04T01:37:51.843046,NYC_GOID_000001,Office of the Mayor,notes,,Rate limit test 1,admin_ui_edits.csv,,Sprint 7.7 rate limiting test,,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-test-20260104_013750_2,2026-01-04T01:37:51.843854,NYC_GOID_000001,Office of the Mayor,notes,Rate limit test 1,Rate limit test 2,admin_ui_edits.csv,,Sprint 7.7 rate limiting test,,@npstorey via NYCGO Admin UI,direct_set
