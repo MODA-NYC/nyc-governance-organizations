@@ -1,0 +1,4 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000007,"Advisory Council to the Department for the Aging",in_org_chart,"TRUE","Sprint 7.8 TEST - Add to Open Data (set org chart membership)",""
+NYC_GOID_000433,"Taskforce on Racial Inclusion and Equity",operational_status,"Inactive","Sprint 7.8 TEST - Remove from Open Data (set inactive)",""
+NYC_GOID_000000,"NYC311",in_org_chart,"FALSE","Sprint 7.8 TEST - Directory eligibility change (remove from org chart)",""
