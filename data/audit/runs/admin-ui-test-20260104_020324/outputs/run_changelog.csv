@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-test-20260104_020324_1,2026-01-04T02:03:26.583497,NYC_GOID_000007,Advisory Council to the Department for the Aging,in_org_chart,,TRUE,admin_ui_edits.csv,,Sprint 7.8 TEST - Add to Open Data (set org chart membership),,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-test-20260104_020324_2,2026-01-04T02:03:26.584297,NYC_GOID_000433,Taskforce on Racial Inclusion and Equity,operational_status,Active,Inactive,admin_ui_edits.csv,,Sprint 7.8 TEST - Remove from Open Data (set inactive),,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-test-20260104_020324_3,2026-01-04T02:03:26.585071,NYC_GOID_000000,NYC311,in_org_chart,TRUE,FALSE,admin_ui_edits.csv,,Sprint 7.8 TEST - Directory eligibility change (remove from org chart),,@npstorey via NYCGO Admin UI,direct_set

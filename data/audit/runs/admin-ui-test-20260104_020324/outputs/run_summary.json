@@ -1,0 +1,55 @@
+{
+  "changed_by": "@npstorey via NYCGO Admin UI",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 0,
+    "qa_changes": 3,
+    "records_after_pipeline": 436
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/inputs/golden_snapshot.csv",
+    "previous_published.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/inputs/previous_published.csv",
+    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/inputs/qa_01.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
+    "previous_export": "data/published/latest/NYCGovernanceOrganizations_latest.csv",
+    "qa_sources": [
+      "/tmp/admin_ui_edits.csv"
+    ]
+  },
+  "operator": "admin-ui-bot",
+  "outputs": {
+    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/outputs/golden_pre-release.csv",
+    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/outputs/published_pre-release.json",
+    "review_artifacts": {
+      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/review/review_manifest.json"
+    },
+    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-test-20260104_020324/outputs/run_changelog.csv"
+  },
+  "published_export_changes": {
+    "added": [
+      {
+        "id": "NYC_GOID_000007",
+        "name": "Advisory Council to the Department for the Aging"
+      }
+    ],
+    "directory_status_changes": [
+      {
+        "from": "TRUE",
+        "id": "NYC_GOID_000000",
+        "name": "NYC311",
+        "to": "FALSE"
+      }
+    ],
+    "removed": [
+      {
+        "id": "NYC_GOID_000433",
+        "name": "Taskforce on Racial Inclusion and Equity"
+      }
+    ]
+  },
+  "run_id": "admin-ui-test-20260104_020324",
+  "timing_seconds": 0.47
+}
