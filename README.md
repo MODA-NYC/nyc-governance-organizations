@@ -311,14 +311,18 @@ The Admin UI loads data directly from this repository's `data/published/latest/N
 
 ### Prerequisites & install
 - **Python 3.10+**
-- `pyenv` (recommended)
+- **[UV](https://docs.astral.sh/uv/)** - Fast Python package manager (from Astral, makers of ruff)
 
 ~~~bash
+# Install UV (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 git clone https://github.com/MODA-NYC/nyc-governance-organizations.git
 cd nyc-governance-organizations
-make setup             # creates .venv & installs deps
-source .venv/bin/activate
+make setup             # uses UV to create .venv & install deps from lockfile
 ~~~
+
+**Running commands**: Use `uv run <command>` or activate the venv with `source .venv/bin/activate`.
 
 ### Pipeline Workflow
 

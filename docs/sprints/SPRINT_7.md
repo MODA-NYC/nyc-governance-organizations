@@ -161,21 +161,36 @@ Ensure the directory eligibility field is calculated consistently.
 
 ---
 
-### 5. UV Package Manager Migration
+### 5. UV Package Manager Migration ✅ COMPLETE
 
-Modernize package management from `venv + pip` to UV.
+**Sprint 7.5 - Completed January 2026**
+
+Modernized package management from `venv + pip` to UV (from Astral, makers of ruff).
 
 **Rationale**:
 - Faster dependency installation
 - Better lockfile support
 - Modern tooling (from Astral, makers of ruff)
 
+**Implementation**:
+- Created `uv.lock` lockfile (42 packages resolved)
+- Updated `Makefile` to use `uv sync` and `uv run` commands
+- Updated `publish-release.yml` workflow to use UV via `astral-sh/setup-uv@v5` action
+- Updated `README.md` prerequisites section with UV install instructions
+
+**Files updated**:
+- `Makefile` - Simplified to use UV commands
+- `.github/workflows/publish-release.yml` - Uses UV for dependency installation
+- `README.md` - Updated prerequisites & install section
+- `uv.lock` - New lockfile (committed)
+
 **Tasks**:
-- [ ] Install UV
-- [ ] Update Makefile
-- [ ] Create `uv.lock`
-- [ ] Update documentation
-- [ ] Test all functionality
+- [x] Install UV (already installed: v0.9.7)
+- [x] Update Makefile
+- [x] Create `uv.lock`
+- [x] Update documentation
+- [x] Update GitHub workflows
+- [x] Test all functionality
 
 ---
 
@@ -306,7 +321,7 @@ Items identified but not yet prioritized:
 - [x] ~~Exception lists in YAML config~~ Reconsidered - keeping Python (Sprint 7.2 - Jan 2026)
 - [x] Schema change detection automated (Sprint 7.3 - Jan 2026)
 - [x] Directory field alignment implemented (Sprint 7.4 - Jan 2026)
-- [ ] UV migration complete (optional)
+- [x] UV migration complete (Sprint 7.5 - Jan 2026)
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [ ] Rate limiting tested
 - [ ] Enhanced release notes with export changes

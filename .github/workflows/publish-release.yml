@@ -68,8 +68,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install UV
+        uses: astral-sh/setup-uv@v5
+
       - name: Install dependencies
-        run: pip install -e .
+        run: uv sync
 
       - name: Determine run ID
         id: run-id
@@ -162,7 +165,7 @@ jobs:
             APPEND_FLAG="--append-changelog"
           fi
 
-          PYTHONPATH="$PYTHONPATH:src" python scripts/pipeline/publish_run.py \
+          uv run python scripts/pipeline/publish_run.py \
             --run-dir "${{ steps.run-id.outputs.run_dir }}" \
             --version "${{ steps.version.outputs.version }}" \
             $APPEND_FLAG \
@@ -204,7 +207,7 @@ jobs:
           echo "Validating golden dataset: $GOLDEN_CSV"
 
           # Run validation
-          python scripts/validate_release_asset.py \
+          uv run python scripts/validate_release_asset.py \
             --input "$GOLDEN_CSV" \
             --schema schemas/nycgo_golden_dataset.tableschema.json \
             --out "$VALIDATION_REPORT" \
@@ -231,7 +234,7 @@ jobs:
           echo "Validating published dataset: $PUBLIC_CSV"
 
           # Run validation against published schema
-          python scripts/validate_release_asset.py \
+          uv run python scripts/validate_release_asset.py \
             --input "$PUBLIC_CSV" \
             --schema schemas/nycgo_published_dataset.tableschema.json \
             --out "$PUBLISHED_VALIDATION_REPORT" \
@@ -268,7 +271,7 @@ jobs:
           echo "Generating Socrata-compatible JSON from: $PUBLIC_CSV"
 
           # Generate versioned JSON
-          python scripts/export_socrata_json.py \
+          uv run python scripts/export_socrata_json.py \
             --input "$PUBLIC_CSV" \
             --output "$JSON_VERSIONED"
 
@@ -325,7 +328,7 @@ jobs:
           SCHEMA_CHANGES_PATH="/tmp/schema_changes.md"
 
           # Run schema change detection
-          python scripts/check_schema_changes.py \
+          uv run python scripts/check_schema_changes.py \
             --schema schemas/nycgo_golden_dataset.tableschema.json \
             --output "$SCHEMA_CHANGES_PATH"
 
