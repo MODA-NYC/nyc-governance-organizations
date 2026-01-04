@@ -200,12 +200,47 @@ Fixed December 2024. `DEMO_MODE` deleted, `TEST_MODE` created.
 
 ---
 
+### 6.5 Simplify Workflow Mode Variables ✅ COMPLETE
+
+**Sprint 7.6 - Completed January 2026**
+
+Consolidated confusing workflow mode variables into a single variable.
+
+**Problem**: Two separate boolean variables (`TEST_MODE` and `PRODUCTION_MODE`) were error-prone:
+- Had to flip both together correctly
+- Three implicit modes (neither set, test, production) were confusing
+- "Neither set" mode committed to admin-ui-test branch which wasn't needed
+
+**Solution**: Single `WORKFLOW_MODE` variable with two values:
+- `test` (default) - commits to main, creates draft release
+- `production` - commits to main, creates real release
+
+**Files updated**:
+- `nycgo-admin-ui/.github/workflows/process-edit.yml` - Uses new variable
+- `CLAUDE.md` - Updated Workflow Modes documentation
+
+**Tasks**:
+- [x] Update process-edit.yml to use single WORKFLOW_MODE variable
+- [x] Remove admin-ui-test branch mode (not needed)
+- [x] Update CLAUDE.md documentation
+- [x] Update tech debt log
+
+**Note**: After deploying, delete old repo variables (TEST_MODE, PRODUCTION_MODE) and create new WORKFLOW_MODE variable via GitHub UI or CLI:
+```bash
+# In nycgo-admin-ui repo
+gh variable delete TEST_MODE
+gh variable delete PRODUCTION_MODE
+gh variable set WORKFLOW_MODE --body "test"
+```
+
+---
+
 ### 7. Test Workflow Rate Limiting
 
 Verify Sprint 4's rate limiting feature works correctly.
 
 **Test procedure**:
-1. Set `TEST_MODE=true`
+1. Set `WORKFLOW_MODE=test`
 2. Submit an edit via Admin UI
 3. While workflow is running, try to submit another edit
 4. Should see: "Edit currently in progress. Check back in a couple minutes."
@@ -310,7 +345,7 @@ Items identified but not yet prioritized:
 | Failing test: MTA eligibility | `test_directory_rules.py` | State Government Agency rule for MTA returns False, expected True |
 | ~~Failing test: changelog schema~~ | ~~`test_changelog_schema.py`~~ | ~~Fixed in Sprint 7.1 - added missing fields to ALLOWED_FIELDS~~ |
 | Failing test: regression snapshot | `test_directory_rules.py` | MTA regression test expects True, gets False |
-| Confusing workflow mode variables | `nycgo-admin-ui` repo variables | Two variables (TEST_MODE, PRODUCTION_MODE) should be simplified to one |
+| ~~Confusing workflow mode variables~~ | ~~`nycgo-admin-ui` repo variables~~ | ~~Fixed Jan 2026 - consolidated to single WORKFLOW_MODE variable~~ |
 | Auto-detect schema changes for version bump | `process-edit.yml` | Workflow should detect schema changes and auto-bump minor version instead of patch |
 
 ---
@@ -323,6 +358,7 @@ Items identified but not yet prioritized:
 - [x] Directory field alignment implemented (Sprint 7.4 - Jan 2026)
 - [x] UV migration complete (Sprint 7.5 - Jan 2026)
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
+- [x] Workflow mode variables simplified (Sprint 7.6 - Jan 2026)
 - [ ] Rate limiting tested
 - [ ] Enhanced release notes with export changes
 - [ ] Failing tests fixed (MTA eligibility) - changelog schema fixed in 7.1

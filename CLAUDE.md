@@ -88,7 +88,7 @@ make test
 **Current Configuration** (config.js):
 - Data source: GitHub raw file from `data/published/latest/NYCGO_golden_dataset_latest.csv`
 - Batch review interface: `review-edits.html` for reviewing CSV uploads before commit
-- Workflow mode: Check repo variables (TEST_MODE / PRODUCTION_MODE)
+- Workflow mode: Check repo variable WORKFLOW_MODE (test or production)
 
 **⚠️ IMPORTANT: Cache-Busting for JS Changes**
 
@@ -114,7 +114,7 @@ process-edit.yml workflow runs
         ↓
 Pipeline processes edit using nyc-governance-organizations
         ↓
-Output committed to target branch (admin-ui-test/test/main)
+Output committed to main branch
         ↓
 publish-release.yml creates GitHub release (if test/prod mode)
         ↓
@@ -140,13 +140,12 @@ record_id,record_name,field_name,action,justification,evidence_url
 
 ## Workflow Modes
 
-The process-edit.yml workflow has three modes (controlled by repo variables):
+The process-edit.yml workflow has two modes (controlled by a single repo variable):
 
 | Mode | Variable | Target Branch | Release |
 |------|----------|---------------|---------|
-| Default | (neither set) | admin-ui-test | None |
-| Test | TEST_MODE=true | test | Draft |
-| Production | PRODUCTION_MODE=true | main | Real |
+| Test | WORKFLOW_MODE=test (default) | main | Draft |
+| Production | WORKFLOW_MODE=production | main | Real |
 
 ---
 
