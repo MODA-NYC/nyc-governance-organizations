@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-test-20260104_013140_1,2026-01-04T01:31:42.563926,NYC_GOID_000001,Office of the Mayor,notes,,Test edit to verify WORKFLOW_MODE variable,admin_ui_edits.csv,,Sprint 7.6 verification test,,@npstorey via NYCGO Admin UI,direct_set
