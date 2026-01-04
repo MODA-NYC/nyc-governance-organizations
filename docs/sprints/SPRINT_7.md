@@ -272,14 +272,41 @@ Rate limiting works at two levels:
 
 ---
 
-### 8. Enhanced Release Notes with Export Changes
+### 8. Enhanced Release Notes with Export Changes ✅ COMPLETE
+
+**Sprint 7.8 - Completed January 2026**
 
 Auto-generate release notes that summarize changes to the published dataset.
 
-**Current state**: Release notes only show run ID and basic metadata
-**Target state**: Release notes include summary of records added/removed and directory eligibility changes
+**Implementation**:
 
-**Desired output in release notes**:
+1. Added `compare_published_exports()` function to `src/nycgo_pipeline/pipeline.py`
+   - Compares previous and new published exports
+   - Detects records added/removed from Open Data
+   - Tracks directory eligibility changes (TRUE → FALSE or vice versa)
+
+2. Updated `run_summary.json` schema with new `published_export_changes` field:
+   ```json
+   {
+     "published_export_changes": {
+       "added": [{"id": "NYC_GOID_100031", "name": "..."}],
+       "removed": [{"id": "NYC_GOID_000474", "name": "..."}],
+       "directory_status_changes": [
+         {"id": "NYC_GOID_000474", "name": "...", "from": "TRUE", "to": "FALSE"}
+       ]
+     }
+   }
+   ```
+
+3. Updated `src/nycgo_pipeline/publish.py` to format changes into release notes:
+   - Shows up to 5 records per category
+   - Displays "...and N more" if more than 5 changes
+
+4. Updated `nycgo-admin-ui/.github/workflows/process-edit.yml`:
+   - Added step to find previous published export
+   - Passes `--previous-export` to pipeline for comparison
+
+**Example release notes output**:
 ```markdown
 ## Published Dataset Changes
 
@@ -292,30 +319,20 @@ Auto-generate release notes that summarize changes to the published dataset.
 - NYC_GOID_000474 - Director of Rodent Mitigation
 
 **Directory Eligibility Changes (1):**
-- NYC_GOID_000474: TRUE → FALSE
+- NYC_GOID_000474 (Director of Rodent Mitigation): TRUE → FALSE
 ```
 
-**Implementation approach**:
-1. Enhance pipeline to compare previous vs new published export
-2. Store changes in `run_summary.json`:
-   ```json
-   {
-     "published_export_changes": {
-       "added": [{"id": "NYC_GOID_100031", "name": "..."}],
-       "removed": [{"id": "NYC_GOID_000474", "name": "..."}],
-       "directory_status_changes": [
-         {"id": "NYC_GOID_000474", "name": "...", "from": "TRUE", "to": "FALSE"}
-       ]
-     }
-   }
-   ```
-3. Update publish-release workflow to format this into release notes
+**Files updated**:
+- `src/nycgo_pipeline/pipeline.py` - Added comparison function, integrated into orchestrate_pipeline
+- `src/nycgo_pipeline/publish.py` - Added release notes section for export changes
+- `nycgo-admin-ui/.github/workflows/process-edit.yml` - Added --previous-export parameter
 
 **Tasks**:
-- [ ] Add comparison logic to pipeline (compare golden snapshots)
-- [ ] Update `run_summary.json` schema with export changes
-- [ ] Update release notes generation in `publish-release.yml`
-- [ ] Limit displayed orgs to first 5 with "and N more..." if needed
+- [x] Add comparison logic to pipeline (compare published exports)
+- [x] Update `run_summary.json` schema with export changes
+- [x] Update release notes generation in `publish.py`
+- [x] Limit displayed orgs to first 5 with "and N more..." if needed
+- [x] Update process-edit.yml to pass previous export path
 
 ---
 
@@ -380,7 +397,7 @@ Items identified but not yet prioritized:
 - [x] ~~DEMO_MODE renamed to TEST_MODE~~ (Done Dec 2024)
 - [x] Workflow mode variables simplified (Sprint 7.6 - Jan 2026)
 - [x] Rate limiting tested (Sprint 7.7 - Jan 2026)
-- [ ] Enhanced release notes with export changes
+- [x] Enhanced release notes with export changes (Sprint 7.8 - Jan 2026)
 - [ ] Failing tests fixed (MTA eligibility) - changelog schema fixed in 7.1
 - [ ] Branch audit complete, unnecessary branches removed
 

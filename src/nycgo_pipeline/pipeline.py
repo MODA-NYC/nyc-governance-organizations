@@ -8,12 +8,152 @@ import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
 from . import export as export_utils
 from . import global_rules, qa_edits
 from .review import build_review_artifacts
+
+
+def compare_published_exports(  # noqa: C901
+    previous_export: Path | None,
+    new_export: Path,
+) -> dict[str, Any]:
+    """
+    Compare previous and new published exports to find changes.
+
+    Returns a dictionary with:
+    - added: records added to Open Data
+    - removed: records removed from Open Data
+    - directory_status_changes: records where directory eligibility changed
+
+    Args:
+        previous_export: Path to previous published CSV (may be None)
+        new_export: Path to new published CSV
+
+    Returns:
+        Dictionary with export changes
+    """
+    result: dict[str, Any] = {
+        "added": [],
+        "removed": [],
+        "directory_status_changes": [],
+    }
+
+    # Load the new export
+    try:
+        df_new = pd.read_csv(new_export, dtype=str, encoding="utf-8-sig").fillna("")
+    except Exception as e:
+        print(f"Warning: Could not load new export for comparison: {e}")
+        return result
+
+    # If no previous export, all records are "new" but we don't report them as added
+    # (this avoids noise on first run)
+    if previous_export is None or not previous_export.exists():
+        print("No previous export available for comparison")
+        return result
+
+    # Load the previous export
+    try:
+        df_prev = pd.read_csv(previous_export, dtype=str, encoding="utf-8-sig").fillna(
+            ""
+        )
+    except Exception as e:
+        print(f"Warning: Could not load previous export for comparison: {e}")
+        return result
+
+    # Find record_id column (handle both cases)
+    new_id_col = "record_id" if "record_id" in df_new.columns else "RecordID"
+    prev_id_col = "record_id" if "record_id" in df_prev.columns else "RecordID"
+
+    if new_id_col not in df_new.columns or prev_id_col not in df_prev.columns:
+        print("Warning: Could not find record_id column in exports")
+        return result
+
+    # Get sets of record IDs
+    new_ids = set(df_new[new_id_col].tolist())
+    prev_ids = set(df_prev[prev_id_col].tolist())
+
+    # Records added (in new but not in previous)
+    added_ids = new_ids - prev_ids
+    for record_id in sorted(added_ids):
+        row = df_new[df_new[new_id_col] == record_id].iloc[0]
+        name = row.get("name", row.get("Name", "Unknown"))
+        result["added"].append({"id": record_id, "name": name})
+
+    # Records removed (in previous but not in new)
+    removed_ids = prev_ids - new_ids
+    for record_id in sorted(removed_ids):
+        row = df_prev[df_prev[prev_id_col] == record_id].iloc[0]
+        name = row.get("name", row.get("Name", "Unknown"))
+        result["removed"].append({"id": record_id, "name": name})
+
+    # Directory eligibility changes (for records in both)
+    common_ids = new_ids & prev_ids
+
+    # Find directory column names
+    new_dir_col = (
+        "listed_in_nyc_gov_agency_directory"
+        if "listed_in_nyc_gov_agency_directory" in df_new.columns
+        else "ListedInNycGovAgencyDirectory"
+    )
+    prev_dir_col = (
+        "listed_in_nyc_gov_agency_directory"
+        if "listed_in_nyc_gov_agency_directory" in df_prev.columns
+        else "ListedInNycGovAgencyDirectory"
+    )
+
+    if new_dir_col in df_new.columns and prev_dir_col in df_prev.columns:
+        # Create lookup dicts for efficiency
+        new_dir_values = dict(
+            zip(df_new[new_id_col], df_new[new_dir_col], strict=False)
+        )
+        prev_dir_values = dict(
+            zip(df_prev[prev_id_col], df_prev[prev_dir_col], strict=False)
+        )
+        new_names = dict(
+            zip(
+                df_new[new_id_col],
+                df_new.get("name", df_new.get("Name", "")),
+                strict=False,
+            )
+        )
+
+        def normalize_bool(val: str) -> str:
+            """Normalize boolean string to TRUE/FALSE."""
+            if not val or str(val).strip() == "":
+                return ""
+            val_lower = str(val).strip().lower()
+            if val_lower in ["true", "1", "t", "yes"]:
+                return "TRUE"
+            elif val_lower in ["false", "0", "f", "no"]:
+                return "FALSE"
+            return ""
+
+        for record_id in sorted(common_ids):
+            old_val = normalize_bool(prev_dir_values.get(record_id, ""))
+            new_val = normalize_bool(new_dir_values.get(record_id, ""))
+
+            if old_val != new_val and old_val and new_val:  # Both must have values
+                result["directory_status_changes"].append(
+                    {
+                        "id": record_id,
+                        "name": new_names.get(record_id, "Unknown"),
+                        "from": old_val,
+                        "to": new_val,
+                    }
+                )
+
+    # Print summary
+    print("\nPublished export comparison:")
+    print(f"  - Records added to Open Data: {len(result['added'])}")
+    print(f"  - Records removed from Open Data: {len(result['removed'])}")
+    dir_changes_count = len(result["directory_status_changes"])
+    print(f"  - Directory eligibility changes: {dir_changes_count}")
+
+    return result
 
 
 def convert_to_socrata_json(df: pd.DataFrame) -> list[dict]:
@@ -167,6 +307,12 @@ def orchestrate_pipeline(
         previous_export,
     )
 
+    # Compare published exports to find changes for release notes
+    published_export_changes = compare_published_exports(
+        previous_export,
+        published_output,
+    )
+
     # Store both copied paths and original source paths
     inputs_copied = {name: str(path) for name, path in copied_inputs.items()}
     inputs_original = {
@@ -195,6 +341,7 @@ def orchestrate_pipeline(
             "records_after_pipeline": len(df_final),
             "directory_field_changes": export_outputs.get("directory_changes", 0),
         },
+        "published_export_changes": published_export_changes,
         "timing_seconds": round(time.time() - start_time, 2),
     }
 

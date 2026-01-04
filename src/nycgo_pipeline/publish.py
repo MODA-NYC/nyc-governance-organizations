@@ -303,6 +303,44 @@ def generate_release_notes(  # noqa: C901
     else:
         notes_lines.append("- No changes recorded in this run")
 
+    # Add published export changes section (Sprint 7.8)
+    export_changes = summary.get("published_export_changes", {})
+    added = export_changes.get("added", [])
+    removed = export_changes.get("removed", [])
+    dir_changes = export_changes.get("directory_status_changes", [])
+
+    if added or removed or dir_changes:
+        notes_lines.extend(["", "## Published Dataset Changes", ""])
+
+        if added:
+            notes_lines.append(f"**Records added to Open Data ({len(added)}):**")
+            # Show first 5, with "and N more..." if needed
+            for record in added[:5]:
+                notes_lines.append(f"- {record['id']} - {record['name']}")
+            if len(added) > 5:
+                notes_lines.append(f"- *...and {len(added) - 5} more*")
+            notes_lines.append("")
+
+        if removed:
+            notes_lines.append(f"**Records removed from Open Data ({len(removed)}):**")
+            for record in removed[:5]:
+                notes_lines.append(f"- {record['id']} - {record['name']}")
+            if len(removed) > 5:
+                notes_lines.append(f"- *...and {len(removed) - 5} more*")
+            notes_lines.append("")
+
+        if dir_changes:
+            notes_lines.append(
+                f"**Directory Eligibility Changes ({len(dir_changes)}):**"
+            )
+            for change in dir_changes[:5]:
+                notes_lines.append(
+                    f"- {change['id']} ({change['name']}): "
+                    f"{change['from']} → {change['to']}"
+                )
+            if len(dir_changes) > 5:
+                notes_lines.append(f"- *...and {len(dir_changes) - 5} more*")
+
     # Add detailed changes table if 5 or fewer QA edits
     if 0 < qa_changes <= 5 and run_changelog.exists():
         changelog_df = pd.read_csv(run_changelog, dtype=str).fillna("")
