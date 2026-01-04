@@ -5,11 +5,11 @@ This document tracks planned improvements and technical debt items that are not 
 ## Package Management Migration
 
 ### UV Migration
-**Status**: Planned  
-**Priority**: Low  
+**Status**: Planned
+**Priority**: Low
 **Timeline**: TBD
 
-**Description**:  
+**Description**:
 Migrate from `venv` + `pip` to [UV](https://github.com/astral-sh/uv) for package management. UV is a modern, fast Python package manager written in Rust that can replace both `venv` and `pip`.
 
 **Rationale**:
@@ -36,4 +36,3 @@ Migrate from `venv` + `pip` to [UV](https://github.com/astral-sh/uv) for package
 - Good timing: Between major phases (e.g., after Phase II.1, before Phase II.2)
 - Low risk: Current setup works fine, migration is optional
 - Can be done incrementally without blocking other work
-

@@ -40,6 +40,9 @@ data/audit/runs/
 # Experiments
 experiments/
 
+# Local archives (not for version control)
+_local_archives/
+
 # Other
 .coverage
 htmlcov/
