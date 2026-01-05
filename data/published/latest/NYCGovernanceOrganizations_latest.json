@@ -359,7 +359,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/bic/contact/email-the-commissioner.page"
     },
-    "reports_to": "Chief Counsel to the Mayor and City Hall",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -417,7 +417,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/cidi/contact/contact.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1093,7 +1093,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/cchr/about/email-the-commissioner.page"
     },
-    "reports_to": "Chief Counsel to the Mayor and City Hall",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1152,7 +1152,7 @@
     "principal_officer_contact": {
       "url": "https://www.cuny.edu/contact-us/"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1170,6 +1170,7 @@
     "principal_officer_first_name": "Mohamed",
     "principal_officer_last_name": "Attalla",
     "principal_officer_title": "Executive Director",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": false
   },
@@ -1190,7 +1191,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/civicengagement/about/contact.page"
     },
-    "reports_to": "Mayor's Office of Civic Engagement",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1270,7 +1271,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/genderequity/contact/contact.page"
     },
-    "reports_to": "Mayor's Office of Equity and Racial Justice",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1291,6 +1292,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/content/core/pages/contact-us"
     },
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": false
   },
@@ -1324,7 +1326,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/cau/connected/contact-cau.page"
     },
-    "reports_to": "Mayor's Office of Civic Engagement",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1456,11 +1458,11 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "alternate_or_former_names": "Office of the Chief Counsel to the Mayor",
-    "principal_officer_full_name": "Allison Stoddart",
-    "principal_officer_first_name": "Allison",
-    "principal_officer_last_name": "Stoddart",
+    "principal_officer_full_name": "Ramzi Kassem",
+    "principal_officer_first_name": "Ramzi",
+    "principal_officer_last_name": "Kassem",
     "principal_officer_title": "Chief Counsel to the Mayor and City Hall",
-    "reports_to": "Mayor",
+    "reports_to": "Office of the Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1514,14 +1516,14 @@
       "url": "https://www.nyc.gov/site/buildings/index.page"
     },
     "acronym": "DOB",
-    "principal_officer_full_name": "Jimmy Oddo",
-    "principal_officer_first_name": "Jimmy",
-    "principal_officer_last_name": "Oddo",
+    "principal_officer_full_name": "Ahmed Tigani",
+    "principal_officer_first_name": "Ahmed",
+    "principal_officer_last_name": "Tigani",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/assets/home/mail/html/maildob.html"
     },
-    "reports_to": "Deputy Mayor for Operations",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1542,7 +1544,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/planning/about/email-the-director.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1563,7 +1565,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dcas/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1579,14 +1581,14 @@
     "alternate_or_former_names": "Department of Consumer Affairs",
     "acronym": "DCWP",
     "alternate_or_former_acronyms": "DCA",
-    "principal_officer_full_name": "Samuel A.A. Levine",
-    "principal_officer_first_name": "Samuel",
-    "principal_officer_last_name": "A.A. Levine",
+    "principal_officer_full_name": "Sam Levine",
+    "principal_officer_first_name": "Sam",
+    "principal_officer_last_name": "Levine",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dca/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1607,7 +1609,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/doc/about/contact-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Public Safety",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1628,7 +1630,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dcla/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1665,14 +1667,14 @@
     "alternate_or_former_names": "Department of Education;NYC Public Schools",
     "acronym": "NYCPS",
     "alternate_or_former_acronyms": "DOE",
-    "principal_officer_full_name": "Melissa Aviles-Ramos",
-    "principal_officer_first_name": "Melissa",
-    "principal_officer_last_name": "Aviles-Ramos",
+    "principal_officer_full_name": "Kamar Samuels",
+    "principal_officer_first_name": "Kamar",
+    "principal_officer_last_name": "Samuels",
     "principal_officer_title": "Chancellor",
     "principal_officer_contact": {
       "url": "https://www.schools.nyc.gov/get-help"
     },
-    "reports_to": "Mayor",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1802,7 +1804,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/probation/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Public Safety",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1824,7 +1826,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/records/about/email-the-commissioner.page"
     },
-    "reports_to": "Chief Counsel to the Mayor and City Hall",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1867,7 +1869,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/sbs/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1909,7 +1911,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/assets/home/mail/html/maildhs.html"
     },
-    "reports_to": "Department of Social Services",
+    "reports_to": "Deputy Mayor for Health and Human Services",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1930,7 +1932,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/assets/home/mail/html/mailhra.html"
     },
-    "reports_to": "Department of Social Services",
+    "reports_to": "Deputy Mayor for Health and Human Services",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -1946,9 +1948,9 @@
     "alternate_or_former_names": "Department of Transportation",
     "acronym": "NYC DOT",
     "alternate_or_former_acronyms": "DOT",
-    "principal_officer_full_name": "Ydanis Rodriguez",
-    "principal_officer_first_name": "Ydanis",
-    "principal_officer_last_name": "Rodriguez",
+    "principal_officer_full_name": "Mike Flynn",
+    "principal_officer_first_name": "Mike",
+    "principal_officer_last_name": "Flynn",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/html/dot/html/contact/contact-form.shtml"
@@ -1995,7 +1997,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dycd/about/contact/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "Deputy Mayor for Health and Human Services",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2129,7 +2131,7 @@
     "principal_officer_contact": {
       "url": "https://edc.nyc/contact-us"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2229,14 +2231,14 @@
     },
     "alternate_or_former_names": "Fire Department",
     "acronym": "FDNY",
-    "principal_officer_full_name": "Mark Guerra",
-    "principal_officer_first_name": "Mark",
-    "principal_officer_last_name": "Guerra",
+    "principal_officer_full_name": "Lillian Bonsignore",
+    "principal_officer_first_name": "Lillian",
+    "principal_officer_last_name": "Bonsignore",
     "principal_officer_title": "Acting Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/fdny/about/overview/leadership/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Public Safety",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2267,7 +2269,7 @@
     "principal_officer_first_name": "Dean",
     "principal_officer_last_name": "Fuleihan",
     "principal_officer_title": "First Deputy Mayor",
-    "reports_to": "Mayor",
+    "reports_to": "Office of the Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2344,7 +2346,7 @@
     "principal_officer_first_name": "Andrea",
     "principal_officer_last_name": "Davis",
     "principal_officer_title": "Executive Director",
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2449,14 +2451,14 @@
     },
     "alternate_or_former_names": "Housing Preservation and Development",
     "acronym": "HPD",
-    "principal_officer_full_name": "Ahmed Tigani",
-    "principal_officer_first_name": "Ahmed",
-    "principal_officer_last_name": "Tigani",
-    "principal_officer_title": "Acting Commissioner",
+    "principal_officer_full_name": "Dina Levy",
+    "principal_officer_first_name": "Dina",
+    "principal_officer_last_name": "Levy",
+    "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/hpd/contact/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2477,7 +2479,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/housingrecovery/about/contacts.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2562,14 +2564,14 @@
     "alternate_or_former_names": "Mayor's Office of Office of Intergovernmental Affairs",
     "acronym": "MOIGA",
     "alternate_or_former_acronyms": "IGA",
-    "principal_officer_full_name": "Jahmila Edward",
+    "principal_officer_full_name": "Jahmila Edwards",
     "principal_officer_first_name": "Jahmila",
-    "principal_officer_last_name": "Edward",
+    "principal_officer_last_name": "Edwards",
     "principal_officer_title": "Director of Intergovernmental Affairs",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/intergovernmental/about/contact-moiga.page"
     },
-    "reports_to": "Mayor",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2656,7 +2658,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/lpc/about/contact-us.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2741,10 +2743,10 @@
       "url": "https://www1.nyc.gov/site/macj/index.page"
     },
     "acronym": "MACJ",
-    "principal_officer_full_name": "Ayanna Sorett",
-    "principal_officer_first_name": "Ayanna",
-    "principal_officer_last_name": "Sorett",
-    "principal_officer_title": "Executive Director",
+    "principal_officer_full_name": "Ali Najmi",
+    "principal_officer_first_name": "Ali",
+    "principal_officer_last_name": "Najmi",
+    "principal_officer_title": "Chair",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/macj/about/contact-acj.page"
     },
@@ -2798,7 +2800,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/fund/about/contact.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2840,7 +2842,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/opportunity/about/contact-us.page"
     },
-    "reports_to": "Mayor's Office of Policy and Planning",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2883,7 +2885,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/international/contact/email-the-office.page"
     },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2919,7 +2921,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/nonprofits/contact/contact.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2971,7 +2973,7 @@
     "principal_officer_first_name": "Lisa",
     "principal_officer_last_name": "Lashley",
     "principal_officer_title": "Senior Executive Director",
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -2992,7 +2994,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/cecm/about/contact-cecm.page"
     },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3006,14 +3008,14 @@
       "url": "https://climate.cityofnewyork.us/"
     },
     "acronym": "MOCEJ",
-    "principal_officer_full_name": "Elijah Hutchinson",
-    "principal_officer_first_name": "Elijah",
-    "principal_officer_last_name": "Hutchinson",
-    "principal_officer_title": "Executive Director",
+    "principal_officer_full_name": "Louise Yeung",
+    "principal_officer_first_name": "Louise",
+    "principal_officer_last_name": "Yeung",
+    "principal_officer_title": "Chief Climate Officer",
     "principal_officer_contact": {
       "url": "https://climate.cityofnewyork.us/contact-us/"
     },
-    "reports_to": "Chief Climate Officer",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3034,7 +3036,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/mocs/about/contact-mocs.page"
     },
-    "reports_to": "Chief Counsel to the Mayor and City Hall",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3069,7 +3071,7 @@
     "principal_officer_contact": {
       "url": "https://criminaljustice.cityofnewyork.us/contact-us/"
     },
-    "reports_to": "Deputy Mayor for Public Safety",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3113,7 +3115,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/ethnicmedia/contact/contact.page"
     },
-    "reports_to": "Deputy Mayor for Communications",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3134,7 +3136,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/foodpolicy/about/contact.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "Deputy Mayor for Health and Human Services",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3155,7 +3157,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/immigrants/about/contact-us.page"
     },
-    "reports_to": "Deputy Mayor for Health and Human Services",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3176,7 +3178,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/mome/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3198,7 +3200,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/assets/mwbe/?page=contact-us"
     },
-    "reports_to": "First Deputy Mayor",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3219,7 +3221,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/operations/about/email-the-director.page"
     },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3267,6 +3269,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/specialenforcement/about/contact-us.page"
     },
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
   },
@@ -3287,7 +3290,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/content/mospce/pages/contact-us"
     },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3303,7 +3306,7 @@
     "alternate_or_former_names": "Mayor's Office of Sports and Recreation",
     "acronym": "MOSWR",
     "principal_officer_title": "Director",
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
+    "reports_to": "Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3341,7 +3344,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/wkdev/about/contact.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3389,11 +3392,11 @@
       "url": "https://www.nyc.gov/content/tenantprotection/pages/"
     },
     "acronym": "MOPT",
-    "principal_officer_full_name": "Marjorie Velázquez",
-    "principal_officer_first_name": "Marjorie",
-    "principal_officer_last_name": "Velázquez",
+    "principal_officer_full_name": "Cea Weaver",
+    "principal_officer_first_name": "Cea",
+    "principal_officer_last_name": "Weaver",
     "principal_officer_title": "Director",
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3481,7 +3484,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/mayorspeu/about-peu/contact.page"
     },
-    "reports_to": "Mayor's Office of Civic Engagement",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3563,7 +3566,7 @@
     "principal_officer_first_name": "Julie",
     "principal_officer_last_name": "Coker",
     "principal_officer_title": "President and CEO",
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3583,7 +3586,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/childrenscabinet/contact-us/contact-us.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3618,7 +3621,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/em/contact/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Public Safety",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3680,7 +3683,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/nycha/about/contact.page"
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3770,7 +3773,7 @@
     "principal_officer_contact": {
       "url": "https://www.nycservice.org/contact"
     },
-    "reports_to": "Mayor's Office of Civic Engagement",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -3993,14 +3996,14 @@
       "url": "https://www.nyc.gov/site/childcare/index.page"
     },
     "acronym": "OCCECE",
-    "principal_officer_full_name": "Amber Cartwright",
-    "principal_officer_first_name": "Amber",
-    "principal_officer_last_name": "Cartwright",
+    "principal_officer_full_name": "Emmy Liss",
+    "principal_officer_first_name": "Emmy",
+    "principal_officer_last_name": "Liss",
     "principal_officer_title": "Executive Director",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/childcare/contact/contact-us.page"
     },
-    "reports_to": "Deputy Mayor for Strategic Initiatives",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4062,27 +4065,6 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Denise Felipe-Adams and Jonathan Salomons",
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
-    "record_id": "NYC_GOID_000362",
-    "name": "Mayor's Office of Civic Engagement",
-    "name_alphabetized": "Civic Engagement, Mayor's Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "url": {
-      "url": "https://www.nyc.gov/content/engagement/pages/"
-    },
-    "alternate_or_former_names": "Mayor's Office of Engagement",
-    "principal_officer_full_name": "Crystal Price",
-    "principal_officer_first_name": "Crystal",
-    "principal_officer_last_name": "Price",
-    "principal_officer_title": "Chief Engagement Officer",
-    "principal_officer_contact": {
-      "url": "https://www.nyc.gov/content/engagement/pages/contact-us"
-    },
     "reports_to": "Deputy Mayor for Administration and Chief of Staff",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
@@ -4155,7 +4137,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/olr/about/about-contact-olr.page"
     },
-    "reports_to": "Chief Counsel to the Mayor and City Hall",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4169,14 +4151,14 @@
       "url": "https://www.nyc.gov/site/omb/index.page"
     },
     "acronym": "OMB",
-    "principal_officer_full_name": "Jacques Jiha",
-    "principal_officer_first_name": "Jacques",
-    "principal_officer_last_name": "Jiha",
+    "principal_officer_full_name": "Sherif Soliman",
+    "principal_officer_first_name": "Sherif",
+    "principal_officer_last_name": "Soliman",
     "principal_officer_title": "Director",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/omb/contact/contact.page"
     },
-    "reports_to": "Mayor",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4231,7 +4213,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer"
     },
-    "reports_to": "Mayor",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4252,6 +4234,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/stophate/about/contact-us.page"
     },
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
   },
@@ -4298,7 +4281,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/nypd/about/about-nypd/email-the-commissioner.page"
     },
-    "reports_to": "Mayor",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4427,7 +4410,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/designcommission/about/contact-pdc/contact.page#:~:text=For%20delivery%20of%20models%20or,788%2D3071%20to%20make%20arrangements."
     },
-    "reports_to": "Deputy Mayor of Housing Economic and Workforce Development",
+    "reports_to": "Deputy Mayor for Housing and Planning",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4607,7 +4590,7 @@
     "principal_officer_contact": {
       "url": "https://www.nycsca.org/Footer/Contact-Us"
     },
-    "reports_to": "Deputy Mayor for Operations",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4687,7 +4670,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/tlc/about/email-the-commissioner.page"
     },
-    "reports_to": "Deputy Mayor for Operations",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -4909,7 +4892,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/ymi/contact/contact.page"
     },
-    "reports_to": "Mayor's Office of Equity and Racial Justice",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -5143,7 +5126,7 @@
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer"
     },
-    "reports_to": "Office of Technology and Innovation",
+    "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -5241,6 +5224,7 @@
     "principal_officer_first_name": "Gilford",
     "principal_officer_last_name": "Monrose",
     "principal_officer_title": "Executive Director",
+    "reports_to": "Mayor's Office of Mass Engagement",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
   },
@@ -5257,6 +5241,7 @@
     "principal_officer_full_name": "Jessica Mofield",
     "principal_officer_first_name": "Jessica",
     "principal_officer_last_name": "Mofield",
+    "reports_to": "First Deputy Mayor",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
   },
@@ -5308,7 +5293,7 @@
     "principal_officer_first_name": "Jeffrey",
     "principal_officer_last_name": "Garcia",
     "principal_officer_title": "Executive Director",
-    "reports_to": "Department of Small Business Services",
+    "reports_to": "Deputy Mayor for Economic Justice",
     "in_org_chart": false,
     "listed_in_nyc_gov_agency": false
   },
@@ -5326,6 +5311,7 @@
     "principal_officer_first_name": "Jason",
     "principal_officer_last_name": "Graham",
     "principal_officer_title": "Chief Medical Examiner",
+    "reports_to": "Deputy Mayor for Health and Human Services",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -5405,6 +5391,34 @@
     "principal_officer_first_name": "Leila",
     "principal_officer_last_name": "Bozorg",
     "principal_officer_title": "Deputy Mayor for Housing and Planning",
+    "reports_to": "Office of the Mayor",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100033",
+    "name": "Deputy Mayor for Economic Justice",
+    "name_alphabetized": "Economic Justice, Deputy Mayor for",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Julie Su",
+    "principal_officer_first_name": "Julie",
+    "principal_officer_last_name": "Su",
+    "principal_officer_title": "Deputy Mayor for Economic Justice",
+    "reports_to": "Office of the Mayor",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100034",
+    "name": "Mayor's Office of Mass Engagement",
+    "name_alphabetized": "Mass Engagement, Mayor's Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Tascha Van Auken",
+    "principal_officer_first_name": "Tascha",
+    "principal_officer_last_name": "Van Auken",
+    "principal_officer_title": "Commissioner",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   }
