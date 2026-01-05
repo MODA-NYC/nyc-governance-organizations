@@ -1,0 +1,52 @@
+{
+  "changed_by": "@npstorey via NYCGO Admin UI",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 0,
+    "qa_changes": 126,
+    "records_after_pipeline": 438
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/inputs/golden_snapshot.csv",
+    "previous_published.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/inputs/previous_published.csv",
+    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/inputs/qa_01.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
+    "previous_export": "data/published/latest/NYCGovernanceOrganizations_latest.csv",
+    "qa_sources": [
+      "/tmp/admin_ui_edits.csv"
+    ]
+  },
+  "operator": "admin-ui-bot",
+  "outputs": {
+    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/outputs/golden_pre-release.csv",
+    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/outputs/published_pre-release.json",
+    "review_artifacts": {
+      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/review/review_manifest.json"
+    },
+    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260105_215554/outputs/run_changelog.csv"
+  },
+  "published_export_changes": {
+    "added": [
+      {
+        "id": "NYC_GOID_100033",
+        "name": "Deputy Mayor for Economic Justice"
+      },
+      {
+        "id": "NYC_GOID_100034",
+        "name": "Mayor's Office of Mass Engagement"
+      }
+    ],
+    "directory_status_changes": [],
+    "removed": [
+      {
+        "id": "NYC_GOID_000362",
+        "name": "Mayor's Office of Civic Engagement"
+      }
+    ]
+  },
+  "run_id": "admin-ui-20260105_215554",
+  "timing_seconds": 0.61
+}
