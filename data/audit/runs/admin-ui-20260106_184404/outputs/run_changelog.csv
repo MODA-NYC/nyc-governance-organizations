@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260106_184404_1,2026-01-06T18:44:05.679169,NYC_GOID_000191,Fire Department of the City of New York,principal_officer_title,Acting Commissioner,Commissioner,admin_ui_edits.csv,,Press conference on new FDNY commissioner being sworn in.,,@tlau-oti via NYCGO Admin UI,direct_set
