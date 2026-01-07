@@ -1,0 +1,10 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NEW,"Mayor's Office - Senior Advisor for Policy and Strategy",name,"Mayor's Office - Senior Advisor for Policy and Strategy","New appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-simonia-brown-as-senior-advisor-fo"
+NEW,"Mayor's Office - Senior Advisor for Policy and Strategy",name_alphabetized,"Mayor's Office - Senior Advisor for Policy and Strategy","New appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-simonia-brown-as-senior-advisor-fo"
+NEW,"Mayor's Office - Senior Advisor for Policy and Strategy",operational_status,"Active","New appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-simonia-brown-as-senior-advisor-fo"
+NEW,"Mayor's Office - Senior Advisor for Policy and Strategy",organization_type,"Mayoral Office","New appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-simonia-brown-as-senior-advisor-fo"
+NEW,"Mayor's Office - Senior Advisor for Policy and Strategy",principal_officer_full_name,"Simonia Brown","New appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-simonia-brown-as-senior-advisor-fo"
+NYC_GOID_000288,"Mayor's Office - Senior Advisor and Director of Public Service Engagement",operational_status,"Inactive","New mayoral administration.",""
+NYC_GOID_000290,"Mayor's Office - Senior Advisor to the Mayor",operational_status,"Inactive","New mayoral administration.",""
+NYC_GOID_000472,"Mayor's Office - Senior Adviser for Severe Mental Illness",operational_status,"Inactive","New mayoral administration.",""
+NYC_GOID_000471,"Mayor's Office - Senior Adviser to the Mayor and Director of Scheduling",operational_status,"Inactive","New mayoral administration.",""

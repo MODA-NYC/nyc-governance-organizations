@@ -1,0 +1,60 @@
+{
+  "changed_by": "@tlau-oti via NYCGO Admin UI",
+  "counts": {
+    "directory_field_changes": 0,
+    "global_rules_changes": 0,
+    "qa_changes": 5,
+    "records_after_pipeline": 439
+  },
+  "inputs": {
+    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/inputs/golden_snapshot.csv",
+    "previous_published.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/inputs/previous_published.csv",
+    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/inputs/qa_01.csv"
+  },
+  "inputs_original": {
+    "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
+    "previous_export": "data/published/latest/NYCGovernanceOrganizations_latest.csv",
+    "qa_sources": [
+      "/tmp/admin_ui_edits.csv"
+    ]
+  },
+  "operator": "admin-ui-bot",
+  "outputs": {
+    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/outputs/golden_pre-release.csv",
+    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/outputs/published_pre-release.json",
+    "review_artifacts": {
+      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/review/review_manifest.json"
+    },
+    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260107_180658/outputs/run_changelog.csv"
+  },
+  "published_export_changes": {
+    "added": [
+      {
+        "id": "NYC_GOID_100035",
+        "name": "Mayor's Office - Senior Advisor for Policy and Strategy"
+      }
+    ],
+    "directory_status_changes": [],
+    "removed": [
+      {
+        "id": "NYC_GOID_000288",
+        "name": "Mayor's Office - Senior Advisor and Director of Public Service Engagement"
+      },
+      {
+        "id": "NYC_GOID_000290",
+        "name": "Mayor's Office - Senior Advisor to the Mayor"
+      },
+      {
+        "id": "NYC_GOID_000471",
+        "name": "Mayor's Office - Senior Adviser to the Mayor and Director of Scheduling"
+      },
+      {
+        "id": "NYC_GOID_000472",
+        "name": "Mayor's Office - Senior Adviser for Severe Mental Illness"
+      }
+    ]
+  },
+  "run_id": "admin-ui-20260107_180658",
+  "timing_seconds": 0.48
+}
