@@ -3402,30 +3402,6 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000288",
-    "name": "Mayor's Office - Senior Advisor and Director of Public Service Engagement",
-    "name_alphabetized": "Mayor's Office - Senior Advisor and Director of Public Service Engagement",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Andrea Shapiro Davis",
-    "principal_officer_first_name": "Andrea",
-    "principal_officer_last_name": "Davis",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
-    "record_id": "NYC_GOID_000290",
-    "name": "Mayor's Office - Senior Advisor to the Mayor",
-    "name_alphabetized": "Mayor's Office - Senior Advisor to the Mayor",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Stefan Ringel",
-    "principal_officer_first_name": "Stefan",
-    "principal_officer_last_name": "Ringel",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000291",
     "name": "Mayor's Office of Speechwriting",
     "name_alphabetized": "Speechwriting, Mayor's Office of",
@@ -4883,32 +4859,6 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000471",
-    "name": "Mayor's Office - Senior Adviser to the Mayor and Director of Scheduling",
-    "name_alphabetized": "Mayor's Office - Senior Adviser to the Mayor and Director of Scheduling",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Gladys Miranda",
-    "principal_officer_first_name": "Gladys",
-    "principal_officer_last_name": "Miranda",
-    "principal_officer_title": "Senior Adviser to the Mayor and Director of Scheduling",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
-    "record_id": "NYC_GOID_000472",
-    "name": "Mayor's Office - Senior Adviser for Severe Mental Illness",
-    "name_alphabetized": "Mayor's Office - Senior Adviser for Severe Mental Illness",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Brian Stettin",
-    "principal_officer_first_name": "Brian",
-    "principal_officer_last_name": "Stettin",
-    "principal_officer_title": "Senior Adviser for Severe Mental Illness",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000476",
     "name": "Metropolitan Transportation Authority",
     "name_alphabetized": "Metropolitan Transportation Authority",
@@ -5406,6 +5356,16 @@
     "principal_officer_last_name": "Van Auken",
     "principal_officer_title": "Commissioner",
     "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100035",
+    "name": "Mayor's Office - Senior Advisor for Policy and Strategy",
+    "name_alphabetized": "Mayor's Office - Senior Advisor for Policy and Strategy",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Simonia Brown",
+    "in_org_chart": false,
     "listed_in_nyc_gov_agency": true
   }
 ]
