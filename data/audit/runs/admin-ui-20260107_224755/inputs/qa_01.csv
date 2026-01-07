@@ -1,0 +1,4 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000097,"New York City Council",principal_officer_full_name,"Julie Menin","New speaker elected","https://council.nyc.gov/press/2026/01/07/3051/"
+NYC_GOID_000097,"New York City Council",principal_officer_first_name,"Julie","New speaker elected","https://council.nyc.gov/press/2026/01/07/3051/"
+NYC_GOID_000097,"New York City Council",principal_officer_last_name,"Menin","New speaker elected","https://council.nyc.gov/press/2026/01/07/3051/"
