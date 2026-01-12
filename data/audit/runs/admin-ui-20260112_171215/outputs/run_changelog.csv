@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260112_171215_1,2026-01-12T17:12:17.153707,NYC_GOID_000347,Office of Asylum Seeker Operations,operational_status,Active,Inactive,admin_ui_edits.csv,,Removal of Agency from the directory was requested.,,@vsubrath-doitt via NYCGO Admin UI,direct_set
