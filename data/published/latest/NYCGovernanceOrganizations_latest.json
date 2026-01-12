@@ -3918,27 +3918,6 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000347",
-    "name": "Office of Asylum Seeker Operations",
-    "name_alphabetized": "Asylum Seeker Operations, Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "url": {
-      "url": "https://www.nyc.gov/site/asylumseekers/index.page"
-    },
-    "acronym": "OASO",
-    "principal_officer_full_name": "Molly Schaeffer",
-    "principal_officer_first_name": "Molly",
-    "principal_officer_last_name": "Schaeffer",
-    "principal_officer_title": "Executive Director",
-    "principal_officer_contact": {
-      "url": "https://www.nyc.gov/site/asylumseekers/contact/contact-office-of-asylum-seeker-operations.page"
-    },
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000349",
     "name": "Office of Capital Project Development",
     "name_alphabetized": "Capital Project Development, Office of",
