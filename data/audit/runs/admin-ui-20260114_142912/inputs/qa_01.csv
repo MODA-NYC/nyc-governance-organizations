@@ -1,0 +1,5 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000113,"Commission on Racial Equity",in_org_chart,"TRUE","Request from CORE to be included with approval from Kesone.",""
+NYC_GOID_000096,"City Commission on Human Rights",principal_officer_full_name,"Christine Clarke","Mayor Mamdani announced the appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-christine-clarke-to-lead-the-new-y"
+NYC_GOID_000096,"City Commission on Human Rights",principal_officer_first_name,"Christine","Mayor Mamdani announced the appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-christine-clarke-to-lead-the-new-y"
+NYC_GOID_000096,"City Commission on Human Rights",principal_officer_last_name,"Clarke","Mayor Mamdani announced the appointment.","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-christine-clarke-to-lead-the-new-y"
