@@ -1072,9 +1072,9 @@
       "url": "https://www.nyc.gov/site/cchr/index.page"
     },
     "acronym": "CCHR",
-    "principal_officer_full_name": "Annabel Palma",
-    "principal_officer_first_name": "Annabel",
-    "principal_officer_last_name": "Palma",
+    "principal_officer_full_name": "Christine Clarke",
+    "principal_officer_first_name": "Christine",
+    "principal_officer_last_name": "Clarke",
     "principal_officer_title": "Chair and Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/cchr/about/email-the-commissioner.page"
@@ -1279,8 +1279,8 @@
       "url": "https://www.nyc.gov/content/core/pages/contact-us"
     },
     "reports_to": "Deputy Mayor for Economic Justice",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": false
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
   },
   {
     "record_id": "NYC_GOID_000116",
