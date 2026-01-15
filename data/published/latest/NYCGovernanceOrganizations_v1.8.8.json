@@ -1988,6 +1988,36 @@
     "listed_in_nyc_gov_agency": true
   },
   {
+    "record_id": "NYC_GOID_000161",
+    "name": "Deputy Mayor for Health and Human Services",
+    "name_alphabetized": "Health and Human Services, Deputy Mayor for",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "acronym": "DMHHS",
+    "principal_officer_full_name": "Helen Arteaga",
+    "principal_officer_first_name": "Helen",
+    "principal_officer_last_name": "Arteaga",
+    "principal_officer_title": "Deputy Mayor for Health and Human Services",
+    "reports_to": "Office of the Mayor",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_000163",
+    "name": "Deputy Mayor for Operations",
+    "name_alphabetized": "Operations, Deputy Mayor for",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "acronym": "DMOPS",
+    "principal_officer_full_name": "Julia Kerson",
+    "principal_officer_first_name": "Julia",
+    "principal_officer_last_name": "Kerson",
+    "principal_officer_title": "Deputy Mayor for Operations",
+    "reports_to": "Office of the Mayor",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
     "record_id": "NYC_GOID_000168",
     "name": "Bronx District Attorney's Office",
     "name_alphabetized": "District Attorney's Office, Bronx",
