@@ -2906,20 +2906,6 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000256",
-    "name": "Mayor's Office of Media and Research Analysis",
-    "name_alphabetized": "Media and Research Analysis, Mayor's Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Margaret Turner",
-    "principal_officer_first_name": "Margaret",
-    "principal_officer_last_name": "Turner",
-    "principal_officer_title": "Senior Deputy Director",
-    "reports_to": "Deputy Mayor for Communications",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000257",
     "name": "Mayor's Office for Nonprofit Services",
     "name_alphabetized": "Nonprofit Services, Mayor's Office for",
@@ -3432,28 +3418,14 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000291",
-    "name": "Mayor's Office of Speechwriting",
-    "name_alphabetized": "Speechwriting, Mayor's Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Marjorie Sweeney",
-    "principal_officer_first_name": "Marjorie",
-    "principal_officer_last_name": "Sweeney",
-    "principal_officer_title": "Chief Speechwriter",
-    "reports_to": "Director of Communications",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000292",
     "name": "Mayor's Press Office",
     "name_alphabetized": "Press Office, Mayor's",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Kayla Mamelak Altus",
-    "principal_officer_first_name": "Kayla",
-    "principal_officer_last_name": "Mamelak Altus",
+    "principal_officer_full_name": "Joe Calvello",
+    "principal_officer_first_name": "Joe",
+    "principal_officer_last_name": "Calvello",
     "principal_officer_title": "Press Secretary",
     "reports_to": "Deputy Mayor for Communications",
     "in_org_chart": true,
