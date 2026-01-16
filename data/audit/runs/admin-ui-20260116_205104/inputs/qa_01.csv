@@ -1,0 +1,7 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000292,"Mayor's Press Office",principal_officer_full_name,"Joe Calvello","Request from Angela Banks from City Hall",""
+NYC_GOID_000292,"Mayor's Press Office",principal_officer_first_name,"Joe","Request from Angela Banks from City Hall",""
+NYC_GOID_000292,"Mayor's Press Office",principal_officer_last_name,"Calvello","Request from Angela Banks from City Hall",""
+NYC_GOID_000256,"Mayor's Office of Media and Research Analysis",operational_status,"Inactive","Request from Angela Banks from City Hall",""
+NYC_GOID_000291,"Mayor's Office of Speechwriting",operational_status,"Inactive","Request from Angela Banks from City Hall",""
+NYC_GOID_000130,"Cultural Institutions Retirement System",in_org_chart,"FALSE","Should not be listed on the NYC.gov Agency Directory.",""
