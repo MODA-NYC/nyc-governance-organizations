@@ -3044,8 +3044,8 @@
   },
   {
     "record_id": "NYC_GOID_000265",
-    "name": "Mayor's Office of Correspondence",
-    "name_alphabetized": "Correspondence, Mayor's Office of",
+    "name": "Mayor's Office - Correspondence",
+    "name_alphabetized": "Mayor's Office - Correspondence",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Dawn Baskerville",
@@ -3419,8 +3419,8 @@
   },
   {
     "record_id": "NYC_GOID_000292",
-    "name": "Mayor's Press Office",
-    "name_alphabetized": "Press Office, Mayor's",
+    "name": "Mayor's Office - Press Office",
+    "name_alphabetized": "Mayor's Office - Press Office",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Joe Calvello",
