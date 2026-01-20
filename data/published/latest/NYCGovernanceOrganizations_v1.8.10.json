@@ -1762,9 +1762,9 @@
     "alternate_or_former_names": "NYC Parks",
     "acronym": "DPR",
     "alternate_or_former_acronyms": "Parks",
-    "principal_officer_full_name": "Iris Rodriguez-Rosa",
-    "principal_officer_first_name": "Iris",
-    "principal_officer_last_name": "Rodriguez-Rosa",
+    "principal_officer_full_name": "Tricia Shimamura",
+    "principal_officer_first_name": "Tricia",
+    "principal_officer_last_name": "Shimamura",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/assets/home/mail/html/maildpr.html"
@@ -3089,9 +3089,9 @@
     "alternate_or_former_names": "Mayor's Office of Equity",
     "acronym": "MOERJ",
     "alternate_or_former_acronyms": "MOE",
-    "principal_officer_full_name": "Sideya Sherman",
-    "principal_officer_first_name": "Sideya",
-    "principal_officer_last_name": "Sherman",
+    "principal_officer_full_name": "Afua Atta-Mensah",
+    "principal_officer_first_name": "Afua",
+    "principal_officer_last_name": "Atta-Mensah",
     "principal_officer_title": "Chief Equity Officer & Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/equity/contact/contact.page"
@@ -4969,13 +4969,14 @@
   },
   {
     "record_id": "NYC_GOID_100007",
-    "name": "Director of Communications",
-    "name_alphabetized": "Communications, Director of",
+    "name": "Mayor's Office - Director of Communications",
+    "name_alphabetized": "Mayor's Office - Director of Communications",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Anna Bahr",
     "reports_to": "Deputy Mayor for Communications",
     "in_org_chart": true,
-    "listed_in_nyc_gov_agency": false
+    "listed_in_nyc_gov_agency": true
   },
   {
     "record_id": "NYC_GOID_100008",
