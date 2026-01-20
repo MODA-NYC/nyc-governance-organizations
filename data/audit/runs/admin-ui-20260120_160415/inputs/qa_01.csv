@@ -1,0 +1,11 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_100007,"Director of Communications",name,"Mayor's Office - Director of Communications","Request from Quintanilla, Diana <DQuintanilla@cityhall.nyc.gov>",""
+NYC_GOID_100007,"Director of Communications",name_alphabetized,"Mayor's Office - Director of Communications","Request from Quintanilla, Diana <DQuintanilla@cityhall.nyc.gov>",""
+NYC_GOID_100007,"Director of Communications",principal_officer_full_name,"Anna Bahr","Request from Quintanilla, Diana <DQuintanilla@cityhall.nyc.gov>",""
+NYC_GOID_100007,"Director of Communications",in_org_chart,"","Request from Quintanilla, Diana <DQuintanilla@cityhall.nyc.gov>",""
+NYC_GOID_000149,"Department of Parks and Recreation",principal_officer_full_name,"Tricia Shimamura","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-tricia-shimamura-as-nyc-parks-comm"
+NYC_GOID_000149,"Department of Parks and Recreation",principal_officer_first_name,"Tricia","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-tricia-shimamura-as-nyc-parks-comm"
+NYC_GOID_000149,"Department of Parks and Recreation",principal_officer_last_name,"Shimamura","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-appoints-tricia-shimamura-as-nyc-parks-comm"
+NYC_GOID_000267,"Mayor's Office of Equity and Racial Justice",principal_officer_full_name,"Afua Atta-Mensah","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-appoints-afua-atta-mensah-as-chief-equity-officer-"
+NYC_GOID_000267,"Mayor's Office of Equity and Racial Justice",principal_officer_first_name,"Afua","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-appoints-afua-atta-mensah-as-chief-equity-officer-"
+NYC_GOID_000267,"Mayor's Office of Equity and Racial Justice",principal_officer_last_name,"Atta-Mensah","New appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-appoints-afua-atta-mensah-as-chief-equity-officer-"
