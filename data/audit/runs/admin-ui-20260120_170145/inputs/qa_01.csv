@@ -1,0 +1,5 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000292,"Mayor's Press Office",name,"Mayor's Office - Press Office","New naming format for Mayor's Office staff",""
+NYC_GOID_000292,"Mayor's Press Office",name_alphabetized,"Mayor's Office - Press Office","New naming format for Mayor's Office staff",""
+NYC_GOID_000265,"Mayor's Office of Correspondence",name,"Mayor's Office - Correspondence","New naming format for Mayor's Office staff",""
+NYC_GOID_000265,"Mayor's Office of Correspondence",name_alphabetized,"Mayor's Office - Correspondence","New naming format for Mayor's Office staff",""
