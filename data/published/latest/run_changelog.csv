@@ -1,2 +1,2 @@
 ﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
-admin-ui-20260120_211321_1,2026-01-20T21:13:23.118230,NYC_GOID_000316,New York City Employee Retirement System,principal_officer_title,Interim Executive Director,Executive Director,admin_ui_edits.csv,,"Request from feedback form, confirmed by Chris.",,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260121_015458_1,2026-01-21T01:55:00.497561,NYC_GOID_000022,Board of Education Retirement System,organization_type,Advisory or Regulatory Organization,Pension Fund,admin_ui_edits.csv,,Corrected the organization_type field,,@npstorey via NYCGO Admin UI,direct_set

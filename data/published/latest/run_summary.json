@@ -1,5 +1,5 @@
 {
-  "changed_by": "@tlau-oti via NYCGO Admin UI",
+  "changed_by": "@npstorey via NYCGO Admin UI",
   "counts": {
     "directory_field_changes": 0,
     "global_rules_changes": 0,
@@ -7,9 +7,9 @@
     "records_after_pipeline": 439
   },
   "inputs": {
-    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/inputs/golden_snapshot.csv",
-    "previous_published.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/inputs/previous_published.csv",
-    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/inputs/qa_01.csv"
+    "golden_snapshot.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/inputs/golden_snapshot.csv",
+    "previous_published.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/inputs/previous_published.csv",
+    "qa_01.csv": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/inputs/qa_01.csv"
   },
   "inputs_original": {
     "golden_source": "data/published/latest/NYCGO_golden_dataset_latest.csv",
@@ -20,19 +20,24 @@
   },
   "operator": "admin-ui-bot",
   "outputs": {
-    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/outputs/golden_pre-release.csv",
-    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/outputs/published_pre-release.csv",
-    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/outputs/published_pre-release.json",
+    "golden_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/outputs/golden_pre-release.csv",
+    "published_pre_release": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/outputs/published_pre-release.csv",
+    "published_pre_release_json": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/outputs/published_pre-release.json",
     "review_artifacts": {
-      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/review/review_manifest.json"
+      "review_manifest": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/review/review_manifest.json"
     },
-    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260120_211321/outputs/run_changelog.csv"
+    "run_changelog": "/home/runner/work/nycgo-admin-ui/nycgo-admin-ui/pipeline/data/audit/runs/admin-ui-20260121_015458/outputs/run_changelog.csv"
   },
   "published_export_changes": {
-    "added": [],
+    "added": [
+      {
+        "id": "NYC_GOID_000022",
+        "name": "Board of Education Retirement System"
+      }
+    ],
     "directory_status_changes": [],
     "removed": []
   },
-  "run_id": "admin-ui-20260120_211321",
-  "timing_seconds": 0.45
+  "run_id": "admin-ui-20260121_015458",
+  "timing_seconds": 0.46
 }

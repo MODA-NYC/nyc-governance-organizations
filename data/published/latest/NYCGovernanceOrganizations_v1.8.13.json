@@ -139,6 +139,26 @@
     "listed_in_nyc_gov_agency": true
   },
   {
+    "record_id": "NYC_GOID_000022",
+    "name": "Board of Education Retirement System",
+    "name_alphabetized": "Education Retirement System, Board of",
+    "operational_status": "Active",
+    "organization_type": "Pension Fund",
+    "url": {
+      "url": "https://www.bers.nyc.gov/"
+    },
+    "acronym": "BERS",
+    "principal_officer_full_name": "Sanford Rich",
+    "principal_officer_first_name": "Sanford",
+    "principal_officer_last_name": "Rich",
+    "principal_officer_title": "Executive Director",
+    "principal_officer_contact": {
+      "url": "https://www.bers.nyc.gov/site/bers/about/email-bers.page"
+    },
+    "in_org_chart": false,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
     "record_id": "NYC_GOID_000023",
     "name": "Board of Elections",
     "name_alphabetized": "Elections, Board of",
