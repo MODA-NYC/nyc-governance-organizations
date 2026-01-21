@@ -12,3 +12,8 @@ timestamp,changed_by,change_type,rule_name,category,old_value,new_value,commit_s
 2025-12-10T18:09:32.070738+00:00,nathanstorey,exemption_added,state_government_exemptions,exemption,,Richmond County Public Administrator,f4545d5,
 2026-01-21T01:45:09.559005+00:00,nathan,rule_modified,state_government_agency,type_specific,State Government Agency: included if in exemption list,State Government Agency: always included,aa6b3ea,
 2026-01-21T01:45:09.559005+00:00,nathan,rule_modified,pension_fund,type_specific,Pension Fund: always included,Pension Fund: included if on allowlist (city employee funds),aa6b3ea,
+2026-01-21T01:51:13.366806+00:00,nathan,exemption_added,pension_fund_allowlist,allowlist,,Board of Education Retirement System,6dcdcb9,
+2026-01-21T01:51:13.366806+00:00,nathan,exemption_added,pension_fund_allowlist,allowlist,,Fire Department Pension Fund and Related Funds,6dcdcb9,
+2026-01-21T01:51:13.366806+00:00,nathan,exemption_added,pension_fund_allowlist,allowlist,,Teachers' Retirement System of City of New York,6dcdcb9,
+2026-01-21T01:51:13.366806+00:00,nathan,exemption_added,pension_fund_allowlist,allowlist,,New York City Police Pension Fund,6dcdcb9,
+2026-01-21T01:51:13.366806+00:00,nathan,exemption_added,pension_fund_allowlist,allowlist,,New York City Employee Retirement System,6dcdcb9,

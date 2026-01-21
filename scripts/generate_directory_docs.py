@@ -34,6 +34,7 @@ from nycgo_pipeline.directory_rules import (
     MANUAL_OVERRIDE_FALSE,
     MANUAL_OVERRIDE_TRUE,
     NONPROFIT_EXEMPTIONS,
+    PENSION_FUND_ALLOWLIST,
     PUBLISHED_EXPORT_EXCEPTIONS,
     STATE_GOVERNMENT_EXEMPTIONS,
     TYPE_SPECIFIC_RULES,
@@ -86,6 +87,7 @@ def rules_to_dict() -> dict:
         "nonprofit_exemptions": sorted(NONPROFIT_EXEMPTIONS),
         "advisory_exemptions": sorted(ADVISORY_EXEMPTIONS),
         "state_government_exemptions": sorted(STATE_GOVERNMENT_EXEMPTIONS),
+        "pension_fund_allowlist": sorted(PENSION_FUND_ALLOWLIST),
         "published_export_exceptions": [
             {"record_id": r[0], "name": r[1]} for r in PUBLISHED_EXPORT_EXCEPTIONS
         ],
@@ -158,6 +160,7 @@ def detect_changes(old: dict, new: dict) -> list[dict]:  # noqa: C901
         ("nonprofit_exemptions", "exemption"),
         ("advisory_exemptions", "exemption"),
         ("state_government_exemptions", "exemption"),
+        ("pension_fund_allowlist", "allowlist"),
         ("manual_override_true", "override"),
         ("manual_override_false", "override"),
     ]
@@ -384,6 +387,18 @@ def generate_docs() -> str:  # noqa: C901
         ]
     )
     for name in sorted(STATE_GOVERNMENT_EXEMPTIONS):
+        lines.append(f"- {name}")
+
+    lines.extend(
+        [
+            "",
+            "### Pension Fund Allowlist",
+            "",
+            "Only these city employee pension funds are included:",
+            "",
+        ]
+    )
+    for name in sorted(PENSION_FUND_ALLOWLIST):
         lines.append(f"- {name}")
 
     lines.extend(

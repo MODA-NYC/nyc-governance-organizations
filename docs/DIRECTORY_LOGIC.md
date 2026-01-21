@@ -9,11 +9,11 @@
 
 | Date | Change | Rule | Details |
 |------|--------|------|---------|
-| 2026-01-21 | Rule Modified | pension_fund | Pension Fund: included if on allowlist (city emplo... |
-| 2026-01-21 | Rule Modified | state_government_agency | State Government Agency: always included |
-| 2025-12-10 | Exemption Added | state_government_exemptions | Richmond County Public Administrator |
-| 2025-12-10 | Exemption Added | state_government_exemptions | City University of New York |
-| 2025-12-10 | Exemption Added | state_government_exemptions | Public Administrator of Queens County |
+| 2026-01-21 | Exemption Added | pension_fund_allowlist | New York City Employee Retirement System |
+| 2026-01-21 | Exemption Added | pension_fund_allowlist | New York City Police Pension Fund |
+| 2026-01-21 | Exemption Added | pension_fund_allowlist | Teachers' Retirement System of City of New York |
+| 2026-01-21 | Exemption Added | pension_fund_allowlist | Fire Department Pension Fund and Related Funds |
+| 2026-01-21 | Exemption Added | pension_fund_allowlist | Board of Education Retirement System |
 
 *See `data/directory_logic_changelog.csv` for full history.*
 
@@ -84,6 +84,16 @@ These NYC-affiliated state agencies are included in the directory:
 - New York County Public Administrator
 - Public Administrator of Queens County
 - Richmond County Public Administrator
+
+### Pension Fund Allowlist
+
+Only these city employee pension funds are included:
+
+- Board of Education Retirement System
+- Fire Department Pension Fund and Related Funds
+- New York City Employee Retirement System
+- New York City Police Pension Fund
+- Teachers' Retirement System of City of New York
 
 ### Published Export Exceptions
 

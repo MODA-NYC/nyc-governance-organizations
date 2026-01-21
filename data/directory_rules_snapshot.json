@@ -31,6 +31,13 @@
     "New York Public Library",
     "Queens Public Library"
   ],
+  "pension_fund_allowlist": [
+    "Board of Education Retirement System",
+    "Fire Department Pension Fund and Related Funds",
+    "New York City Employee Retirement System",
+    "New York City Police Pension Fund",
+    "Teachers' Retirement System of City of New York"
+  ],
   "published_export_exceptions": [
     {
       "name": "Office of Collective Bargaining",
