@@ -9,11 +9,11 @@
 
 | Date | Change | Rule | Details |
 |------|--------|------|---------|
+| 2026-01-21 | Rule Modified | pension_fund | Pension Fund: included if on allowlist (city emplo... |
+| 2026-01-21 | Rule Modified | state_government_agency | State Government Agency: always included |
 | 2025-12-10 | Exemption Added | state_government_exemptions | Richmond County Public Administrator |
 | 2025-12-10 | Exemption Added | state_government_exemptions | City University of New York |
 | 2025-12-10 | Exemption Added | state_government_exemptions | Public Administrator of Queens County |
-| 2025-12-10 | Exemption Added | state_government_exemptions | New York County Public Administrator |
-| 2025-12-10 | Exemption Added | state_government_exemptions | Bronx County Public Administrator |
 
 *See `data/directory_logic_changelog.csv` for full history.*
 
@@ -44,8 +44,8 @@ After passing gatekeeper rules, **at least one** type-specific rule must pass:
 - **mayoral_agency**: Mayoral Agency: always included
 - **mayoral_office**: Mayoral Office: always included
 - **elected_office**: Elected Office: always included
-- **pension_fund**: Pension Fund: always included
-- **state_government_agency**: State Government Agency: included if in exemption list
+- **pension_fund**: Pension Fund: included if on allowlist (city employee funds)
+- **state_government_agency**: State Government Agency: always included
 - **division_in_org_chart**: Division: included if in Org Chart
 - **public_benefit_in_org_chart**: Public Benefit or Development Org: included if in Org Chart
 - **nonprofit_in_org_chart_or_exemption**: Nonprofit Organization: included if in Org Chart OR exemption

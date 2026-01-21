@@ -197,9 +197,17 @@ class TestOrganizationTypes:
         result = evaluate_eligibility(base_record)
         assert result.eligible is True
 
-    def test_pension_fund_always_eligible(self, base_record):
-        """Pension Fund should always be eligible."""
+    def test_pension_fund_allowlist(self, base_record):
+        """Pension Fund eligible only if on allowlist (city employee funds)."""
         base_record["organization_type"] = "Pension Fund"
+
+        # Non-allowlisted pension fund should NOT be eligible
+        base_record["name"] = "Cultural Institutions Retirement System"
+        result = evaluate_eligibility(base_record)
+        assert result.eligible is False
+
+        # Allowlisted pension fund should be eligible
+        base_record["name"] = "New York City Employee Retirement System"
         result = evaluate_eligibility(base_record)
         assert result.eligible is True
 
@@ -481,11 +489,20 @@ class TestRegressionSnapshot:
         ("100602", "City Council", "Elected Office", "Active", "", True),
         (
             "100603",
-            "NYC Employees' Retirement System",
+            "New York City Employee Retirement System",
             "Pension Fund",
             "Active",
             "",
             True,
+        ),
+        # Non-allowlisted pension fund should be excluded
+        (
+            "100603b",
+            "Cultural Institutions Retirement System",
+            "Pension Fund",
+            "Active",
+            "",
+            False,
         ),
         ("100604", "MTA", "State Government Agency", "Active", "", True),
         ("100605", "IT Division", "Division", "Active", "True", True),

@@ -71,12 +71,12 @@
     },
     {
       "category": "type_specific",
-      "description": "Pension Fund: always included",
+      "description": "Pension Fund: included if on allowlist (city employee funds)",
       "name": "pension_fund"
     },
     {
       "category": "type_specific",
-      "description": "State Government Agency: included if in exemption list",
+      "description": "State Government Agency: always included",
       "name": "state_government_agency"
     },
     {

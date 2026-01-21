@@ -60,6 +60,17 @@ PUBLISHED_EXPORT_EXCEPTIONS = [
 MANUAL_OVERRIDE_TRUE: list[str] = []
 MANUAL_OVERRIDE_FALSE: list[str] = []
 
+# Pension Fund allowlist - only these Comptroller-administered city employee
+# pension funds are included in the directory. Other pension funds (e.g.,
+# Cultural Institutions Retirement System) serve non-city employees and are excluded.
+PENSION_FUND_ALLOWLIST = [
+    "Board of Education Retirement System",
+    "Fire Department Pension Fund and Related Funds",
+    "New York City Employee Retirement System",
+    "New York City Police Pension Fund",
+    "Teachers' Retirement System of City of New York",
+]
+
 # State Government Agency exemptions (bypass the no_state_nygov_url gatekeeper)
 # These are NYC-affiliated state agencies that should be included even if they
 # have .ny.gov URLs (though currently none of them do)
@@ -158,9 +169,13 @@ TYPE_SPECIFIC_RULES = [
     ),
     Rule(
         name="pension_fund",
-        description="Pension Fund: always included",
-        check=lambda r: r.get("organization_type") == "Pension Fund",
+        description="Pension Fund: included if on allowlist (city employee funds)",
+        check=lambda r: (
+            r.get("organization_type") == "Pension Fund"
+            and r.get("name") in PENSION_FUND_ALLOWLIST
+        ),
         category="type_specific",
+        details_on_match=lambda r: f"Allowlist: {r.get('name')}",
     ),
     Rule(
         name="state_government_agency",
