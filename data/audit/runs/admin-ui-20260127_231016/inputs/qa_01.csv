@@ -1,0 +1,10 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000150,"Department of Probation",principal_officer_full_name,"Sharun Goodwin","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000150,"Department of Probation",principal_officer_first_name,"Sharun","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000150,"Department of Probation",principal_officer_last_name,"Goodwin","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000138,"Department of Citywide Administrative Services",principal_officer_full_name,"Yume Kitasei","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000138,"Department of Citywide Administrative Services",principal_officer_first_name,"Yume","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000138,"Department of Citywide Administrative Services",principal_officer_last_name,"Kitasei","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000144,"Department of Environmental Protection",principal_officer_full_name,"Lisa Garcia","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000144,"Department of Environmental Protection",principal_officer_first_name,"Lisa","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
+NYC_GOID_000144,"Department of Environmental Protection",principal_officer_last_name,"Garcia","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-new-appointments-to-lead-key-city-agenci"
