@@ -1,0 +1,5 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000260,"Mayor's Office of Appointments",principal_officer_full_name,"Stephanie Silkowski","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-additional-appointments-across-key-city-"
+NYC_GOID_000260,"Mayor's Office of Appointments",principal_officer_title,"Director","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-additional-appointments-across-key-city-"
+NYC_GOID_000260,"Mayor's Office of Appointments",principal_officer_first_name,"Stephanie","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-additional-appointments-across-key-city-"
+NYC_GOID_000260,"Mayor's Office of Appointments",principal_officer_last_name,"Silkowski","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/01/mayor-mamdani-announces-additional-appointments-across-key-city-"
