@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260203_185627_1,2026-02-03T18:56:29.071662,NYC_GOID_100030,Office of Digital Assets and Blockchain Technology,operational_status,Active,Inactive,admin_ui_edits.csv,,"Request to remove agency from the directory, making it inactive",,@vsubrath-doitt via NYCGO Admin UI,direct_set
