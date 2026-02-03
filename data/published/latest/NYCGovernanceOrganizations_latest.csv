@@ -298,7 +298,6 @@ NYC_GOID_100021,Office of the Chief Medical Examiner,"Chief Medical Examiner, Of
 NYC_GOID_100023,Tax Appeals Tribunal,Tax Appeals Tribunal,Active,Advisory or Regulatory Organization,https://www1.nyc.gov/site/taxappeals/index.page,,,,,,,,,,False,True
 NYC_GOID_100024,New York City Tax Commission,"Tax Commission, New York City",Active,Advisory or Regulatory Organization,https://www1.nyc.gov/site/taxcommission/index.page,Tax Commission;NYC Tax Commission,TAXCOMM,,Robert J. Firestone,Robert,Firestone,President,,,False,True
 NYC_GOID_100026,Youth Board,Youth Board,Active,Advisory or Regulatory Organization,https://www.nyc.gov/site/dycd/involved/boards-and-councils/nyc-youth-board.page,,,,,,,,,,False,False
-NYC_GOID_100030,Office of Digital Assets and Blockchain Technology,"Digital Assets and Blockchain, Office of",Active,Mayoral Office,,,,,Moises Rendon,Moises,Rendon,Executive Director,,Office of Technology and Innovation,False,True
 NYC_GOID_100031,Mayor's Office of Rodent Mitigation,"Rodent Mitigation, Mayor's Office of",Active,Mayoral Office,,,,,,,,Director,,,False,False
 NYC_GOID_100032,Deputy Mayor for Housing and Planning,"Housing and Planning, Deputy Mayor for",Active,Mayoral Office,,,,,Leila Bozorg,Leila,Bozorg,Deputy Mayor for Housing and Planning,,Office of the Mayor,True,True
 NYC_GOID_100033,Deputy Mayor for Economic Justice,"Economic Justice, Deputy Mayor for",Active,Mayoral Office,,,,,Julie Su,Julie,Su,Deputy Mayor for Economic Justice,,Office of the Mayor,True,True

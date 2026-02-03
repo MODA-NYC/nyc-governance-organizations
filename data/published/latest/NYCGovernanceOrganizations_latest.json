@@ -5296,20 +5296,6 @@
     "listed_in_nyc_gov_agency": false
   },
   {
-    "record_id": "NYC_GOID_100030",
-    "name": "Office of Digital Assets and Blockchain Technology",
-    "name_alphabetized": "Digital Assets and Blockchain, Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Moises Rendon",
-    "principal_officer_first_name": "Moises",
-    "principal_officer_last_name": "Rendon",
-    "principal_officer_title": "Executive Director",
-    "reports_to": "Office of Technology and Innovation",
-    "in_org_chart": false,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_100031",
     "name": "Mayor's Office of Rodent Mitigation",
     "name_alphabetized": "Rodent Mitigation, Mayor's Office of",
