@@ -1501,9 +1501,9 @@
     "alternate_or_former_names": "NYC Aging",
     "acronym": "NYC AGING",
     "alternate_or_former_acronyms": "DFTA",
-    "principal_officer_full_name": "Lorraine Cortés-Vázquez",
-    "principal_officer_first_name": "Lorraine",
-    "principal_officer_last_name": "Cortés-Vázquez",
+    "principal_officer_full_name": "Lisa Scott-McKenzie",
+    "principal_officer_first_name": "Lisa",
+    "principal_officer_last_name": "Scott-McKenzie",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dfta/about/email-the-commissioner.page"
@@ -3393,9 +3393,9 @@
       "url": "https://www.nyc.gov/site/mopd/index.page"
     },
     "acronym": "MOPD",
-    "principal_officer_full_name": "Christina Curry",
-    "principal_officer_first_name": "Christina",
-    "principal_officer_last_name": "Curry",
+    "principal_officer_full_name": "Nisha Agarwal",
+    "principal_officer_first_name": "Nisha",
+    "principal_officer_last_name": "Agarwal",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/mopd/about/email-the-commissioner.page"
@@ -4169,10 +4169,10 @@
     "alternate_or_former_names": "Department of Information Technology and Telecommunications",
     "acronym": "OTI",
     "alternate_or_former_acronyms": "DoITT",
-    "principal_officer_full_name": "Ruby Choi",
-    "principal_officer_first_name": "Ruby",
-    "principal_officer_last_name": "Choi",
-    "principal_officer_title": "Acting Chief Technology Officer (CTO)",
+    "principal_officer_full_name": "Lisa Gelobter",
+    "principal_officer_first_name": "Lisa",
+    "principal_officer_last_name": "Gelobter",
+    "principal_officer_title": "Chief Technology Officer and Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/content/oti/pages/email-the-chief-technology-officer"
     },
@@ -5354,6 +5354,17 @@
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Simonia Brown",
     "in_org_chart": false,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100036",
+    "name": "Mayor's Office to Combat Antisemitism",
+    "name_alphabetized": "Combat Antisemitism, Mayor's Office to",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Phylisa Wisdom",
+    "principal_officer_title": "Executive Director",
+    "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   }
 ]
