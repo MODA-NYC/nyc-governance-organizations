@@ -1,0 +1,10 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000315,"New York City Emergency Management",principal_officer_full_name,"Christina Farrell","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-christina-farrell-as-commissioner-of-new-"
+NYC_GOID_000315,"New York City Emergency Management",principal_officer_first_name,"Christina","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-christina-farrell-as-commissioner-of-new-"
+NYC_GOID_000315,"New York City Emergency Management",principal_officer_last_name,"Farrell","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-christina-farrell-as-commissioner-of-new-"
+NYC_GOID_000255,"Mayor's Office for International Affairs",principal_officer_full_name,"Ana María Archila","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
+NYC_GOID_000255,"Mayor's Office for International Affairs",principal_officer_first_name,"Ana María","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
+NYC_GOID_000255,"Mayor's Office for International Affairs",principal_officer_last_name,"Archila","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
+NYC_GOID_000270,"Mayor's Office of Immigrant Affairs",principal_officer_full_name,"Faiza Ali","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
+NYC_GOID_000270,"Mayor's Office of Immigrant Affairs",principal_officer_first_name,"Faiza","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
+NYC_GOID_000270,"Mayor's Office of Immigrant Affairs",principal_officer_last_name,"Ali","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-zohran-mamdani-announces-commissioners-for-international-a"
