@@ -2792,14 +2792,14 @@
   },
   {
     "record_id": "NYC_GOID_000246",
-    "name": "Chief of Staff",
-    "name_alphabetized": "Chief of Staff",
+    "name": "Chief of Staff to the Mayor",
+    "name_alphabetized": "Chief of Staff to the Mayor",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Elle Bisgaard-Church",
     "principal_officer_first_name": "Elle",
     "principal_officer_last_name": "Bisgaard-Church",
-    "principal_officer_title": "Chief of Staff",
+    "principal_officer_title": "Chief of Staff to the Mayor",
     "reports_to": "Mayor",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
