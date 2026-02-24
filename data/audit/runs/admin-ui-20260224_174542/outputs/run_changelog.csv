@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260224_174542_1,2026-02-24T17:45:43.775276,NYC_GOID_000246,Chief of Staff,name,Chief of Staff,Chief of Staff to the Mayor,admin_ui_edits.csv,,"Added ""to the Mayor"" to the title Chief of Staff",,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-20260224_174542_2,2026-02-24T17:45:43.776105,NYC_GOID_000246,Chief of Staff,name_alphabetized,Chief of Staff,Chief of Staff to the Mayor,admin_ui_edits.csv,,"Added ""to the Mayor"" to the title Chief of Staff",,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-20260224_174542_3,2026-02-24T17:45:43.776875,NYC_GOID_000246,Chief of Staff,principal_officer_title,Chief of Staff,Chief of Staff to the Mayor,admin_ui_edits.csv,,"Added ""to the Mayor"" to the title Chief of Staff",,@npstorey via NYCGO Admin UI,direct_set
