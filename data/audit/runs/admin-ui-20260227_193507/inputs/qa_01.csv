@@ -1,0 +1,5 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000154,"Department of Social Services",principal_officer_full_name,"Erin Dalton","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-erin-dalton-as-commissioner-of-department"
+NYC_GOID_000154,"Department of Social Services",principal_officer_contact_url,"https://www.nyc.gov/site/hra/about/email-the-commissioner.page","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-erin-dalton-as-commissioner-of-department"
+NYC_GOID_000154,"Department of Social Services",principal_officer_first_name,"Erin","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-erin-dalton-as-commissioner-of-department"
+NYC_GOID_000154,"Department of Social Services",principal_officer_last_name,"Dalton","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/02/mayor-mamdani-appoints-erin-dalton-as-commissioner-of-department"
