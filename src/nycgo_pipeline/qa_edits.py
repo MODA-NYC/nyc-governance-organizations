@@ -49,6 +49,14 @@ RULES = {
 
 # Column synonyms for backward compatibility with edit files
 # Maps old names to current canonical names
+CLEAR_SENTINEL = "__CLEAR__"
+
+
+def _is_clear_sentinel(value) -> bool:
+    """Check if a value is the __CLEAR__ sentinel (case-insensitive)."""
+    return pd.notna(value) and str(value).strip().upper() == CLEAR_SENTINEL
+
+
 SYNONYM_COLUMN_MAP = {
     "principal_officer_given_name": "principal_officer_first_name",
     "principal_officer_family_name": "principal_officer_last_name",
@@ -367,6 +375,8 @@ def _get_edit_value(
     # Check for new_value column first (preferred format)
     if "new_value" in qa_row.index:
         new_val = qa_row.get("new_value")
+        if _is_clear_sentinel(new_val):
+            return ("", "new_value")
         if pd.notna(new_val) and str(new_val).strip():
             clean_val = _sanitize_wrapped_text(str(new_val).strip())
             return (clean_val if clean_val else "", "new_value")
@@ -645,6 +655,9 @@ def apply_qa_edits(  # noqa: C901
     1. Preferred: Use 'new_value' column with the direct value
     2. Legacy: Use 'action' column with 'Set to "value"' syntax
 
+    Clearing a field: Use '__CLEAR__' as the new_value to set a field to empty string.
+    This is needed because an empty new_value is treated as "no edit" by the pipeline.
+
     If both 'new_value' and 'action' columns have values, 'new_value' takes precedence.
 
     Note: record_name is optional but recommended for existing records to
@@ -699,10 +712,9 @@ def apply_qa_edits(  # noqa: C901
         feedback = _sanitize_wrapped_text(raw_feedback)
 
         # Check if this row has a new_value (preferred format)
-        has_new_value = (
-            has_new_value_col
-            and pd.notna(qa_row.get("new_value"))
-            and str(qa_row.get("new_value")).strip()
+        has_new_value = has_new_value_col and (
+            (pd.notna(qa_row.get("new_value")) and str(qa_row.get("new_value")).strip())
+            or _is_clear_sentinel(qa_row.get("new_value"))
         )
 
         # Skip rows with no action and no new_value
@@ -790,10 +802,9 @@ def apply_qa_edits(  # noqa: C901
         feedback = _sanitize_wrapped_text(raw_feedback)
 
         # Check if this row has a new_value (preferred format)
-        has_new_value = (
-            has_new_value_col
-            and pd.notna(qa_row.get("new_value"))
-            and str(qa_row.get("new_value")).strip()
+        has_new_value = has_new_value_col and (
+            (pd.notna(qa_row.get("new_value")) and str(qa_row.get("new_value")).strip())
+            or _is_clear_sentinel(qa_row.get("new_value"))
         )
 
         # Skip rows with no action and no new_value
