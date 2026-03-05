@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260305_232809_1,2026-03-05T23:28:10.794654,NYC_GOID_000271,Mayor's Office of Media and Entertainment,principal_officer_full_name,Pat Swinney Kaufman,Rafael Espinal,admin_ui_edits.csv,,New Commissioner Appointed,,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-20260305_232809_2,2026-03-05T23:28:10.795450,NYC_GOID_000271,Mayor's Office of Media and Entertainment,principal_officer_first_name,Pat,Rafael,admin_ui_edits.csv,,New Commissioner Appointed,,@npstorey via NYCGO Admin UI,direct_set
+admin-ui-20260305_232809_3,2026-03-05T23:28:10.796208,NYC_GOID_000271,Mayor's Office of Media and Entertainment,principal_officer_last_name,Kaufman,Espinal,admin_ui_edits.csv,,New Commissioner Appointed,,@npstorey via NYCGO Admin UI,direct_set
