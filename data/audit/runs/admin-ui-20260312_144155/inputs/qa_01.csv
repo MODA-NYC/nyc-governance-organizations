@@ -1,0 +1,4 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000238,"New York City Law Department",principal_officer_full_name,"Steven Banks","Request sent from Law Dept.",""
+NYC_GOID_000238,"New York City Law Department",principal_officer_first_name,"Steven","Request sent from Law Dept.",""
+NYC_GOID_000238,"New York City Law Department",principal_officer_last_name,"Banks","Request sent from Law Dept.",""

@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260312_144155_1,2026-03-12T14:41:57.442171,NYC_GOID_000238,New York City Law Department,principal_officer_full_name,Muriel Goode-Trufant,Steven Banks,admin_ui_edits.csv,,Request sent from Law Dept.,,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260312_144155_2,2026-03-12T14:41:57.443061,NYC_GOID_000238,New York City Law Department,principal_officer_first_name,Muriel,Steven,admin_ui_edits.csv,,Request sent from Law Dept.,,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260312_144155_3,2026-03-12T14:41:57.443868,NYC_GOID_000238,New York City Law Department,principal_officer_last_name,Goode-Trufant,Banks,admin_ui_edits.csv,,Request sent from Law Dept.,,@tlau-oti via NYCGO Admin UI,direct_set
