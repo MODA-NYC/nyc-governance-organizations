@@ -1844,10 +1844,10 @@
     },
     "alternate_or_former_names": "Department of Sanitation;NYC Sanitation",
     "acronym": "DSNY",
-    "principal_officer_full_name": "Javier Lojan",
-    "principal_officer_first_name": "Javier",
-    "principal_officer_last_name": "Lojan",
-    "principal_officer_title": "Acting Commissioner",
+    "principal_officer_full_name": "Gregory Anderson",
+    "principal_officer_first_name": "Gregory",
+    "principal_officer_last_name": "Anderson",
+    "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/dsny/about/contact.page"
     },
@@ -5361,6 +5361,28 @@
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Phylisa Wisdom",
     "principal_officer_title": "Executive Director",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100037",
+    "name": "Deputy Mayor for Community Safety",
+    "name_alphabetized": "Community Safety, Deputy Mayor for",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Renita Francois",
+    "principal_officer_title": "Deputy Mayor",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100038",
+    "name": "Mayor's Office of LGBTQIA+ Affairs",
+    "name_alphabetized": "LGBTQIA+ Affairs, Mayor's Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Taylor Brown",
+    "principal_officer_title": "Director",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   }
