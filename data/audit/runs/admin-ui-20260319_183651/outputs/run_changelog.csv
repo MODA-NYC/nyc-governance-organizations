@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260319_183651_1,2026-03-19T18:36:53.213792,NYC_GOID_100037,Deputy Mayor for Community Safety,principal_officer_title,Deputy Mayor,Deputy Mayor for Community Safety,admin_ui_edits.csv,,Update title,,@tlau-oti via NYCGO Admin UI,direct_set
