@@ -1,0 +1,4 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000145,"Department of Finance",principal_officer_full_name,"Richard Lee","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/03/mayor-mamdani-appoints-richard-lee-as-commissioner-of-the-depart"
+NYC_GOID_000145,"Department of Finance",principal_officer_first_name,"Richard","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/03/mayor-mamdani-appoints-richard-lee-as-commissioner-of-the-depart"
+NYC_GOID_000145,"Department of Finance",principal_officer_last_name,"Lee","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/03/mayor-mamdani-appoints-richard-lee-as-commissioner-of-the-depart"
