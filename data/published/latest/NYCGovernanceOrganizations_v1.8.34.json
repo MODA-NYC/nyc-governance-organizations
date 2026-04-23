@@ -1633,12 +1633,12 @@
       "url": "https://www.nyc.gov/site/ddc/index.page"
     },
     "acronym": "DDC",
-    "principal_officer_full_name": "Eduardo del Valle",
-    "principal_officer_first_name": "Eduardo",
-    "principal_officer_last_name": "del Valle",
-    "principal_officer_title": "Acting Commissioner",
+    "principal_officer_full_name": "Paul Ochoa",
+    "principal_officer_first_name": "Paul",
+    "principal_officer_last_name": "Ochoa",
+    "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
-      "url": "https://www.nyc.gov/site/ddc/about/contact-form.page?recipient=Thomas%20Foley"
+      "url": "https://www.nyc.gov/site/ddc/about/contact-form.page?recipient=Paul%20A.%20Ochoa"
     },
     "reports_to": "Deputy Mayor for Operations",
     "in_org_chart": true,
@@ -1808,9 +1808,9 @@
     },
     "acronym": "DORIS",
     "alternate_or_former_acronyms": "DoRIS",
-    "principal_officer_full_name": "Pauline Toole",
-    "principal_officer_first_name": "Pauline",
-    "principal_officer_last_name": "Toole",
+    "principal_officer_full_name": "Shawn(ta) Smith-Cruz",
+    "principal_officer_first_name": "Shawn(ta)",
+    "principal_officer_last_name": "Smith-Cruz",
     "principal_officer_title": "Commissioner",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/records/about/email-the-commissioner.page"
@@ -3219,9 +3219,9 @@
       "url": "https://www.nyc.gov/site/operations/index.page"
     },
     "acronym": "OPS",
-    "principal_officer_full_name": "Daniel Steinberg",
-    "principal_officer_first_name": "Daniel",
-    "principal_officer_last_name": "Steinberg",
+    "principal_officer_full_name": "Annie Levers",
+    "principal_officer_first_name": "Annie",
+    "principal_officer_last_name": "Levers",
     "principal_officer_title": "Director",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/operations/about/email-the-director.page"
