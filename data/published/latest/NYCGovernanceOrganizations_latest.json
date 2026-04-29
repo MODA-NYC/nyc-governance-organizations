@@ -5322,10 +5322,16 @@
     "name_alphabetized": "Mass Engagement, Mayor's Office of",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
+    "url": {
+      "url": "https://www.nyc.gov/content/organize/pages/"
+    },
     "principal_officer_full_name": "Tascha Van Auken",
     "principal_officer_first_name": "Tascha",
     "principal_officer_last_name": "Van Auken",
     "principal_officer_title": "Commissioner",
+    "principal_officer_contact": {
+      "url": "https://www.nyc.gov/content/organize/pages/contact"
+    },
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
@@ -5368,6 +5374,17 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "principal_officer_full_name": "Taylor Brown",
+    "principal_officer_title": "Director",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100039",
+    "name": "Mayor's Office of Deed Theft Prevention",
+    "name_alphabetized": "Deed Theft Prevention, Mayor's Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Peter White",
     "principal_officer_title": "Director",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
