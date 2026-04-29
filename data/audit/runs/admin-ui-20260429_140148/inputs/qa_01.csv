@@ -1,0 +1,10 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_100034,"Mayor's Office of Mass Engagement",url,"https://www.nyc.gov/content/organize/pages/","Website launch",""
+NYC_GOID_100034,"Mayor's Office of Mass Engagement",principal_officer_contact_url,"https://www.nyc.gov/content/organize/pages/contact","Website launch",""
+NEW,"Mayor's Office of Deed Theft Prevention",name,"Mayor's Office of Deed Theft Prevention","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",name_alphabetized,"Deed Theft Prevention, Mayor's Office of","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",operational_status,"Active","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",organization_type,"Mayoral Office","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",in_org_chart,"TRUE","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",principal_officer_full_name,"Peter White","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
+NEW,"Mayor's Office of Deed Theft Prevention",principal_officer_title,"Director","Mayoral announcement","https://www.nyc.gov/mayors-office/news/2026/04/mayor-mamdani-establishes-mayor-s-office-of-deed-theft-preventio"
