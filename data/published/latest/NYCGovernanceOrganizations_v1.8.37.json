@@ -2229,8 +2229,9 @@
     "operational_status": "Active",
     "organization_type": "Advisory or Regulatory Organization",
     "url": {
-      "url": "https://www1.nyc.gov/site/eepc/about/jurisdictions/fisa.page"
+      "url": "https://www.nyc.gov/site/opa/about/opa-history.page"
     },
+    "acronym": "FISA",
     "principal_officer_full_name": "Neil Matthew",
     "principal_officer_first_name": "Neil",
     "principal_officer_last_name": "Matthew",
@@ -3113,9 +3114,6 @@
       "url": "https://www.nyc.gov/site/ethnicmedia/index.page"
     },
     "acronym": "MOECM",
-    "principal_officer_full_name": "Jd Michaels",
-    "principal_officer_first_name": "Jd",
-    "principal_officer_last_name": "Michaels",
     "principal_officer_title": "Executive Director",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/ethnicmedia/contact/contact.page"
@@ -3412,13 +3410,10 @@
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
     "acronym": "MORMC",
-    "principal_officer_full_name": "Jean-Claude LeBec",
-    "principal_officer_first_name": "Jean-Claude",
-    "principal_officer_last_name": "LeBec",
     "principal_officer_title": "Director",
     "reports_to": "Chief Counsel to the Mayor and City Hall",
     "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
+    "listed_in_nyc_gov_agency": false
   },
   {
     "record_id": "NYC_GOID_000292",
@@ -3444,10 +3439,10 @@
       "url": "https://www.nyc.gov/site/mayorspeu/index.page"
     },
     "acronym": "PEU",
-    "principal_officer_full_name": "Adrienne Lever",
-    "principal_officer_first_name": "Adrienne",
-    "principal_officer_last_name": "Lever",
-    "principal_officer_title": "Executive Director",
+    "principal_officer_full_name": "Isolina De La Cruz",
+    "principal_officer_first_name": "Isolina",
+    "principal_officer_last_name": "De La Cruz",
+    "principal_officer_title": "Acting Executive Director",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/mayorspeu/about-peu/contact.page"
     },
@@ -4005,17 +4000,6 @@
     "listed_in_nyc_gov_agency": true
   },
   {
-    "record_id": "NYC_GOID_000361",
-    "name": "Mayor's Office of Innovation and Emerging Markets",
-    "name_alphabetized": "Innovation and Emerging Markets, Mayor's Office of",
-    "operational_status": "Active",
-    "organization_type": "Mayoral Office",
-    "principal_officer_full_name": "Denise Felipe-Adams and Jonathan Salomons",
-    "reports_to": "Deputy Mayor for Administration and Chief of Staff",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000363",
     "name": "Mayor's Office of Environmental Coordination",
     "name_alphabetized": "Environmental Coordination, Mayor's Office of",
@@ -4369,9 +4353,6 @@
     "url": {
       "url": "https://www.nyc.gov/site/publicrealm/index.page"
     },
-    "principal_officer_full_name": "Ya-Ting Liu",
-    "principal_officer_first_name": "Ya-Ting",
-    "principal_officer_last_name": "Liu",
     "principal_officer_title": "Chief Public Realm Officer",
     "principal_officer_contact": {
       "url": "https://www.nyc.gov/site/publicrealm/contact-us/contact-public-realm.page"
@@ -5158,7 +5139,7 @@
     "url": {
       "url": "https://www1.nyc.gov/site/peacenyc/index.page"
     },
-    "acronym": "Executive Director",
+    "acronym": "OPGV",
     "principal_officer_full_name": "Jessica Mofield",
     "principal_officer_first_name": "Jessica",
     "principal_officer_last_name": "Mofield",
