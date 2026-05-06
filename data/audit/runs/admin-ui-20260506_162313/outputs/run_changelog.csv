@@ -1,0 +1,3 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260506_162313_1,2026-05-06T16:23:15.024503,NYC_GOID_100036,Mayor's Office to Combat Antisemitism,url,,https://www.nyc.gov/main/combat-antisemitism,admin_ui_edits.csv,,Main landing page and contact page for the office went live.,,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260506_162313_2,2026-05-06T16:23:15.025359,NYC_GOID_100036,Mayor's Office to Combat Antisemitism,principal_officer_contact_url,,https://www.nyc.gov/main/forms/contact-combat-antisemitism,admin_ui_edits.csv,,Main landing page and contact page for the office went live.,,@tlau-oti via NYCGO Admin UI,direct_set
