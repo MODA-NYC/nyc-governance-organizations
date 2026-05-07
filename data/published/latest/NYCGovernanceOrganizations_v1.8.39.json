@@ -5375,5 +5375,16 @@
     "principal_officer_title": "Director",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100040",
+    "name": "Office of Community Safety",
+    "name_alphabetized": "Community Safety, Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "principal_officer_full_name": "Ayesha Delany-Brumsey",
+    "principal_officer_title": "Commissioner",
+    "in_org_chart": true,
+    "listed_in_nyc_gov_agency": true
   }
 ]
