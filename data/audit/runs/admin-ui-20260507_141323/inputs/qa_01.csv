@@ -1,0 +1,8 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NEW,"Office of Community Safety",name,"Office of Community Safety","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",name_alphabetized,"Community Safety, Office of","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",operational_status,"Active","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",organization_type,"Mayoral Office","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",in_org_chart,"TRUE","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",principal_officer_full_name,"Ayesha Delany-Brumsey","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"
+NEW,"Office of Community Safety",principal_officer_title,"Commissioner","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-dr--ayesha-delany-brumsey-as-commissioner"

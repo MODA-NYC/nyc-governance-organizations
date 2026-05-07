@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260507_141323_1,2026-05-07T14:13:25.122989,NYC_GOID_100040,Office of Community Safety,_ROW_ADDED,N/A,Office of Community Safety,admin_ui_edits.csv,New record created with 7 fields,,,@tlau-oti via NYCGO Admin UI,direct_set
