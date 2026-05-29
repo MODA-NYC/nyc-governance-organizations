@@ -1,0 +1,7 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_100005,"Sheriff",principal_officer_full_name,"__CLEAR__","Sheriff was let go.",""
+NYC_GOID_100005,"Sheriff",principal_officer_first_name,"__CLEAR__","Sheriff was let go.",""
+NYC_GOID_100005,"Sheriff",principal_officer_last_name,"__CLEAR__","Sheriff was let go.",""
+NYC_GOID_100005,"Sheriff",principal_officer_full_name,"Edwin Raymond","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-edwin-raymond-as-sheriff-of-new-york-city"
+NYC_GOID_100005,"Sheriff",principal_officer_first_name,"Edwin","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-edwin-raymond-as-sheriff-of-new-york-city"
+NYC_GOID_100005,"Sheriff",principal_officer_last_name,"Raymond","Mayoral appointment","https://www.nyc.gov/mayors-office/news/2026/05/mayor-mamdani-appoints-edwin-raymond-as-sheriff-of-new-york-city"
