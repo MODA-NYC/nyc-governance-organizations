@@ -1302,24 +1302,6 @@
     "listed_in_nyc_gov_agency": false
   },
   {
-    "record_id": "NYC_GOID_000117",
-    "name": "Mayor's Community Affairs Unit",
-    "name_alphabetized": "Community Affairs Unit, Mayor's",
-    "operational_status": "Active",
-    "organization_type": "Division",
-    "url": {
-      "url": "https://www.nyc.gov/site/cau/index.page"
-    },
-    "acronym": "CAU",
-    "principal_officer_title": "Commissioner",
-    "principal_officer_contact": {
-      "url": "https://www.nyc.gov/site/cau/connected/contact-cau.page"
-    },
-    "reports_to": "Mayor's Office of Mass Engagement",
-    "in_org_chart": true,
-    "listed_in_nyc_gov_agency": true
-  },
-  {
     "record_id": "NYC_GOID_000118",
     "name": "Community Boards",
     "name_alphabetized": "Community Boards",
