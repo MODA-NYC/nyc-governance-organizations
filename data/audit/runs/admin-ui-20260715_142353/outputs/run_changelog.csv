@@ -1,0 +1,4 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260715_142353_1,2026-07-15T14:23:54.727918,NYC_GOID_000436,New York City Taxi and Limousine Commission,principal_officer_full_name,David Do,Midori Valdivia,admin_ui_edits.csv,,Mayoral Appointment,,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260715_142353_2,2026-07-15T14:23:54.728633,NYC_GOID_000436,New York City Taxi and Limousine Commission,principal_officer_first_name,David,Midori,admin_ui_edits.csv,,Mayoral Appointment,,@tlau-oti via NYCGO Admin UI,direct_set
+admin-ui-20260715_142353_3,2026-07-15T14:23:54.729273,NYC_GOID_000436,New York City Taxi and Limousine Commission,principal_officer_last_name,Do,Valdivia,admin_ui_edits.csv,,Mayoral Appointment,,@tlau-oti via NYCGO Admin UI,direct_set

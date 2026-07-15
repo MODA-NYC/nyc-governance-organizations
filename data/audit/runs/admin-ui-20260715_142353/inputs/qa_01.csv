@@ -1,0 +1,4 @@
+record_id,record_name,field_name,new_value,justification,evidence_url
+NYC_GOID_000436,"New York City Taxi and Limousine Commission",principal_officer_full_name,"Midori Valdivia","Mayoral Appointment",""
+NYC_GOID_000436,"New York City Taxi and Limousine Commission",principal_officer_first_name,"Midori","Mayoral Appointment",""
+NYC_GOID_000436,"New York City Taxi and Limousine Commission",principal_officer_last_name,"Valdivia","Mayoral Appointment",""
