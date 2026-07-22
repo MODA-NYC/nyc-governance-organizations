@@ -1,18 +1,18 @@
 {
   "validation_report_version": "1.0.0",
-  "generated_at": "2026-07-15T14:24:16.349002+00:00",
+  "generated_at": "2026-07-22T17:13:04.528644+00:00",
   "dataset": {
     "name": "nycgo_published_dataset",
     "title": "NYC Governance Organizations Published Dataset",
     "schema_version": "1.7.0",
     "schema_hash": "8a4dd8658240",
-    "version": "v1.8.45"
+    "version": "v1.8.46"
   },
   "asset": {
-    "filename": "NYCGovernanceOrganizations_v1.8.45.csv",
-    "filepath": "data/published/latest/NYCGovernanceOrganizations_v1.8.45.csv",
-    "sha256": "4fb44e2a5d34d40e7ba46d6736b64eafd2e5c70862f19969bff3722cdfa9602d",
-    "size_bytes": 79374,
+    "filename": "NYCGovernanceOrganizations_v1.8.46.csv",
+    "filepath": "data/published/latest/NYCGovernanceOrganizations_v1.8.46.csv",
+    "sha256": "27fad9ebfbd5b30d494acb44ef5bc2f6939f9a25ce066742be0b67a88e804052",
+    "size_bytes": 79376,
     "row_count": 306,
     "column_count": 17
   },
