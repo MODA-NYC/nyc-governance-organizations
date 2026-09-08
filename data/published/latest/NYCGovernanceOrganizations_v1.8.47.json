@@ -5368,5 +5368,19 @@
     "principal_officer_title": "Commissioner",
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
+  },
+  {
+    "record_id": "NYC_GOID_100041",
+    "name": "Mayor's Office of Worker Power",
+    "name_alphabetized": "Worker Power, Mayor's Office of",
+    "operational_status": "Active",
+    "organization_type": "Mayoral Office",
+    "url": {
+      "url": "https://www.nyc.gov/main/mayors-office-of-worker-power"
+    },
+    "principal_officer_full_name": "Tony Perlstein",
+    "principal_officer_title": "Director",
+    "in_org_chart": false,
+    "listed_in_nyc_gov_agency": true
   }
 ]
