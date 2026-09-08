@@ -1,0 +1,2 @@
+﻿ChangeID,timestamp,record_id,record_name,column_changed,old_value,new_value,feedback_source,notes,reason,evidence_url,changed_by,RuleAction
+admin-ui-20260908_142620_1,2026-09-08T14:26:22.338748,NYC_GOID_100041,Mayor's Office of Worker Power,principal_officer_contact_url,,https://www.nyc.gov/main/mayors-office-of-worker-power/get-in-touch,admin_ui_edits.csv,,Added contact form.,,@tlau-oti via NYCGO Admin UI,direct_set
