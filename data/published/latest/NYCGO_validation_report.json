@@ -1,18 +1,18 @@
 {
   "validation_report_version": "1.0.0",
-  "generated_at": "2026-09-08T13:22:21.764148+00:00",
+  "generated_at": "2026-09-08T14:26:43.432146+00:00",
   "dataset": {
     "name": "nycgo_golden_dataset",
     "title": "NYC Governance Organizations Golden Dataset",
     "schema_version": "1.8.0",
     "schema_hash": "618130b0e233",
-    "version": "v1.8.47"
+    "version": "v1.8.48"
   },
   "asset": {
-    "filename": "NYCGO_golden_dataset_v1.8.47.csv",
-    "filepath": "data/published/latest/NYCGO_golden_dataset_v1.8.47.csv",
-    "sha256": "132b6ffd7b12b5d9c648c129128511e4fbc436e74d4c11b15497fee9d63f0850",
-    "size_bytes": 227737,
+    "filename": "NYCGO_golden_dataset_v1.8.48.csv",
+    "filepath": "data/published/latest/NYCGO_golden_dataset_v1.8.48.csv",
+    "sha256": "78c4813fdab1de406ee2545f9e70d63d132d292d48a7d8fde5bc399f0c2fa68c",
+    "size_bytes": 227804,
     "row_count": 445,
     "column_count": 38
   },
