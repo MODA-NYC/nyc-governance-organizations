@@ -5364,8 +5364,14 @@
     "name_alphabetized": "Community Safety, Mayor's Office of",
     "operational_status": "Active",
     "organization_type": "Mayoral Office",
+    "url": {
+      "url": "https://www.nyc.gov/main/office-of-community-safety"
+    },
     "principal_officer_full_name": "Ayesha Delany-Brumsey",
     "principal_officer_title": "Commissioner",
+    "principal_officer_contact": {
+      "url": "https://www.nyc.gov/main/office-of-community-safety/contact-ocs"
+    },
     "in_org_chart": true,
     "listed_in_nyc_gov_agency": true
   },
