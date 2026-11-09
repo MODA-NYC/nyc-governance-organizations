@@ -275,4 +275,4 @@ jq . data/audit/runs/<run_id>/outputs/run_summary.json
 
 - [CHANGELOG_SPEC.md](CHANGELOG_SPEC.md) - Append-only changelog specification
 - [README.md](../README.md) - Full workflow documentation
-- [SCRIPTS.md](../SCRIPTS.md) - Script index and usage
+- [SCRIPTS.md](archive/SCRIPTS.md) - Script index and usage (archived)

@@ -1,5 +1,7 @@
 # NYC Governance Organizations - Configuration Guide
 
+> **Phase II tooling (deferred).** This material supports the deferred Phase II schema research. It is not needed to run or maintain the current pipeline. See [`docs/sprints/PHASE_II.md`](../docs/sprints/PHASE_II.md).
+
 This directory contains project-specific MCP and security configurations for the NYC Governance Organizations Phase II implementation.
 
 ## Configuration Files

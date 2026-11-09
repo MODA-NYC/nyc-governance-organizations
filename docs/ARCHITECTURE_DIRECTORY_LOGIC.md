@@ -190,4 +190,4 @@ This keeps documentation co-located without architectural changes.
 ## Related Documentation
 
 - [DIRECTORY_LOGIC.md](DIRECTORY_LOGIC.md) - Auto-generated rule documentation
-- [Sprint 6A](sprints/SPRINT_6A.md) - Implementation details
+- [Sprint 6](sprints/completed/SPRINT_6.md) - Implementation details

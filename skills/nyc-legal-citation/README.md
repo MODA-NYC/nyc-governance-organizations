@@ -1,5 +1,7 @@
 # NYC Legal Citation Skill
 
+> **Phase II tooling (deferred).** This material supports the deferred Phase II schema research. It is not needed to run or maintain the current pipeline. See [`docs/sprints/PHASE_II.md`](../../docs/sprints/PHASE_II.md).
+
 Project-specific skill for proper citation and formatting of NYC legal documents, statutes, and government sources.
 
 ## Purpose
