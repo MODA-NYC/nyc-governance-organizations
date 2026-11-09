@@ -1,5 +1,7 @@
 # NYC Governance Schema Skill
 
+> **Phase II tooling (deferred).** This material supports the deferred Phase II schema research. It is not needed to run or maintain the current pipeline. See [`docs/sprints/PHASE_II.md`](../../docs/sprints/PHASE_II.md).
+
 Project-specific skill for the NYC Governance Organizations dataset schema validation and Phase II field implementation.
 
 ## Purpose

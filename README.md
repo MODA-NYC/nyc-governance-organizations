@@ -1,138 +1,155 @@
 # NYC Agencies and Governance Organizations
 
-An analysis-ready reference of NYC agencies and governance organizaitons—standardized names, acronyms, principal officers, reporting lines, and stable IDs—powering the Agency Directory on nyc.gov.
-
-
+An analysis-ready reference of NYC agencies and governance organizations—standardized names, acronyms, principal officers, reporting lines, and stable IDs—powering the Agency Directory on nyc.gov.
 
 ### Quick links
 - **Dataset on NYC Open Data (t3jq-9nkf)**: [NYC Agencies and Governance Organizations](https://data.cityofnewyork.us/d/t3jq-9nkf/)
 - **Feedback & corrections (Airtable form)**: [Submit a change request](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form)
-- **Pipeline diagram**: [View interactive BPMN](https://moda-nyc.github.io/nyc-governance-organizations/docs/nycgo-edit-publish-pipeline-standalone.html) | [Mermaid version](docs/nycgo-edit-publish-pipeline.mermaid.md)
-- **Baseline run artifacts spec**: [`docs/Run_Artifacts.md`](docs/Run_Artifacts.md)
-- **Release history**: see [Release History](#release-history) in this README
-- **Contributing (CONTRIBUTING.md)**: (TODO: add)
+- **Releases**: [GitHub Releases](https://github.com/MODA-NYC/nyc-governance-organizations/releases) (latest: [`releases/latest`](https://github.com/MODA-NYC/nyc-governance-organizations/releases/latest))
+- **Schema**: [`docs/SCHEMA.md`](docs/SCHEMA.md) and the [data dictionary](docs/NYC_Agencies_and_Governance_Organizations_Data_Dictionary.xlsx)
+- **Pipeline diagram**: [View interactive BPMN](https://moda-nyc.github.io/nyc-governance-organizations/nycgo-edit-publish-pipeline-standalone.html) | [Mermaid version](docs/nycgo-edit-publish-pipeline.mermaid.md)
+- **AI usage**: [`AI_USAGE.md`](AI_USAGE.md)
+- **Maintenance runbook**: [`docs/MAINTENANCE.md`](docs/MAINTENANCE.md)
+- **Contributing**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ## Overview
 NYC Agencies and Governance Organizations is a standardized reference list of NYC agencies and other governance organizations. It standardizes official names, acronyms, leadership, and reporting relationships so New Yorkers—and City staff—can speak the same language about government. It consolidates the citywide organizational chart into a single, analysis-ready table and powers the revamped Agency Directory on nyc.gov, which presents a curated subset of these records for public browsing.
 
 Each record is included in at least one of two authoritative sources: the Citywide Org Chart or an internal list of NYC governance organizations maintained by the Mayor’s Office of Operations. Each record includes the organization’s preferred and alternate names, acronyms, type classification, operational status, principal officer information, reporting relationship, official website, and directory-inclusion flags. All organizations in this dataset are formally established through a legal or administrative instrument, such as an NYC Charter provision, Mayoral Executive Order, or local or state enabling statute.
 
-To make this data publicly available, we built a repeatable publication pipeline with rule-based cleaning, Unicode/encoding fixes, name parsing, de-duplication, and a comprehensive audit trail of every change. The workflow supports structured QA, supplemental edits, and scripted exports for publication—so the dataset can keep pace as executive orders or Charter updates create, merge, or retire units. NYC Agencies and Governance Organizations helps New Yorkers and City staff understand who's who in government and how units relate. It can be paired with budgets, contracts, performance metrics, or program datasets to analyze services and accountability across the enterprise. The dataset and accompanying crosswalks in this GitHub repository are designed to combine other datasets that use legacy names or system-specific codes, improving interoperability citywide. Documentation and processing scripts are available in this repository, and the Agency Directory provides an accessible front door for the public.
+To make this data publicly available, we built a repeatable publication pipeline with rule-based cleaning, Unicode/encoding fixes, name parsing, de-duplication, and a comprehensive audit trail of every change. The dataset can be paired with budgets, contracts, performance metrics, or program datasets to analyze services and accountability across City government. The dataset and the crosswalk in this repository are designed to help combine other datasets that use legacy names or system-specific codes.
 
-## Phase I vs Phase II
+## The dataset
 
-This repository maintains two versions of the dataset schema:
+The dataset exists in two forms:
 
-### Phase I (v1.1.1) - Final Release
-- **Released**: November 21, 2024
-- **Golden Dataset Fields**: 38 fields
-- **Public Export Fields**: 16 fields (+ 1 computed field: `listed_in_nyc_gov_agency_directory`)
-- **Entity Count**: 434
-- **RecordID Format**: `NYC_GOID_XXXXXX` (e.g., `NYC_GOID_000318`)
-- **Relationship Field**: `reports_to` (text field capturing both org chart and parent-child relationships)
-- **Documentation**: See [`docs/PHASE_I_PIPELINE.md`](docs/PHASE_I_PIPELINE.md) for complete Phase I workflow and schema details
+| Form | Fields | Records | File |
+|------|--------|---------|------|
+| **Golden dataset** | 38 | All records, including inactive and dissolved organizations | [`data/published/latest/NYCGO_golden_dataset_latest.csv`](data/published/latest/NYCGO_golden_dataset_latest.csv) |
+| **Published dataset** | 17 | Active records only (see below) | [`data/published/latest/NYCGovernanceOrganizations_latest.csv`](data/published/latest/NYCGovernanceOrganizations_latest.csv) |
 
-### Phase II (v2.0.0-dev) - Current Development
-- **Status**: In development
-- **Golden Dataset Fields**: 46 fields (38 original - 1 retired + 9 new)
-- **Public Export Fields**: 25 fields
-- **Entity Count**: 433 (will be 434 when complete)
-- **RecordID Format**: 6-digit numeric (e.g., `100318`)
-- **Relationship Fields**:
-  - `org_chart_oversight_record_id` and `org_chart_oversight_name` (for org chart/political oversight)
-  - `parent_organization_record_id` and `parent_organization_name` (for parent-child governance relationships)
-- **New Fields**: `governance_structure`, `authorizing_authority`, `authorizing_authority_type`, `authorizing_url`, `appointments_summary`
-- **Retired Fields**: `reports_to` (replaced by new relationship fields)
-- **Documentation**: See [`PHASE_II_PLAN.md`](PHASE_II_PLAN.md) for Phase II implementation details
+- **Primary key**: `record_id`, format `NYC_GOID_XXXXXX` (e.g., `NYC_GOID_000318`). IDs are stable.
+- **Column names**: snake_case.
+- **Current record counts**: see `counts` in [`data/published/latest/run_summary.json`](data/published/latest/run_summary.json).
+- **Which records are published**: a record is in the published dataset when its `operational_status` is `Active` and it is in the citywide org chart or on the Mayor's Office of Operations list. A small number of named exceptions are set in [`scripts/process/export_dataset.py`](scripts/process/export_dataset.py).
+- **Which records appear on nyc.gov**: the `listed_in_nyc_gov_agency_directory` flag marks the subset shown in the Agency Directory. The rules are documented in [`docs/DIRECTORY_LOGIC.md`](docs/DIRECTORY_LOGIC.md).
 
-**Note**: For urgent Phase I-compatible updates during Phase II development, use [`scripts/pipeline/export_phase_i.py`](scripts/pipeline/export_phase_i.py) to generate Phase I-compatible exports from Phase II datasets.
-
-## Public schema
-
-### Phase II Public Schema (v2.0.0-dev)
-
-The current development version exposes 25 fields. For Phase I schema (16 fields), see [`docs/PHASE_I_SCHEMA.md`](docs/PHASE_I_SCHEMA.md).
+### Published schema (17 fields)
 
 | Field | Description |
 |-------|-------------|
-| record_id | Stable internal ID (immutable, 6-digit numeric format) |
-| operational_status | Current status of the organization |
-| organization_type | Category (e.g., Mayoral Agency, Advisory/Regulatory, etc.) |
+| record_id | Stable internal identifier (immutable primary key) |
 | name | Official/preferred name |
-| acronym | Official acronym (if any) |
-| name_alphabetized | Name normalized for sorting |
+| name_alphabetized | Name normalized for alphabetical sorting |
+| operational_status | Current status of the organization |
+| organization_type | Category (e.g., Mayoral Agency, Advisory or Regulatory Organization) |
 | url | Official website URL |
-| alternate_or_former_names | Other names seen in official sources |
+| alternate_or_former_names | Other names seen in official sources (semicolon-separated) |
+| acronym | Official acronym (if any) |
 | alternate_or_former_acronyms | Other acronyms seen in official sources |
-| principal_officer_title | Title of the principal officer |
 | principal_officer_full_name | Full name of the principal officer |
-| principal_officer_first_name | Given name (derived/maintained) |
-| principal_officer_last_name | Family name (derived/maintained) |
-| principal_officer_contact_url | Profile/contact page for principal officer |
-| in_org_chart | Flag used for citywide org chart |
-| listed_in_nyc_gov_agency_directory | Flag used for nyc.gov Agency Directory |
-| governance_structure | Narrative description of governance structure (e.g., board composition) |
-| org_chart_oversight_record_id | RecordID of entity providing org chart/political oversight |
-| org_chart_oversight_name | Name of entity providing org chart/political oversight |
-| parent_organization_record_id | RecordID of parent organization (for specialized boards, divisions) |
-| parent_organization_name | Name of parent organization |
-| authorizing_authority | Legal authority establishing the organization (e.g., "NYC Charter § 2203") |
-| authorizing_authority_type | Type of legal authority (NYC Charter, Mayoral Executive Order, etc.) |
-| authorizing_url | URL to legal document or statute |
-| appointments_summary | Description of how appointments/selection works |
+| principal_officer_first_name | First name (derived from the full name) |
+| principal_officer_last_name | Last name (derived from the full name) |
+| principal_officer_title | Title of the principal officer |
+| principal_officer_contact_url | Profile/contact page for the principal officer |
+| reports_to | Reporting, administrative, or oversight relationship |
+| in_org_chart | Whether the organization appears in the citywide org chart |
+| listed_in_nyc_gov_agency_directory | Computed flag: whether the record appears in the nyc.gov Agency Directory |
 
-## Run artifacts baseline
+All 38 golden fields are listed in [`docs/SCHEMA.md`](docs/SCHEMA.md).
 
-All processing runs must emit a structured artifact bundle under `data/audit/runs/<run_id>/`. Each bundle contains:
+### Schema expansion (deferred)
 
-- `inputs/`: golden snapshot used, prior published snapshot, and the edits CSV that triggered the run
-- `outputs/`: regenerated golden dataset, regenerated published dataset, run changelog CSV, and a `run_summary.json` with record counts and key metrics; all outputs remain in pre-release form (`*_pre-release.*`)
-- `review/`: QA aids such as source comparison reports and summary statistics
+A larger schema ("Phase II": governance structure, legal authority, and parent-organization fields) was designed and is deferred. See [`docs/sprints/PHASE_II.md`](docs/sprints/PHASE_II.md). The `configs/`, `skills/`, and `.env.template` files in this repository belong to that work and are not needed to run the pipeline.
 
-Run folders follow the convention `YYYYMMDD-HHMM_<descriptor>` with a timezone indicator (UTC recommended). See [`docs/run_artifacts.md`](docs/run_artifacts.md) for detailed guidance plus examples of where review aids should land.
+## How the dataset is updated
 
-## Versioning & release policy
+1. An authorized editor submits a change in the Admin UI with a justification and, where available, an evidence URL.
+2. The editor commits the generated edit file under their own GitHub account.
+3. A GitHub Actions workflow runs the pipeline on the edit: rule-based cleaning, name parsing, directory-eligibility rules, and schema validation.
+4. If validation passes, a versioned GitHub Release is published and each field change is appended to [`data/changelog.csv`](data/changelog.csv) with who, when, why, and evidence.
+5. A separate automated process monitors this repository's releases and updates the dataset on NYC Open Data.
 
-- Semantic versioning resumes at `v1.0.0` for the next publish event. Code changes before the publish CLI launches use the development version `1.0.0-dev` in `pyproject.toml`.
-- Every run folder must record its dataset linkage in `data/audit/run_manifest.csv` so we can trace published artifacts back to the originating run.
-- Legacy releases up to `2.8.0` are retained for context but new tags will begin at `v1.0.0` once the publish workflow is live.
+Members of the public can request a change through the [Airtable form](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form); staff review each request and enter accepted changes.
 
-## Release Validation Contract
+For how AI tools were and were not used, see [`AI_USAGE.md`](AI_USAGE.md).
 
-Each GitHub Release includes a machine-readable validation report that downstream consumers (e.g., AEM, other data ingestion systems) can use to verify data integrity before updating their cached copies.
+## Admin UI integration
 
-### Release Assets
+This repository works with **nycgo-admin-ui**, an internal web interface where authorized editors submit record edits without running the pipeline manually.
+
+> **Note**: The Admin UI repository ([MODA-NYC/nycgo-admin-ui](https://github.com/MODA-NYC/nycgo-admin-ui)) is **internal** and requires organization membership to access.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  nycgo-admin-ui (internal)                                              │
+│  ├── Web UI for searching/editing organizations                         │
+│  ├── pending-edits/     ← User commits CSV edits here                   │
+│  ├── scheduled-edits/   ← Future-dated edits (promoted hourly)          │
+│  └── .github/workflows/process-edit.yml  ← Triggers on CSV commit       │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Workflow clones this repo,
+                                    │ runs pipeline, commits results
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  nyc-governance-organizations (this repo)                               │
+│  ├── data/published/latest/   ← Golden dataset (source of truth)        │
+│  ├── data/audit/runs/         ← Run artifacts with full audit trail     │
+│  ├── .github/workflows/publish-release.yml  ← Creates GitHub releases   │
+│  └── Releases                 ← Versioned datasets + validation reports │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+The Admin UI loads its data from this repository's `data/published/latest/NYCGO_golden_dataset_latest.csv`.
+
+## Versioning and change history
+
+- **Releases** are tagged `vX.Y.Z`. Each release lists its changes in the release notes and attaches the files below.
+- **Edits submitted through the Admin UI** are currently released as patch versions.
+- **Schema changes** use a minor or major version and are recorded in [`schemas/SCHEMA_CHANGELOG.md`](schemas/SCHEMA_CHANGELOG.md).
+- **Field-level history**: every change to every record is in [`data/changelog.csv`](data/changelog.csv) (append-only; format in [`docs/CHANGELOG_SPEC.md`](docs/CHANGELOG_SPEC.md)).
+- **Directory rule changes** are tracked in [`docs/DIRECTORY_FIELD_CHANGELOG.md`](docs/DIRECTORY_FIELD_CHANGELOG.md).
+- **Earlier numbering**: releases up to `2.8.0` (June 2025) predate the current pipeline; numbering restarted at `v1.0.0` afterward. See [`docs/archive/CHANGELOG.md`](docs/archive/CHANGELOG.md).
+
+## Release validation contract
+
+Each GitHub Release includes a machine-readable validation report that downstream consumers can use to verify data integrity before updating their cached copies.
+
+### Release assets
 
 | Asset | Description |
 |-------|-------------|
 | `NYCGO_golden_dataset_v{X.Y.Z}.csv` | Versioned golden dataset (38 fields, all records) |
-| `NYCGO_golden_dataset_latest.csv` | Same file with stable name for automated fetching |
-| `NYCGovernanceOrganizations_v{X.Y.Z}.csv` | Public export (17 fields, directory-eligible records only) |
-| `NYCGovernanceOrganizations_v{X.Y.Z}.json` | Socrata-compatible JSON export for API consumers |
-| `NYCGovernanceOrganizations_latest.csv` | Same CSV file with stable name |
-| `NYCGovernanceOrganizations_latest.json` | Same JSON file with stable name |
+| `NYCGO_golden_dataset_latest.csv` | Same file with a stable name for automated fetching |
+| `NYCGovernanceOrganizations_v{X.Y.Z}.csv` | Published dataset (17 fields, active records) |
+| `NYCGovernanceOrganizations_v{X.Y.Z}.json` | Socrata-compatible JSON export of the published dataset |
+| `NYCGovernanceOrganizations_latest.csv` | Same CSV with a stable name |
+| `NYCGovernanceOrganizations_latest.json` | Same JSON with a stable name |
 | `NYCGO_validation_report.json` | Golden dataset validation report |
-| `NYCGO_published_validation_report.json` | Published dataset validation report |
 | `nycgo_golden_dataset.tableschema.json` | Golden dataset schema (Frictionless Table Schema) |
-| `nycgo_published_dataset.tableschema.json` | Published dataset schema (Frictionless Table Schema) |
+| `run_changelog.csv` | Field changes in this release |
+| `nycgo-run-{run_id}.zip` | Full run bundle (inputs, outputs, review files) |
 
-### Schema Governance
+The published dataset's validation report and schema are not attached to releases. They are in the repository at `data/published/latest/NYCGO_published_validation_report.json` and `schemas/nycgo_published_dataset.tableschema.json`.
+
+### Schema governance
 
 Schema changes are tracked in [`schemas/SCHEMA_CHANGELOG.md`](schemas/SCHEMA_CHANGELOG.md).
 
-**Schema Files:**
+**Schema files:**
 - `schemas/nycgo_golden_dataset.tableschema.json` - Golden dataset (38 fields)
 - `schemas/nycgo_published_dataset.tableschema.json` - Published dataset (17 fields)
 
-**Making Schema Changes:**
+**Making schema changes:**
 1. Update the schema file with new field definitions
 2. Update the version number in the schema file
 3. Document the change in `schemas/SCHEMA_CHANGELOG.md`
-4. If changing published schema, update `PUBLISHED_COLUMN_ORDER` in `scripts/process/export_dataset.py`
-5. Run pipeline to validate outputs match the new schema
-6. Use minor or major version bump (not patch) for schema changes
+4. If changing the published schema, update `PUBLISHED_COLUMN_ORDER` in `scripts/process/export_dataset.py`
+5. Run the pipeline to validate outputs match the new schema
+6. Use a minor or major version bump (not patch) for schema changes
 
-### Validation Report Structure
+### Validation report structure
 
 The `NYCGO_validation_report.json` file contains:
 
@@ -167,28 +184,28 @@ The `NYCGO_validation_report.json` file contains:
 }
 ```
 
-### Consumer Integration Pattern
+### Consumer integration pattern
 
-1. **Fetch validation report first**:
+1. **Fetch the validation report first**:
    ```bash
-   curl -sL "https://github.com/.../releases/latest/download/NYCGO_validation_report.json"
+   curl -sL "https://github.com/MODA-NYC/nyc-governance-organizations/releases/latest/download/NYCGO_validation_report.json"
    ```
 
 2. **Check validity**:
    - If `valid == false`: reject the release, keep serving cached data
    - If `valid == true`: proceed to download the dataset
 
-3. **Verify checksum**:
+3. **Verify the checksum**:
    ```bash
    # Download dataset
-   curl -sL "https://github.com/.../releases/latest/download/NYCGO_golden_dataset_latest.csv" -o dataset.csv
-   # Verify SHA-256 matches the value in validation report
+   curl -sL "https://github.com/MODA-NYC/nyc-governance-organizations/releases/latest/download/NYCGO_golden_dataset_latest.csv" -o dataset.csv
+   # Verify SHA-256 matches the value in the validation report
    sha256sum dataset.csv
    ```
 
-4. **Update cache** only if checksum matches
+4. **Update the cache** only if the checksum matches
 
-### Validation Checks
+### Validation checks
 
 The pipeline validates the following before publishing:
 
@@ -203,9 +220,9 @@ The pipeline validates the following before publishing:
 | Enum validation | Yes | `operational_status`, `organization_type` contain valid values |
 | URL format | No | URL fields contain valid http/https URLs (warning only) |
 
-If any blocking check fails, the release workflow will abort and no GitHub Release will be created.
+If any blocking check fails, the release workflow aborts and no GitHub Release is created.
 
-### Local Validation
+### Local validation
 
 Run validation locally against any CSV:
 
@@ -214,15 +231,10 @@ python scripts/validate_release_asset.py \
   --input data/published/latest/NYCGO_golden_dataset_latest.csv \
   --schema schemas/nycgo_golden_dataset.tableschema.json \
   --out validation_report.json \
-  --version v1.7.0
+  --version vX.Y.Z
 ```
 
 Use `--strict` to treat warnings as errors.
-
-## Release history
-
-- **Unreleased / in-flight** – pipeline restructure phases (complete). Focus areas: new `nycgo_pipeline` package, run/publish CLIs, data layout cleanup.
-- **2.8.0 (2025-06-10)** – Baseline prior to the refactor. Introduced the modular scripts (`manage_schema.py`, `process_golden_dataset.py`, `export_dataset.py`, `compare_datasets.py`), name parsing utilities, the maintenance scripts for the changelog workflow, and the current pytest suite and linting config. This release also added the append-only changelog (`data/changelog.csv`) and accompanying spec in `docs/CHANGELOG_SPEC.md`.
 
 ## API quick start (Socrata)
 Examples use dataset `t3jq-9nkf`.
@@ -266,52 +278,13 @@ Accepted evidence includes official nyc.gov pages showing the value, Executive O
 - “Can’t find it” reports
 - Proposing a new organization
 
-## Admin UI Integration
+## Running the pipeline locally
 
-This repository works in conjunction with **nycgo-admin-ui**, an internal web interface that allows authorized editors to submit individual record edits without running the full pipeline manually.
-
-> **Note**: The Admin UI repository ([MODA-NYC/nycgo-admin-ui](https://github.com/MODA-NYC/nycgo-admin-ui)) is **internal/private** and requires organization membership to access.
-
-### How the repositories interact
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  nycgo-admin-ui (internal)                                              │
-│  ├── Web UI for searching/editing organizations                         │
-│  ├── pending-edits/     ← User commits CSV edits here                   │
-│  ├── scheduled-edits/   ← Future-dated edits (promoted hourly)          │
-│  └── .github/workflows/process-edit.yml  ← Triggers on CSV commit       │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    │ Workflow clones this repo,
-                                    │ runs pipeline, commits results
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│  nyc-governance-organizations (this repo)                               │
-│  ├── data/published/latest/   ← Golden dataset (source of truth)        │
-│  ├── data/audit/runs/         ← Run artifacts with full audit trail     │
-│  ├── .github/workflows/publish-release.yml  ← Creates GitHub releases   │
-│  └── Releases                 ← Versioned datasets + validation reports │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-### Pipeline flow
-
-See the [interactive pipeline diagram](https://moda-nyc.github.io/nyc-governance-organizations/docs/nycgo-edit-publish-pipeline-standalone.html) or the [Mermaid version](docs/nycgo-edit-publish-pipeline.mermaid.md) for a complete visualization of:
-
-1. **Admin UI** → User submits edit via web form → CSV committed to `pending-edits/`
-2. **Process Edit Workflow** → Validates, runs pipeline, commits audit artifacts
-3. **Publish Release Workflow** → Creates versioned GitHub release with validation reports
-
-### For Admin UI maintainers
-
-The Admin UI loads data directly from this repository's `data/published/latest/NYCGO_golden_dataset_latest.csv`. Configuration is in `js/config.js`.
-
-## How to run this repo
+Routine updates go through the Admin UI and need none of this. Maintainers run the pipeline locally for bulk edits, schema changes, and testing.
 
 ### Prerequisites & install
 - **Python 3.10+**
-- **[UV](https://docs.astral.sh/uv/)** - Fast Python package manager (from Astral, makers of ruff)
+- **[UV](https://docs.astral.sh/uv/)** - Python package manager
 
 ~~~bash
 # Install UV (if not already installed)
@@ -324,59 +297,22 @@ make setup             # uses UV to create .venv & install deps from lockfile
 
 **Running commands**: Use `uv run <command>` or activate the venv with `source .venv/bin/activate`.
 
-### Pipeline Workflow
-
-**Note**: The pipeline currently generates v1.7.x format (38 fields, snake_case columns). Phase II schema expansion is deferred indefinitely.
-
-#### 1 · Prepare Schema *(optional)*
-~~~bash
-python scripts/process/manage_schema.py \
-  --input_csv  data/published/latest/NYCGO_golden_dataset_latest.csv \
-  --output_csv data/input/pending/updated_schema.csv \
-  --add_columns "new_column_name" \
-  --default_value ""
-~~~
-
-#### 2 · Run the pipeline orchestrator
-The CLI stages inputs, applies global rules + QA edits, exports pre-release outputs, and emits the per-run changelog and summary.
+### 1 · Run the pipeline
+The CLI stages inputs, applies global rules and the edits file, exports pre-release outputs, and writes the per-run changelog and summary.
 ~~~bash
 make run-pipeline GOLDEN=data/published/latest/NYCGO_golden_dataset_latest.csv \
                  QA=data/input/pending/my_edits.csv \
                  DESCRIPTOR=qa-pass
 ~~~
-_The CLI will create a run id when one is not supplied and writes artifacts under `data/audit/runs/<run_id>/`._
+_The CLI creates a run id when one is not supplied and writes artifacts under `data/audit/runs/<run_id>/`._
 
-#### 3 · Review outputs
-- Inspect `data/audit/runs/<run_id>/outputs/run_changelog.csv` and `run_summary.json`.
-- Use aids in `review/` to validate (comparison reports, stats).
+Edit files use these columns, the same format the Admin UI produces:
+```
+record_id,record_name,field_name,new_value,justification,evidence_url
+```
+Use `NEW` as the `record_id` for every row of a new organization. See [`data/input/README.md`](data/input/README.md) for where edit files go.
 
-#### 4 · Publish the run
-Promote the pre-release artifacts and append changelog rows to the dataset manifest.
-~~~bash
-make publish-run RUN_ID=<run_id> VERSION=v1.0.0
-~~~
-_Publish creates `_final` artifacts in `data/published/`, updates `latest/`, archives prior `latest/` snapshots, zips the run folder, and appends rows to `data/changelog.csv`._
-
-#### 5 · Audit & Compare *(optional)*
-~~~bash
-python scripts/maint/compare_datasets.py \
-  --original_csv  data/published/latest/NYCGO_golden_dataset_latest.csv \
-  --processed_csv data/audit/runs/<run_id>/outputs/golden_pre-release.csv \
-  --output_report_csv data/audit/comparison_report.csv
-~~~
-
-### Script Reference
-
-| Script | Purpose | Key Args |
-|--------|---------|----------|
-| **pipeline/run_pipeline.py** | End-to-end run orchestration | `--golden` · `--qa` (optional) · `--descriptor` · `--previous-export` |
-| **pipeline/publish_run.py** | Promote pre-release artifacts to final | `--run-dir` · `--version` · `--append-changelog` |
-| **process/manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
-| **process/export_dataset.py** | (Legacy) export helper leveraged by pipeline package | `--input_csv` · `--output_golden` · `--output_published` |
-
-#### Running Pipeline Without QA Edits
-
-To run the pipeline with no data changes (useful for testing schema changes or re-exporting):
+To run with no data changes (for example, to test a schema or rule change), omit the edits file:
 
 ```bash
 python scripts/pipeline/run_pipeline.py \
@@ -384,37 +320,54 @@ python scripts/pipeline/run_pipeline.py \
   --descriptor "Schema-only-run"
 ```
 
-When `--qa` is omitted, the pipeline applies global rules only (no QA edits).
+### 2 · Review outputs
+- Inspect `data/audit/runs/<run_id>/outputs/run_changelog.csv` and `run_summary.json`.
+- Use the files in `review/` to check the result.
+
+Each run folder contains `inputs/` (the golden snapshot, the prior published dataset, and the edits applied), `outputs/` (pre-release golden and published datasets, run changelog, run summary), and `review/`. See [`docs/run_artifacts.md`](docs/run_artifacts.md).
+
+### 3 · Publish the run
+Promote the pre-release outputs and append the run's changes to the changelog.
+~~~bash
+make publish-run RUN_ID=<run_id> VERSION=vX.Y.Z
+~~~
+
+In normal operation the `publish-release.yml` workflow does this step and creates the GitHub Release.
+
+### 4 · Compare datasets *(optional)*
+~~~bash
+python scripts/maint/compare_datasets.py \
+  --original_csv  data/published/latest/NYCGO_golden_dataset_latest.csv \
+  --processed_csv data/audit/runs/<run_id>/outputs/golden_pre-release.csv \
+  --output_report_csv data/audit/comparison_report.csv
+~~~
+
+### Script reference
+
+| Script | Purpose | Key Args |
+|--------|---------|----------|
+| **pipeline/run_pipeline.py** | End-to-end run orchestration | `--golden` · `--qa` (optional) · `--descriptor` · `--previous-export` |
+| **pipeline/publish_run.py** | Promote pre-release artifacts to final | `--run-dir` · `--version` · `--append-changelog` |
+| **process/manage_schema.py** | Add blank columns to a CSV | `--input_csv` · `--output_csv` · `--add_columns` |
+| **process/export_dataset.py** | Export logic used by the pipeline package | `--input_csv` · `--output_golden` · `--output_published` |
+| **validate_release_asset.py** | Validate a CSV against a schema | `--input` · `--schema` · `--out` · `--version` |
 
 ### Development
 
-#### Run Tests
 ~~~bash
-make test
+make test      # run tests
+make format    # black + ruff
 ~~~
 
-#### Format & Lint
-~~~bash
-make format
-~~~
+## Contributing
 
-## Versioning & changelog
-See [CHANGELOG.md](CHANGELOG.md) (append-only). Changes to `name`, `url`, `listed_in_nyc_gov_agency_directory`, `in_org_chart`, and major structural updates will be called out.
+- **Dataset or content updates** → use the [change request form](https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form) and include an official source.
+- **Code changes or tooling ideas** → open a GitHub Issue first. Please do not open pull requests unless a maintainer invites one.
 
-## Contributing (policy)
-
-We accept contributions in two ways:
-
-- Dataset/content updates → Use the NYC GO Change Request Form (Airtable). Please include an official source.
-👉 https://airtable.com/app7XmwsZnK325UiH/pagw5O7ZNWHJMkzxl/form
-
-- Code changes or tooling ideas → Open a GitHub Issue in this repo to discuss scope and approach.
-Please do not open pull requests unless a maintainer explicitly invites one on an accepted issue. Unsolicited PRs may be closed.
-
-Why: This repository runs a governed, production pipeline for a public dataset. Issue-first keeps changes reviewable, predictable, and compliant.
+Details are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Governance & credits
 Maintained by OTI’s Office of Data Analytics (Data Governance), with partner teams across NYC government. Archived predecessor repo: [Agency-Name-Project](https://github.com/MODA-NYC/Agency-Name-Project).
 
 ## License
-**MIT** – see `pyproject.toml` for full text.
+**MIT**, as declared in `pyproject.toml`.

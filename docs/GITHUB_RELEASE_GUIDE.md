@@ -1,5 +1,7 @@
 # GitHub Release Guide
 
+> **Superseded.** Releases are now created by `.github/workflows/publish-release.yml`. This page describes the earlier manual process and is kept for reference. For current operations see [MAINTENANCE.md](MAINTENANCE.md).
+
 ## Overview
 
 When publishing a new version, the `publish_run.py` script generates all files needed for a GitHub release. This guide explains what files are created and how to use them.

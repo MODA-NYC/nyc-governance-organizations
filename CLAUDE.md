@@ -21,10 +21,10 @@ Sprint documentation lives in `nyc-governance-organizations/docs/sprints/`:
 - `SPRINT_4.md` - Edit Submission Rate Limiting
 - `SPRINT_4.5.md` - Release Notes & Smart Versioning
 - `SPRINT_5.md` - Data Quality & Standardization
-- `SPRINT_6.md` - Directory Logic Transparency & QA (Dec 2024, released v1.6.0)
+- `SPRINT_6.md` - Directory Logic Transparency & QA (Dec 2025, released v1.6.0)
+- `SPRINT_7.md` - Cleanup & Technical Debt (Jan 2026; schema docs, field alignment, released v1.8.0)
 
-**Active/Planned** (in root folder):
-- `SPRINT_7.md` - Cleanup & Technical Debt (schema docs, externalize configs, etc.)
+**Planned** (in root folder):
 - `PHASE_II.md` - Phase II Data Release (46-field schema, 9 new orgs - deferred indefinitely)
 
 ---
@@ -56,9 +56,7 @@ Both are symlinks to the actual repos.
 - `scripts/pipeline/` - CLI entrypoints (run_pipeline.py, publish_run.py)
 - `.github/workflows/publish-release.yml` - Automated release workflow
 
-**Current Versions**:
-- v1.6.0 - Latest published (434 records, 38 fields, snake_case column names)
-- v1.2.0 - Development (443 records, 46 fields, Phase II schema - deferred)
+**Current Version**: do not hard-code it in docs. Read it from the tags (`git tag --sort=-v:refname | head -1`) and the record counts from `data/published/latest/run_summary.json`. The golden dataset has 38 fields and the published dataset 17, both snake_case. The Phase II schema (46 fields) is deferred.
 
 **Pipeline Commands**:
 ```bash
@@ -127,14 +125,12 @@ Artifacts available in data/published/latest/
 
 Edits use a CSV format with these columns:
 ```
-record_id,record_name,field_name,action,justification,evidence_url
+record_id,record_name,field_name,new_value,justification,evidence_url
 ```
 
-**Actions**:
-- `direct_set` - Set field to specific value
-- `append_to_list` - Append to semicolon-separated list
-- `remove_from_list` - Remove from list
-- `generate_recordid` - Auto-generate new RecordID
+- `new_value` holds the value to set. This is the format the Admin UI writes.
+- A new organization uses `NEW` as the `record_id` on every row; the pipeline assigns the ID.
+- The pipeline still accepts the older format, where an `action` column holds text such as `Set to ...` (see `src/nycgo_pipeline/qa_edits.py`).
 
 ---
 
@@ -149,7 +145,7 @@ The process-edit.yml workflow has two modes (controlled by a single repo variabl
 
 ---
 
-## Sprint 6 Completed (Dec 2024)
+## Sprint 6 Completed (Dec 2025)
 
 Sprint 6 focused on Directory Logic Transparency, field standardization, and QA:
 
@@ -164,7 +160,7 @@ Sprint 6 focused on Directory Logic Transparency, field standardization, and QA:
 
 **Released**: v1.6.0 with snake_case columns
 
-## Sprint 1 Completed (Dec 2024)
+## Sprint 1 Completed (Dec 2025)
 
 1. **Admin UI data source**: Now uses `NYCGO_golden_dataset_latest.csv` from `data/published/latest/`
 2. **Batch edit review**: New `review-edits.html` interface for reviewing CSV uploads before commit
@@ -266,8 +262,9 @@ Key fields:
 **GitHub Release Assets** (attached to each release):
 - `NYCGO_golden_dataset_v{X.Y.Z}.csv` - Versioned golden dataset
 - `NYCGO_golden_dataset_latest.csv` - Same file, stable name
-- `NYCGovernanceOrganizations_v{X.Y.Z}.csv` - Public export (directory-eligible only)
+- `NYCGovernanceOrganizations_v{X.Y.Z}.csv` - Published dataset (active records; the directory flag marks the nyc.gov subset)
 - `NYCGovernanceOrganizations_latest.csv` - Same file, stable name
+- Plus JSON exports, the validation report, the golden schema, the run changelog and the run zip. The full list is in `README.md`.
 
 **Pipeline Run Artifacts** (`data/audit/runs/<run_id>/`):
 ```
@@ -275,7 +272,9 @@ Key fields:
 ├── inputs/           # Copies of input files used
 ├── outputs/          # Generated files
 │   ├── golden_pre-release.csv
-│   ├── public_export.csv
+│   ├── published_pre-release.csv
+│   ├── published_pre-release.json
+│   ├── run_changelog.csv
 │   └── run_summary.json
 └── review/           # Diff and changelog files
 ```
@@ -290,5 +289,7 @@ Key fields:
 
 - `nyc-governance-organizations/README.md` - Main pipeline docs
 - `nyc-governance-organizations/docs/` - Detailed documentation
-- `docs/PHASE_I_SCHEMA.md` - Field definitions and types
+- `docs/SCHEMA.md` - Field definitions
+- `docs/MAINTENANCE.md` - Operations runbook (token rotation, failed runs, editors)
+- `AI_USAGE.md` - Public statement of how AI was used; keep it accurate when AI-assisted work changes
 - `nycgo-admin-ui/README.md` - Admin UI docs
